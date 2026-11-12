@@ -2971,29 +2971,69 @@ async function roomId() {
   return 'bsprac-' + [...new Uint8Array(h)].slice(0, 12).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 function setupDC() {
+  const c0 = dc;
   dc.on('open', () => {
-    showGame();
+    if (c0 !== dc) return;
+    lastRx = Date.now(); rcBusy = false; showGame();
     if (!isHost) {
       // 同じカードは1回だけ送る(40枚分まるごと送ると50KB前後になり、接続先によっては途中で止まるため)
       const u = [], ix = myDefs.map(d => { let i = u.findIndex(x => x === d || (x.id && x.id === d.id && x.name === d.name)); if (i < 0) { i = u.length; const L = CARD_LIST.find(c => c.def.id === d.id); u.push(L && d.id && JSON.stringify(L.def) === JSON.stringify(d) ? { id: d.id } : d); } return i; });
-      try { dc.send({ t: 'deck', u, ix, name: getName() }); } catch (e) { say('デッキの送信に失敗しました: ' + e.message); }
-      $('side').textContent = 'ホストの開始を待っています…(通信v22)';
-    } else $('side').textContent = '相手のデッキを受信中…(通信v22)';
+      if (guestStarted) { dsend({ t: 'resync' }); toast('再接続しました'); }
+      else { if (!dsend({ t: 'deck', u, ix, name: getName() })) say('デッキの送信に失敗しました'); $('side').textContent = 'ホストの開始を待っています…(通信v23)'; }
+    } else if (G) { pushState(); toast('相手が再接続しました'); }
+    else $('side').textContent = '相手のデッキを受信中…(通信v23)';
   });
-  dc.on('data', m => { try { onDcData(m); } catch (e) { const t = '受信処理でエラー: ' + (e && e.message || e); try { $('side').textContent = t; } catch (e2) { } toast(t); } });
+  dc.on('data', m => { if (c0 !== dc) return; lastRx = Date.now(); try { if (m && m.t === 'chunk') { const b = (chunkBuf[m.id] = chunkBuf[m.id] || { n: m.n, p: [], k: 0 }); if (!b.p[m.i]) { b.p[m.i] = m.d; b.k++; } if (b.k < b.n) return; delete chunkBuf[m.id]; m = JSON.parse(b.p.join('')); } if (m && m.t === 'ping') return; onDcData(m); } catch (e) { const t = '受信処理でエラー: ' + (e && e.message || e); try { $('side').textContent = t; } catch (e2) { } toast(t); } });
   dc.on('error', e => { try { $('side').textContent = '通信エラー: ' + (e && (e.type || e.message) || e); } catch (e2) { } });
   const onDcData = m => {
     if (!m || typeof m !== 'object') return;
     if (m.t === 'deck' && isHost && Array.isArray(m.u) && Array.isArray(m.ix)) { const miss = []; guestDefs = m.ix.slice(0, 100).map(i => { const x = m.u[i]; if (x && x.id && Object.keys(x).length === 1) { const L = CARD_LIST.find(c => c.def.id === x.id); if (!L) { miss.push(x.id); return null; } return L.def; } return x; }).filter(Boolean).map(cleanDef); if (miss.length) toast('相手のカードがこちらに無いため外しました: ' + [...new Set(miss)].join(',')); guestName = str(m.name, 12).trim(); startGame(); }
     else if (m.t === 'deck' && isHost && Array.isArray(m.defs)) { guestDefs = m.defs.slice(0, 100).map(cleanDef); guestName = str(m.name, 12).trim(); startGame(); }
-    else if (m.t === 'state' && !isHost) { setV(m.v); }
+    else if (m.t === 'state' && !isHost) { guestStarted = true; setV(m.v); }
     else if (m.t === 'act' && isHost && G) hostAct(1, m.a);
     else if (m.t === 'rematch') { rematchOpp = true; if (isHost) tryRematch(); else renderResult(); }
     else if (m.t === 'rematchgo' && !isHost) resetForNew();
+    else if (m.t === 'resync' && isHost && G) { pushState(); }
     else if (m.t === 'bye') resetToHome('相手が退出したため、ホームに戻りました');
   };
-  dc.on('close', () => { toast('接続が切断されました'); });
+  dc.on('close', () => { if (c0 !== dc) return; connLost(); });
 }
+/* --- 通信の安定化: 大きい送信の分割 / 切れたら自動で再接続 / 生存確認 --- */
+let lastRx = 0, rcBusy = false, guestStarted = false, lastRoom = null; const chunkBuf = {};
+function dsend(m) {
+  if (!dc || !dc.open) return false;
+  try {
+    const s = JSON.stringify(m), CH = 8000;
+    if (s.length <= CH) dc.send(m);
+    else { const id = Math.random().toString(36).slice(2, 8), n = Math.ceil(s.length / CH); for (let i = 0; i < n; i++) dc.send({ t: 'chunk', id, i, n, d: s.slice(i * CH, (i + 1) * CH) }); }
+    return true;
+  } catch (e) { return false; }
+}
+const inMatch = () => !cpu && !solo && !!(isHost ? G : V);
+function connLost() {
+  if (!inMatch()) { toast('接続が切断されました'); return; }
+  toast('接続が切れました。つなぎ直しています…');
+  if (!isHost) guestReconnect(); else if (peer && peer.disconnected && !peer.destroyed) { try { peer.reconnect(); } catch (e) { } }
+}
+function guestReconnect() {
+  if (isHost || rcBusy || !lastRoom || !peer) return; rcBusy = true; let tries = 0;
+  const go = () => {
+    if (dc && dc.open) { rcBusy = false; return; }
+    try {
+      if (peer.destroyed) { peer = new Peer(); peer.on('open', go); peer.on('error', () => { }); return; }
+      if (peer.disconnected) peer.reconnect();
+      dc = peer.connect(lastRoom, { reliable: true, serialization: 'json' }); setupDC();
+    } catch (e) { }
+    setTimeout(() => { if (dc && dc.open) rcBusy = false; else if (++tries < 40) go(); else { rcBusy = false; toast('つなぎ直せませんでした。ページを再読み込みして入り直してください'); } }, 3000);
+  };
+  go();
+}
+setInterval(() => {
+  if (!dc || !inMatch()) return;
+  if (dc.open) { dsend({ t: 'ping' }); if (Date.now() - lastRx > 20000) { try { dc.close(); } catch (e) { } connLost(); lastRx = Date.now(); } }
+  else if (!isHost && !rcBusy) guestReconnect();
+}, 5000);
+document.addEventListener('visibilitychange', () => { if (document.hidden || !inMatch()) return; if (!dc || !dc.open) connLost(); });
 let cpu = false, matchTest = false, guestName = '';
 const getName = () => { const v = ($('myName').value || '').trim().slice(0, 12); return v || 'プレイヤー'; };
 try { $('myName').value = localStorage.getItem('bs-name') || ''; } catch (e) { }
@@ -3016,7 +3056,7 @@ function asGuest(id, n) {
   isHost = false; if (peer) { try { peer.destroy(); } catch (e) { } }
   say('相手を探しています…');
   peer = new Peer();
-  peer.on('open', () => { dc = peer.connect(id, { reliable: true, serialization: 'json' }); setupDC(); });
+  peer.on('open', () => { lastRoom = id; dc = peer.connect(id, { reliable: true, serialization: 'json' }); setupDC(); });
   peer.on('error', e => { if (e.type === 'peer-unavailable' && n < 3) setTimeout(() => asHost(id, n + 1), 800); else say('エラー: ' + e.type); });
 }
 $('cpuLv').onchange = () => { try { localStorage.setItem('bs-cpulv', $('cpuLv').value); } catch (e) { } };
@@ -3069,22 +3109,22 @@ function doRematch() {
     pushState(); return;
   }
   rematchMine = true;
-  try { dc.send({ t: 'rematch' }); } catch (e) { /* 切断時は無視 */ }
+  try { dsend({ t: 'rematch' }); } catch (e) { /* 切断時は無視 */ }
   if (isHost) tryRematch(); else renderResult();
 }
 function tryRematch() {
-  if (rematchMine && rematchOpp) { resetForNew(); try { dc.send({ t: 'rematchgo' }); } catch (e) { } startGame(); }
+  if (rematchMine && rematchOpp) { resetForNew(); try { dsend({ t: 'rematchgo' }); } catch (e) { } startGame(); }
   else renderResult();
 }
-function leaveNow() { try { if (dc && dc.open) dc.send({ t: 'bye' }); } catch (e) { } resetToHome(''); }
+function leaveNow() { try { if (dc && dc.open) dsend({ t: 'bye' }); } catch (e) { } resetToHome(''); }
 function goHome() {
   if (Date.now() - homeArm > 3500) { homeArm = Date.now(); toast('もう一度押すと、対戦をリセットしてホームに戻ります'); return; }
-  try { if (dc && dc.open) dc.send({ t: 'bye' }); } catch (e) { /* 接続が切れていても戻れる */ }
+  try { if (dc && dc.open) dsend({ t: 'bye' }); } catch (e) { /* 接続が切れていても戻れる */ }
   resetToHome('');
 }
 function resetToHome(msg) {
   clearTimeout(animTimer); clearTimeout(fxTimer); animStep = null; fxQ = []; fxBusy = false; $('fx').hidden = true; $('fx').dataset.k = '';
-  pay = null; sel.clear(); pickSel.clear(); G = null; V = null; snap = null; lastSeq = null; seenCast = 0; seenNotice = 0; solo = false; cpu = false; clearTimeout(cpuT); isHost = false; viewer = 0; guestDefs = null; wasFocus = false;
+  pay = null; sel.clear(); pickSel.clear(); G = null; V = null; snap = null; lastSeq = null; seenCast = 0; seenNotice = 0; solo = false; cpu = false; clearTimeout(cpuT); isHost = false; viewer = 0; guestDefs = null; wasFocus = false; guestStarted = false; lastRoom = null;
   const pr = peer, c = dc; peer = null; dc = null;
   setTimeout(() => { try { if (c) c.close(); if (pr) pr.destroy(); } catch (e) { /* 無視 */ } }, 200);
   hideSheet(); $('banner').hidden = true; $('logpanel').hidden = true; logOpen = false; menuOpen = false;
@@ -3508,7 +3548,7 @@ function playTrace(tr) {
 }
 function pushState() {
   setV(viewFor(G, solo ? viewer : 0));
-  if (dc && dc.open) dc.send({ t: 'state', v: viewFor(G, 1) });
+  if (dc && dc.open) dsend({ t: 'state', v: viewFor(G, 1) });
   scheduleCpu();
 }
 let cpuT = null, gateUntil = 0;
@@ -3553,7 +3593,7 @@ const doAct = a => {
     pushState();
   }
   else if (isHost) hostAct(0, a);
-  else if (dc && dc.open) dc.send({ t: 'act', a });
+  else if (dc && dc.open) dsend({ t: 'act', a });
 };
 
 /* --- 描画 --- */
