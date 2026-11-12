@@ -2979,11 +2979,11 @@ function setupDC() {
       // 同じカードは1回だけ送る(40枚分まるごと送ると50KB前後になり、接続先によっては途中で止まるため)
       const u = [], ix = myDefs.map(d => { let i = u.findIndex(x => x === d || (x.id && x.id === d.id && x.name === d.name)); if (i < 0) { i = u.length; const L = CARD_LIST.find(c => c.def.id === d.id); u.push(L && d.id && JSON.stringify(L.def) === JSON.stringify(d) ? { id: d.id } : d); } return i; });
       if (guestStarted) { dsend({ t: 'resync' }); toast('再接続しました'); }
-      else { if (!dsend({ t: 'deck', u, ix, name: getName() })) say('デッキの送信に失敗しました'); $('side').textContent = 'ホストの開始を待っています…(通信v23)'; }
+      else { if (!dsend({ t: 'deck', u, ix, name: getName() })) say('デッキの送信に失敗しました'); $('side').textContent = 'ホストの開始を待っています…(通信v25)'; }
     } else if (G) { pushState(); toast('相手が再接続しました'); }
-    else $('side').textContent = '相手のデッキを受信中…(通信v23)';
+    else $('side').textContent = '相手のデッキを受信中…(通信v25)';
   });
-  dc.on('data', m => { if (c0 !== dc) return; lastRx = Date.now(); try { if (m && m.t === 'chunk') { const b = (chunkBuf[m.id] = chunkBuf[m.id] || { n: m.n, p: [], k: 0 }); if (!b.p[m.i]) { b.p[m.i] = m.d; b.k++; } if (b.k < b.n) return; delete chunkBuf[m.id]; m = JSON.parse(b.p.join('')); } if (m && m.t === 'ping') return; onDcData(m); } catch (e) { const t = '受信処理でエラー: ' + (e && e.message || e); try { $('side').textContent = t; } catch (e2) { } toast(t); } });
+  dc.on('data', m => { if (c0 !== dc) return; lastRx = Date.now(); try { if (m && m.t === 'chunk') { const b = (chunkBuf[m.id] = chunkBuf[m.id] || { n: m.n, p: [], k: 0 }); if (!b.p[m.i]) { b.p[m.i] = m.d; b.k++; } if (b.k < b.n) return; delete chunkBuf[m.id]; const arrs = b.p.map(x => Uint8Array.from(atob(x), ch => ch.charCodeAt(0))), all = new Uint8Array(arrs.reduce((a, x) => a + x.length, 0)); let off = 0; arrs.forEach(x => { all.set(x, off); off += x.length; }); m = JSON.parse(new TextDecoder().decode(all)); } if (m && m.t === 'ping') return; if (m && m.t === 'state' && m.pk) m.v = unpackDefs(m.v); onDcData(m); } catch (e) { const t = '受信処理でエラー: ' + (e && e.message || e); try { $('side').textContent = t; } catch (e2) { } toast(t); } });
   dc.on('error', e => { try { $('side').textContent = '通信エラー: ' + (e && (e.type || e.message) || e); } catch (e2) { } });
   const onDcData = m => {
     if (!m || typeof m !== 'object') return;
@@ -3000,12 +3000,38 @@ function setupDC() {
 }
 /* --- 通信の安定化: 大きい送信の分割 / 切れたら自動で再接続 / 生存確認 --- */
 let lastRx = 0, rcBusy = false, guestStarted = false, lastRoom = null; const chunkBuf = {};
+/* カードの中身(def)は両側が持っているので、番号だけ送って受け取り側で戻す。トークンなど無いものはそのまま送る */
+let _idMap = null, _idMapFor = null; const _defOk = new WeakMap();
+function defById() { if (_idMapFor !== CARD_LIST) { _idMap = new Map(CARD_LIST.map(c => [c.def.id, c.def])); _idMapFor = CARD_LIST; } return _idMap; }
+function packDefs(m) {
+  const mp = defById();
+  return JSON.parse(JSON.stringify(m, function (k, v) {
+    if (k === 'def' && v && typeof v === 'object' && v.id && !Array.isArray(v)) {
+      let ok = _defOk.get(v);
+      if (ok === undefined) { const L = mp.get(v.id); ok = !!L && (L === v || JSON.stringify(L) === JSON.stringify(v)); _defOk.set(v, ok); }
+      if (ok) return { __id: v.id };
+    }
+    return v;
+  }));
+}
+function unpackDefs(o) {
+  if (!o || typeof o !== 'object') return o;
+  const mp = defById();
+  if (Array.isArray(o)) { for (let i = 0; i < o.length; i++) o[i] = unpackDefs(o[i]); return o; }
+  for (const k in o) { const v = o[k]; if (k === 'def' && v && typeof v === 'object' && v.__id) { const d = mp.get(v.__id); if (d) o[k] = d; } else if (v && typeof v === 'object') o[k] = unpackDefs(v); }
+  return o;
+}
 function dsend(m) {
   if (!dc || !dc.open) return false;
   try {
-    const s = JSON.stringify(m), CH = 8000;
-    if (s.length <= CH) dc.send(m);
-    else { const id = Math.random().toString(36).slice(2, 8), n = Math.ceil(s.length / CH); for (let i = 0; i < n; i++) dc.send({ t: 'chunk', id, i, n, d: s.slice(i * CH, (i + 1) * CH) }); }
+    if (m && m.t === 'state') m = { t: 'state', v: packDefs(m.v), pk: 1 };
+    // PeerJSは1回16300バイトまで(日本語は1文字3バイト)。UTF-8のバイト数で分割し、base64にして送る
+    const bytes = new TextEncoder().encode(JSON.stringify(m)), CH = 9000;
+    if (bytes.length <= 12000) dc.send(m);
+    else {
+      const id = Math.random().toString(36).slice(2, 8), n = Math.ceil(bytes.length / CH);
+      for (let i = 0; i < n; i++) { const part = bytes.subarray(i * CH, (i + 1) * CH); let bin = ''; for (let k = 0; k < part.length; k += 3000) bin += String.fromCharCode.apply(null, part.subarray(k, k + 3000)); dc.send({ t: 'chunk', id, i, n, d: btoa(bin) }); }
+    }
     return true;
   } catch (e) { return false; }
 }
