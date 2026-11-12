@@ -502,6 +502,10 @@ body:has(#builder:not([hidden])) h1{display:none}
   .card{font-size:clamp(9px,calc(var(--cw) * .17),15px)}
   /* PC: スピリットは上の段、ネクサスは2段目(相手側は反転)。段の高さは固定して、効果のたびに盤面が動かないようにする */
   .half .col{--cw:calc(var(--cwb) * .74)}
+  :root{--cwb:clamp(46px,min(8.8vw,11.2vh),132px)}
+  /* PC: 横向き(疲労)のカードが隣やフィールドに重ならないよう、カード同士の間を空ける。余裕があるときは広く、足りなければ詰める */
+  .field{container-type:inline-size}
+  .lane{--gx:clamp(calc(var(--cw) * .1), calc((100cqw - 14px - var(--n, 1) * var(--cw)) / max(1, var(--n, 1) - 1)), calc(var(--cw) * .5));column-gap:var(--gx);row-gap:8px;justify-content:center}
 }
 
 .symx{display:inline-block;background:#6fe3a1;color:#08210f;border-radius:6px;padding:0 4px;font-size:10px;font-weight:800;animation:symp 1.6s ease-in-out infinite}
@@ -512,6 +516,11 @@ body:has(#builder:not([hidden])) h1{display:none}
 .whypop{position:fixed;z-index:70;pointer-events:none;background:#1a0d12ee;color:#ffd0d6;border:1px solid #ff6e7f;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 4px 14px #000a}
 .corepop{position:fixed;z-index:60;pointer-events:none;font-weight:900;color:#ffd36e;text-shadow:0 0 6px #000}
 
+#idlemsg{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:55;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(18px,7vw,54px);white-space:nowrap;font-weight:900;color:#fff;text-shadow:0 0 18px #6ea8ff,0 0 4px #000;background:#0b1020d9;border:2px solid #6ea8ff;border-radius:18px;padding:.35em 1.1em;box-shadow:0 0 40px #6ea8ff88;animation:idlein .5s ease both}
+#idlemsg small{font-size:.4em;font-weight:700;color:#bcd0ff;text-shadow:none}
+@keyframes idlein{from{opacity:0;transform:translate(-50%,-46%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.idleglow{animation:idlepulse 1s ease-in-out infinite!important;outline:3px solid #ffd36e;outline-offset:2px}
+@keyframes idlepulse{50%{box-shadow:0 0 22px 8px #ffd36e;filter:brightness(1.35)}}
 #cbtn.low{top:auto;bottom:calc(var(--handh,120px) + 14px);transform:translateX(-50%);max-width:96vw}
 @media (max-width:899px){#cbtn.low{transform:none;max-width:none;left:6px;right:6px}}
 #cbtn .dh,#revbox .dh{pointer-events:auto;cursor:grab;touch-action:none;background:#000b;color:#ffe9a8;font-size:12px;padding:3px 12px;border-radius:999px;user-select:none}
@@ -1521,12 +1530,12 @@ function execOpX(G, it, op) {
     if (op.auto && (op.iter | 0) > 0) { it.fx = { n: it.name, t: '', p: it.pi, r: [] }; G.fx.push(it.fx); }   // 2回目以降は、効果の表示をあらためて出す
     const iterTxt = op.auto ? '(' + ((op.iter | 0) + 1) + '/' + (op.tot || op.times) + '回目) ' : '';
     if (!c) { lg(G, it.pi, '　' + it.name + ': デッキがありません'); if (it.fx) it.fx.r.push('デッキがないため、何も起きません'); return; }
-    P.deck.pop(); G.evs.push({ t: 'open', p: it.pi, cards: [{ iid: c.iid, id: c.def.id, name: c.def.name, color: c.def.color }] });
+    P.deck.pop(); const oev = { t: 'open', p: it.pi, to: 'deck', cards: [{ iid: c.iid, id: c.def.id, name: c.def.name, color: c.def.color }] }; G.evs.push(oev);
     lg(G, it.pi, '　' + it.name + ': デッキの上から「' + c.def.name + '」(コスト' + c.def.cost + ')をオープン');
     let rr = iterTxt + 'デッキの上の「' + c.def.name + '」(コスト' + c.def.cost + ')をオープンしました', add = [], keep = false;
     for (const br of (op.branch || [])) {
       if (!matchDef(c.def, br.flt || {})) continue;
-      if (br.toHand) { P.hand.push(c); keep = true; rr += '。手札に加えました'; lg(G, it.pi, '　' + it.name + ': 「' + c.def.name + '」を手札に加えた'); }
+      if (br.toHand) { oev.to = 'hand'; P.hand.push(c); keep = true; rr += '。手札に加えました'; lg(G, it.pi, '　' + it.name + ': 「' + c.def.name + '」を手札に加えた'); }
       add = add.concat(br.ops || []); break;
     }
     if (!keep) { if (op.back === 'top') P.deck.push(c); else P.deck.unshift(c); }
@@ -2152,7 +2161,7 @@ function abilityOK(G, pi, k, ei) {
   if (t.step === 'main') { if (!(G.turn === pi && (G.step === 'main' || G.step === 'main2') && !b)) return false; }
   else {
     if (b) { if (!(b.phase === 'flash1' || b.phase === 'flash2') || b.prio !== pi) return false; }
-    else if (!(G.turn === pi && ['main', 'main2', 'attack'].includes(G.step))) return false;
+    else if (!(G.turn === pi && ['main', 'main2'].includes(G.step))) return false;   // アタックとアタックの間(バトルが無いアタックステップ)ではフラッシュの起動効果は使えない
     const atk = !!b && b.iid === k.iid && !b.gone, blk = !!b && b.blocker === k.iid && !b.bgone;
     if (lab.includes('アタック/ブロック中')) { if (!atk && !blk) return false; }
     else if (lab.includes('アタック中')) { if (!atk) return false; }
@@ -2653,8 +2662,9 @@ const VARIANTS = [   // イラスト違い(カード番号は仮。正式な番�
   { id: '26RBS02-CP01-V11', of: '26RBS02-CP01', set: 'プロモカード' },
   { id: '26RBS02-CP01-V12', of: '26RBS02-CP01', set: 'プロモカード' }   // ゲートオープン、界放(プロモ・別絵)
 ];
-const setLabel = n => { n = String(n); if (/^26RSD09/.test(n)) return '26RSD09 覚醒の煉凰'; if (/^26RSD10/.test(n)) return '26RSD10 アニメスターター【深淵の怪鯨】'; if (/^BS0[13]/.test(n)) return SET_RBS02(); return n; };
-let _rbs02 = '26RBS02 幻惑の翔風';
+const SET_TITLE = { '26RSD01': 'エントリーデッキ【赫焔ノ風牙】', '26RSD02': 'エントリーデッキ【紫幻ノ血醒】', '26RSD03': 'エントリーデッキ【翆海ノ甲魚】', '26RSD04': 'エントリーデッキ【白命ノ鉱人】', '26RSD05': 'エントリーデッキ【煌陽ノ雷竜】', '26RSD06': 'エントリーデッキ【蒼淵ノ凶獣】', '26RSD09': 'アニメスターター【覚醒の煉凰】', '26RSD10': 'アニメスターター【深淵の怪鯨】', '26RSD11': 'アニメスターター【蒼風ノ剣豪】', '26RBS01': 'ブースター【創世の鼓動】', '26RBS02': 'ブースター【幻惑の翔風】', '26RBS03': 'ブースター【絶界の覇者】' };
+const setLabel = n => { n = String(n); { const m = n.match(/^(26R[A-Z]{2}\d{2})/); if (m && SET_TITLE[m[1]]) return m[1] + ' ' + SET_TITLE[m[1]]; } if (/^BS0[13]/.test(n)) return SET_RBS02(); return n; };
+let _rbs02 = '26RBS02 ブースター【幻惑の翔風】';
 const SET_RBS02 = () => _rbs02;
 function rebuildCards() {
   BLOB_URLS.splice(0).forEach(u => { try { URL.revokeObjectURL(u); } catch (e) { } });
@@ -3192,6 +3202,7 @@ let cutinT = null, busyUntil = 0, busyTimer = null;
 function busyCheck() { clearTimeout(busyTimer); if (typeof uiBusy === 'function' && uiBusy()) { busyTimer = setTimeout(busyCheck, 400); return; } render(); }
 const uiBusy = () => Date.now() < busyUntil;
 function setV(v) {
+  idleReset();
   const pre = { me: zoneRect('#me', 'coreTrash'), opp: zoneRect('#opp', 'coreTrash') };
   const oldS = snap, oldMe = V ? V.me : null, preRect = pre, prr = grabRects();
   V = v; snap = snapOf(V);
@@ -3263,7 +3274,7 @@ function setV(v) {
     // 破壊(ガラスが割れてトラッシュへ)・消滅(ふわっと消えて粒子がトラッシュへ)
     const fxWait = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0);
     const eAt = fxWait;
-    (V.evs || []).filter(ev => ev.t === 'destroy' || ev.t === 'vanish').forEach((ev, i) => { evQ.push({ ev, rc: prr.cards[ev.iid], key: ev.p === V.me ? 'me' : 'opp', at: now + eAt + i * 250 }); });
+    (V.evs || []).filter(ev => ev.t === 'destroy' || ev.t === 'vanish').forEach((ev, i) => { evQ.push({ ev, rc: prr.cards[ev.iid], key: ev.p === V.me ? 'me' : 'opp', at: now + eAt + i * 250 }); holdTrash(ev.p === V.me ? 'me' : 'opp', [ev.iid], eAt + i * 250 + 1400, true); });   // 位置が取れなくても、アニメが終わるまではトラッシュに見せない
     // ライフで受けた: ライフのコアが弾けて、リザーブへ
     snap.p.forEach((n, i) => {
       const lost = [...oldS.p[i].life].filter(id => !n.life.has(id)); if (!lost.length) return;
@@ -3289,7 +3300,9 @@ function setV(v) {
     });
   }
   if (newSeq && had && oldS) {
+    let oi = 0;
     (V.evs || []).forEach(ev => {
+      if (ev.t === 'open') openAnim(ev, oi++);
       if (ev.t === 'turn') { const el = $(ev.p === V.me ? 'me' : 'opp'); if (el) { el.classList.remove('turnglow'); void el.offsetWidth; el.classList.add('turnglow'); setTimeout(() => el.classList.remove('turnglow'), 2600); } }
       if (ev.t === 'coreAdd') { const t = grabRects().cards[ev.iid]; let z = null; if (ev.from && ev.from.startsWith('card:')) { const fr = grabRects().cards[ev.from.slice(5)]; if (fr) z = { x: fr.cx, y: fr.cy }; } else z = zoneRect(ev.p === V.me ? '#me' : '#opp', ev.from || 'reserve'); if (t) { const dl = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0); coreFly(z ? { cx: z.x, cy: z.y } : { cx: t.cx, cy: t.cy - 90 }, t, ev.n, ev.soul, dl); setTimeout(() => popText(ev.soul ? 'ソウルコア+1' : 'コア+' + ev.n, t.cx, t.cy), dl + 900); } }
       if (ev.t === 'lifeAdd') { const ls = [...document.querySelectorAll((ev.p === V.me ? '#me' : '#opp') + ' .lc')], l = ls[ls.length - 1], z = zoneRect(ev.p === V.me ? '#me' : '#opp', 'reserve'); if (l) { const r = l.getBoundingClientRect(), c = { cx: r.left + r.width / 2, cy: r.top + r.height / 2 }; coreFly(z ? { cx: z.x, cy: z.y } : { cx: c.cx, cy: c.cy - 80 }, c, ev.n); popText('ライフ+' + ev.n, c.cx, c.cy); } }
@@ -3334,7 +3347,7 @@ function popText(t, x, y) {
 }
 // 【地鳴】: デッキの上から指定枚数がぱらぱらと盤面近くに開かれ、少し待ってからトラッシュへ
 const millHold = {};
-function holdTrash(key, ids, ms) { millHold[key] = { until: Date.now() + ms, ids: new Set(ids) }; render(); setTimeout(() => { if (millHold[key] && Date.now() >= millHold[key].until) { delete millHold[key]; render(); } }, ms + 30); }
+function holdTrash(key, ids, ms, noRender) { const o = millHold[key]; if (o && Date.now() < o.until) { ids.forEach(i => o.ids.add(i)); o.until = Math.max(o.until, Date.now() + ms); } else millHold[key] = { until: Date.now() + ms, ids: new Set(ids) }; if (!noRender) render(); setTimeout(() => { if (millHold[key] && Date.now() >= millHold[key].until) { delete millHold[key]; render(); } }, ms + 30); }
 function faceEl(c, back) {
   const el = document.createElement('div'); el.className = 'milc'; el.title = c.name;
   const paint = b => { const u = artOf(c.id); el.style.backgroundImage = b ? '' : (u ? 'url(' + u + ')' : ''); el.textContent = b ? '' : (u ? '' : c.name); el.style.background = b ? 'repeating-linear-gradient(45deg,#26305a,#26305a 6px,#303c70 6px,#303c70 12px)' : ''; if (!b && u) el.style.backgroundImage = 'url(' + u + ')'; el.style.borderColor = b ? '#9aa1bd' : (COLOR_HEX[c.color] || '#9aa1bd'); };
@@ -3357,6 +3370,19 @@ function millAnim(ev) {
     const t1 = 250 + (n - 1) * DEAL + 520 + FLIP * 2 + HOLD + (n - 1 - i) * 70;
     setTimeout(() => { el.animate([{ transform: at(ex, ey, rot, 1), opacity: 1 }, { transform: at(tp.x, tp.y, rot * 3, .55), opacity: .2 }], { duration: SWEEP, easing: 'ease-in', fill: 'both' }).onfinish = () => el.remove(); }, t1);
   });
+}
+// デッキの上から1枚をオープン: デッキから出て、表になって見せてから、行き先(デッキ/手札)へ。相手側にも同じように見える
+function openAnim(ev, idx) {
+  const key = ev.p === V.me ? 'me' : 'opp', c = ev.cards[0]; if (!c) return;
+  const dk = rectC(document.querySelector('#' + key + ' .deck')) || { x: innerWidth - 60, y: innerHeight / 2 }, fd = rectC(document.querySelector('#' + key + ' .field')) || { x: innerWidth / 2, y: innerHeight / 2 };
+  const hd = ev.to === 'hand' ? (rectC($(key === 'me' ? 'hand' : 'opp')) || dk) : dk;
+  const el = faceEl(c, true), W = 27, H = 38, at = (x, y, sc, sx) => 'translate(' + (x - W) + 'px,' + (y - H) + 'px) scale(' + sc + ') scaleX(' + sx + ')';
+  const D0 = 250 + (idx | 0) * 2000, FLY = 500, FLIP = 160, HOLD = 1000, BACK = 500;
+  el.style.opacity = 0;
+  el.animate([{ transform: at(dk.x, dk.y, 1, 1), opacity: 0 }, { transform: at(dk.x, dk.y, 1, 1), opacity: 1, offset: .1 }, { transform: at(fd.x, fd.y, 1.9, 1), opacity: 1 }], { duration: FLY, delay: D0, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'both' });
+  setTimeout(() => { el.animate([{ transform: at(fd.x, fd.y, 1.9, 1) }, { transform: at(fd.x, fd.y, 1.9, 0) }], { duration: FLIP, fill: 'both' }).onfinish = () => { el.paint(false); el.animate([{ transform: at(fd.x, fd.y, 1.9, 0) }, { transform: at(fd.x, fd.y, 1.9, 1) }], { duration: FLIP, fill: 'both' }); }; }, D0 + FLY);
+  setTimeout(() => { el.animate([{ transform: at(fd.x, fd.y, 1.9, 1), opacity: 1 }, { transform: at(hd.x, hd.y, .8, 1), opacity: .2 }], { duration: BACK, easing: 'ease-in', fill: 'both' }).onfinish = () => el.remove(); }, D0 + FLY + FLIP * 2 + HOLD);
+  setTimeout(() => { try { el.remove(); } catch (e) { } }, D0 + FLY + FLIP * 2 + HOLD + BACK + 400);
 }
 // オープンした1枚をデッキの上/下へ戻す
 function deckRetAnim(ev) {
@@ -3413,7 +3439,7 @@ function coreFly(a, b, n, soul, dl) {
 let pendingFly = [], evQ = [], lifeQ = [];
 function grabRects() {
   const cards = {}, life = {};
-  document.querySelectorAll('#mat [data-card][data-zone="field"]').forEach(el => { const r = el.getBoundingClientRect(); cards[el.dataset.card] = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: Math.min(r.width, r.height), h: Math.max(r.width, r.height) }; });
+  document.querySelectorAll('#mat [data-card][data-zone="field"]').forEach(el => { const r = el.getBoundingClientRect(); const hh = el.offsetHeight || Math.max(r.width, r.height); cards[el.dataset.card] = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: hh / 1.4, h: hh }; });
   document.querySelectorAll('#mat .lc[data-lcid]').forEach(el => { const r = el.getBoundingClientRect(); life[el.dataset.lcid] = { x: r.left + r.width / 2, y: r.top + r.height / 2, soul: el.dataset.lsoul === '1' }; });
   return { cards, life };
 }
@@ -3421,7 +3447,7 @@ const trashPt = key => { const el = document.querySelector((key === 'me' ? '#me'
 const rnd = (a, b) => a + Math.random() * (b - a);
 function cardFace(rc, ev, clip) {
   const el = document.createElement('div'); el.className = 'shard';
-  const tp = !!ev.tapped, W0 = tp ? rc.h : rc.w, H0 = tp ? rc.w : rc.h;   // 疲労(横向き)のまま壊す
+  const tp = !!ev.tapped, W0 = rc.w, H0 = rc.h;   // 疲労(横向き)のまま壊す: 縦長の箱を90度回して横向きにする(箱の縦横を入れ替えると比率が崩れる)
   el.style.cssText = 'left:' + (rc.cx - W0 / 2) + 'px;top:' + (rc.cy - H0 / 2) + 'px;width:' + W0 + 'px;height:' + H0 + 'px;--cc:' + (COLOR_HEX[ev.color] || '#6a7499') + (clip ? ';clip-path:' + clip : '');
   { const rot = ((ev.p != null && V && ev.p !== V.me) ? 180 : 0) + (tp ? 90 : 0); if (rot) el.style.rotate = rot + 'deg'; }   // 相手のカードは相手向き・疲労は横向きのまま壊す
   const art = ev.id ? artOf(ev.id) : '';
@@ -3433,7 +3459,7 @@ function shatter(rc, ev, to, delay) {
   const polys = ['polygon(0 0,56% 0,40% 42%,0 30%)', 'polygon(56% 0,100% 0,100% 38%,40% 42%)', 'polygon(0 30%,40% 42%,28% 100%,0 100%)', 'polygon(40% 42%,100% 38%,100% 100%,28% 100%)'];
   const D = 1100;
   const cr = document.createElement('div'); cr.className = 'crack';
-  cr.style.cssText = 'left:' + (rc.cx - rc.w / 2) + 'px;top:' + (rc.cy - rc.h / 2) + 'px;width:' + rc.w + 'px;height:' + rc.h + 'px';
+  cr.style.cssText = 'left:' + (rc.cx - rc.w / 2) + 'px;top:' + (rc.cy - rc.h / 2) + 'px;width:' + rc.w + 'px;height:' + rc.h + 'px' + (ev.tapped ? ';rotate:90deg' : '');
   cr.innerHTML = '<svg viewBox="0 0 100 140" preserveAspectRatio="none" width="100%" height="100%"><g stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"><polyline points="0,42 40,59 56,0"/><polyline points="40,59 100,53"/><polyline points="40,59 28,140"/><polyline points="40,59 62,92 100,110"/></g></svg>';
   document.body.appendChild(cr);
   cr.animate([{ opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 1, offset: .26 }, { opacity: 0, offset: .34 }, { opacity: 0, offset: 1 }], { duration: D, delay, fill: 'both' }).onfinish = () => cr.remove();
@@ -3534,7 +3560,7 @@ function showPendingFx() {
   if (k === fxDismissKey) { box.hidden = true; return; }
   if (box.dataset.k === k && !box.hidden) { placeFx(box, pd.cands); return; }
   box.dataset.k = k;
-  box.innerHTML = '<div class="fxc pend"><div class="fxn">' + pn(pd.pi) + 'の「' + esc(pd.name) + '」の効果</div>' + (pd.text ? '<div class="fxt">' + rich(esc(pd.text).replace(/\n/g, '<br>')) + '</div>' : '') +
+  box.innerHTML = '<div class="fxc pend"><div class="fxn">' + pn(pd.by != null ? pd.by : (pd.x && pd.x.by != null ? pd.x.by : pd.pi)) + 'の「' + esc(pd.name) + '」の効果</div>' + (pd.text ? '<div class="fxt">' + rich(esc(pd.text).replace(/\n/g, '<br>')) + '</div>' : '') +
     '</div>';
   box.hidden = false; placeFx(box, pd.cands);
 }
@@ -3783,7 +3809,7 @@ function sideHTML(P, own) {
     '<a class="lk rm" data-list="removed" data-own="' + o + '">除外 <b>' + P.removed.length + '</b></a></div>';
   // スピリットは上の段、ネクサスは下の段(相手側は上下が反転)。多いときは、段からはみ出して相手の領域に入ってよい
   const sp = P.field.filter(k => k.def.type === 'spirit'), nx = P.field.filter(k => k.def.type !== 'spirit');
-  const field = '<div class="field"><div class="lane sp">' + sp.map(k => fieldCardHTML(k, own)).join('') + '</div><div class="lane nx">' + nx.map(k => fieldCardHTML(k, own)).join('') + '</div>' + '' + '</div>';
+  const field = '<div class="field"><div class="lane sp" style="--n:' + sp.length + '">' + sp.map(k => fieldCardHTML(k, own)).join('') + '</div><div class="lane nx" style="--n:' + nx.length + '">' + nx.map(k => fieldCardHTML(k, own)).join('') + '</div>' + '' + '</div>';
   return colA + field + colB;
 }
 
@@ -4102,6 +4128,19 @@ function promptHTML() {
   }
   return R(head, false);
 }
+/* --- 操作がしばらく無いとき: 終了ボタンを光らせ、画面中央に「あなたのターンです」を出す(カーソルを動かす/触ると消える) --- */
+let idleLast = Date.now(), idleOn = false; const IDLE_MS = 12000;
+function idleHide() { idleOn = false; const m = document.getElementById('idlemsg'); if (m) m.remove(); document.querySelectorAll('.idleglow').forEach(b => b.classList.remove('idleglow')); }
+function idleReset() { idleLast = Date.now(); if (idleOn) idleHide(); }
+['mousemove', 'pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(ev => document.addEventListener(ev, idleReset, { passive: true }));
+setInterval(() => {
+  if (idleOn || !V || Date.now() - idleLast < IDLE_MS || Date.now() < gateUntil) return;
+  if (V.winner != null || V.turn !== V.me || V.pending || V.battle || V.mull || V.pick || pay || animStep || document.hidden) return;
+  if (!['main', 'main2', 'attack', 'end'].includes(V.step)) return;
+  const btns = [...document.querySelectorAll('[data-next]:not([disabled])')]; if (!btns.length) return;
+  idleOn = true; btns.forEach(b => b.classList.add('idleglow'));
+  const m = document.createElement('div'); m.id = 'idlemsg'; m.innerHTML = 'あなたのターンです<small>' + esc(STEP_JP[V.step] || '') + 'ステップ</small>'; document.body.appendChild(m);
+}, 1000);
 function render() {
   if (!V) return;
   { const pd = V.pending, b0 = V.battle;   // カードを選ぶ場面(対象の指定・ブロック宣言)では、カード上のコアの判定をなくして、カードを選びやすくする
