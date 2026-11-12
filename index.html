@@ -1118,6 +1118,7 @@ function matchT(G, si, qi, k, t) {
   if (t.type && t.type !== 'any' && k.def.type !== t.type) return false;
   if (t.color && k.def.color !== t.color) return false;
   if (t.family && !k.def.family.includes(t.family)) return false;
+  if (t.state === 'notBlocking' && G.battle && G.battle.blocker === k.iid && !G.battle.bgone) return false;
   if (t.state === 'blocking' && !(G.battle && G.battle.blocker === k.iid && !G.battle.bgone)) return false;
   if (t.state === 'tapped' && !k.tapped) return false;
   if (t.notIid && k.iid === t.notIid) return false;
@@ -1245,6 +1246,7 @@ function evalCond(G, pi, c, ctx) {
   if (c.trashFam && !G.p[pi].trash.some(x => x.def.family.includes(c.trashFam))) return false;
   if (c.trashCnt && G.p[pi].trash.filter(x => (!c.trashCnt.type || x.def.type === c.trashCnt.type) && (!c.trashCnt.family || x.def.family.includes(c.trashCnt.family))).length < c.trashCnt.gte) return false;
   if (c.exclMin && !(ctx && ctx.excludedEx && ctx.excludedEx.length >= c.exclMin)) return false;
+  if (c.millSpirit && !(G.lastMill && G.lastMill.turn === G.turnNo && G.lastMill.sp)) return false;
   if (c.lastDiscFam) { const ld = (G.discards || []).slice(-1)[0]; if (!(ld && ld.turn === G.turnNo && ld.p === pi && (ld.fam || []).includes(c.lastDiscFam))) return false; }
   if (c.battleAtkUntapped && !(G.battle && G.p[G.battle.pi].field.some(x => x.iid === G.battle.iid && !x.tapped))) return false;
   if (c.ownFam && !(ctx && ctx.ownFam && c.ownFam.some(f => ctx.ownFam.includes(f)))) return false;
@@ -1626,6 +1628,8 @@ function execOp(G, it, op) {
     const r = 'トークンの「' + op.name + '」を' + n + '体出しました'; lg(G, it.pi, '　' + it.name + ': ' + r); if (it.fx) it.fx.r.push(r); return;
   }
   if (op.op === 'quake') return;
+  if (op.op === 'clearActed') { it.acted = false; return; }
+  if (op.op === 'quakeBoost') { const b = G.battle; if (b && !b.gone) { b.quakeAdd = (b.quakeAdd | 0) + (op.n | 0); if (it.fx) it.fx.r.push('このバトル中、「' + ((G.p[b.pi].field.find(x => x.iid === b.iid) || { def: { name: 'アタックしているスピリット' } }).def.name) + '」の地鳴を+' + (op.n | 0) + '枚'); } return; }
   if (op.op === 'mill') { const q = op.who === 'you' ? it.pi : 1 - it.pi, n0 = (G.discards || []).length; mill(G, q, op.n | 0, it.name); const nn = (G.discards || []).length - n0; if (it.fx) it.fx.r.push((q === it.pi ? '自分' : '相手') + 'のデッキの上から' + nn + '枚を破棄しました'); return; }
   if (op.op === 'trashCores') {
     const S = G.p[it.pi].field.find(x => x.iid === it.src);
@@ -2038,8 +2042,8 @@ function startAttack(G, pi, k) {
   runQueue(G);
 }
 function mill(G, qi, n, src) {
-  const P = G.p[qi], cards = [];
-  while (n-- > 0 && P.deck.length) { const c = P.deck.pop(); P.trash.push(c); cards.push(c); (G.discards = G.discards || []).push({ turn: G.turnNo, p: qi, iid: c.iid, id: c.def.id, name: c.def.name, type: c.def.type, ex: !!c.def.symbols.ex, color: c.def.color, src }); }
+  const P = G.p[qi], cards = []; G.lastMill = { turn: G.turnNo, sp: false };
+  while (n-- > 0 && P.deck.length) { const c = P.deck.pop(); P.trash.push(c); cards.push(c); if (c.def.type === 'spirit') G.lastMill.sp = true; (G.discards = G.discards || []).push({ turn: G.turnNo, p: qi, iid: c.iid, id: c.def.id, name: c.def.name, type: c.def.type, ex: !!c.def.symbols.ex, color: c.def.color, src }); }
   if (cards.length) { G.evs.push({ t: 'mill', p: qi, cards: cards.map(c => ({ iid: c.iid, id: c.def.id, name: c.def.name, color: c.def.color })) }); lg(G, qi, '「' + src + '」の効果: デッキの上から' + cards.length + '枚を破棄(' + cards.map(c => '「' + c.def.name + '」').join('') + ')'); G.fx.push({ n: src, t: '', p: 1 - qi, r: ['相手のデッキの上から' + cards.length + '枚を破棄'], quick: true }); }
 }
 function quakeResolve(G, b) {
@@ -2048,6 +2052,9 @@ function quakeResolve(G, b) {
   A.def.effects.forEach(e => { if (e.timing.kind === 'static' && e.timing.when === 'attacking' && effectActive(A, e)) e.ops.forEach(op => { if (op.op === 'quake') n += op.n | 0; }); });
   if (!n) return;
   G.p[b.pi].field.forEach(K => K.def.effects.forEach(e => { if (e.timing.kind === 'static' && e.timing.when === 'step' && e.timing.step === 'attack' && e.timing.turn === 'you' && G.turn === b.pi && effectActive(K, e)) e.ops.forEach(op => { if (op.op === 'quakePlus') n += op.n | 0; }); }));
+  // 桜樹結界など: 待機中の「地鳴+N」を先に反映する(地鳴の破棄より前に処理)
+  for (let qi2 = (G.queue || []).length - 1; qi2 >= 0; qi2--) { const it2 = G.queue[qi2]; if (it2 && it2.ops && it2.i === 0 && it2.ops.some(o => o.op === 'quakeBoost')) { G.queue.splice(qi2, 1); it2.ops.forEach(o => { if (o.op === 'quakeBoost') { b.quakeAdd = (b.quakeAdd | 0) + (o.n | 0); lg(G, it2.pi, '「' + it2.name + '」の効果: このバトル中、「' + A.def.name + '」の地鳴を+' + (o.n | 0) + '枚'); G.fx.push({ n: it2.name, t: '', p: it2.pi, r: ['「' + A.def.name + '」の地鳴を+' + (o.n | 0) + '枚'], quick: true }); } }); } }
+  n += b.quakeAdd | 0;
   const bl = b.blocker ? G.p[o].trash.find(x => x.iid === b.blocker) : null;
   if (bl) n = Math.max(0, n - bl.def.cost);
   if (n) { const n0 = (G.discards || []).length; mill(G, o, n, A.def.name); if (G.turn === b.pi && G.step === 'attack' && (G.discards || []).slice(n0).some(x => x.ex)) G.p[b.pi].field.forEach(X => X.def.effects.forEach((e, ei) => { if (e.timing.kind === 'trigger' && e.timing.event === 'quakeEx' && effectActive(X, e)) { if (e.timing.limit === 'turn') { if (X.used && X.used[ei] === 't' + G.turnNo) return; (X.used = X.used || {})[ei] = 't' + G.turnNo; } enqueue(G, b.pi, X, e, { event: 'quakeEx' }); } })); if (G.turn === b.pi && G.step === 'attack' && (G.discards || []).length > n0) G.p[b.pi].field.forEach(X => X.def.effects.forEach((e, ei) => { if (X.iid !== A.iid && X.tapped && e.timing.kind === 'trigger' && e.timing.event === 'quakeOther' && effectActive(X, e)) { if (e.timing.limit === 'turn') { if (X.used && X.used[ei] === 't' + G.turnNo) return; (X.used = X.used || {})[ei] = 't' + G.turnNo; } enqueue(G, b.pi, X, e, { event: 'quakeOther' }); } })); } else lg(G, b.pi, '「' + A.def.name + '」の地鳴: 破棄する枚数は0枚');
@@ -2966,12 +2973,17 @@ async function roomId() {
 function setupDC() {
   dc.on('open', () => {
     showGame();
-    if (!isHost) dc.send({ t: 'deck', defs: myDefs, name: getName() });
-    else $('side').textContent = '相手のデッキを受信中…';
+    if (!isHost) {
+      // 同じカードは1回だけ送る(40枚分まるごと送ると50KB前後になり、接続先によっては途中で止まるため)
+      const u = [], ix = myDefs.map(d => { let i = u.findIndex(x => x === d || (x.id && x.id === d.id && x.name === d.name)); if (i < 0) { i = u.length; u.push(d); } return i; });
+      try { dc.send({ t: 'deck', u, ix, name: getName() }); } catch (e) { say('デッキの送信に失敗しました: ' + e.message); }
+      $('side').textContent = 'ホストの開始を待っています…';
+    } else $('side').textContent = '相手のデッキを受信中…';
   });
   dc.on('data', m => {
     if (!m || typeof m !== 'object') return;
-    if (m.t === 'deck' && isHost && Array.isArray(m.defs)) { guestDefs = m.defs.slice(0, 100).map(cleanDef); guestName = str(m.name, 12).trim(); startGame(); }
+    if (m.t === 'deck' && isHost && Array.isArray(m.u) && Array.isArray(m.ix)) { guestDefs = m.ix.slice(0, 100).map(i => m.u[i]).filter(Boolean).map(cleanDef); guestName = str(m.name, 12).trim(); startGame(); }
+    else if (m.t === 'deck' && isHost && Array.isArray(m.defs)) { guestDefs = m.defs.slice(0, 100).map(cleanDef); guestName = str(m.name, 12).trim(); startGame(); }
     else if (m.t === 'state' && !isHost) { setV(m.v); }
     else if (m.t === 'act' && isHost && G) hostAct(1, m.a);
     else if (m.t === 'rematch') { rematchOpp = true; if (isHost) tryRematch(); else renderResult(); }
