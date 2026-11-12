@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" width="200" height="280">
+  <rect x="2" y="2" width="196" height="276" rx="14" fill="#262b3d" stroke="#6ea8ff" stroke-width="3"/>
+  <rect x="14" y="40" width="172" height="130" rx="6" fill="#1b1f2e" stroke="#46507a" stroke-width="2"/>
+  <path d="M30 150 L70 100 L100 130 L130 85 L170 150 Z" fill="#46507a"/>
+  <circle cx="150" cy="65" r="12" fill="#46507a"/>
+  <rect x="14" y="14" width="172" height="20" rx="4" fill="#323852"/>
+  <rect x="14" y="182" width="172" height="84" rx="6" fill="#1b1f2e"/>
+  <text x="100" y="228" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#9aa1bd">イラスト準備中</text>
+</svg>

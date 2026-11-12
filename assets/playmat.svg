@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="sans-serif">
+  <rect width="1200" height="760" fill="#12161f"/>
+  <line x1="20" y1="380" x2="1180" y2="380" stroke="#46507a" stroke-width="2" stroke-dasharray="10 8"/>
+  <g fill="none" stroke="#46507a" stroke-width="2" stroke-dasharray="8 6">
+    <!-- 相手側(上) -->
+    <rect x="20" y="20" width="150" height="150" rx="12"/>
+    <rect x="190" y="20" width="150" height="150" rx="12"/>
+    <rect x="360" y="20" width="150" height="150" rx="12"/>
+    <rect x="530" y="20" width="150" height="150" rx="12"/>
+    <rect x="1030" y="20" width="150" height="210" rx="12"/>
+    <rect x="20" y="190" width="1000" height="170" rx="12"/>
+    <!-- 自分側(下) -->
+    <rect x="20" y="400" width="1000" height="170" rx="12"/>
+    <rect x="1030" y="530" width="150" height="210" rx="12"/>
+    <rect x="20" y="590" width="150" height="150" rx="12"/>
+    <rect x="190" y="590" width="150" height="150" rx="12"/>
+    <rect x="360" y="590" width="150" height="150" rx="12"/>
+    <rect x="530" y="590" width="150" height="150" rx="12"/>
+  </g>
+  <g fill="#9aa1bd" font-size="18" text-anchor="middle">
+    <text x="95" y="100">ライフ</text><text x="265" y="100">リザーブ</text><text x="435" y="100">トラッシュ</text><text x="605" y="100">ボイド</text>
+    <text x="1105" y="130">デッキ</text><text x="520" y="280">相手の場(スピリット・ネクサス)</text>
+    <text x="520" y="490">自分の場(スピリット・ネクサス)</text><text x="1105" y="640">デッキ</text>
+    <text x="95" y="670">ライフ</text><text x="265" y="670">リザーブ</text><text x="435" y="670">トラッシュ</text><text x="605" y="670">ボイド</text>
+  </g>
+</svg>
