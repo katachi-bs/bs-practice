@@ -502,10 +502,10 @@ body:has(#builder:not([hidden])) h1{display:none}
   .card{font-size:clamp(9px,calc(var(--cw) * .17),15px)}
   /* PC: スピリットは上の段、ネクサスは2段目(相手側は反転)。段の高さは固定して、効果のたびに盤面が動かないようにする */
   .half .col{--cw:calc(var(--cwb) * .74)}
-  :root{--cwb:clamp(46px,min(8.8vw,11.2vh),132px)}
-  /* PC: 横向き(疲労)のカードが隣やフィールドに重ならないよう、カード同士の間を空ける。余裕があるときは広く、足りなければ詰める */
-  .field{container-type:inline-size}
-  .lane{--gx:clamp(calc(var(--cw) * .1), calc((100cqw - 14px - var(--n, 1) * var(--cw)) / max(1, var(--n, 1) - 1)), calc(var(--cw) * .5));column-gap:var(--gx);row-gap:8px;justify-content:center}
+  :root{--cwb:clamp(46px,min(8.8vw,9.6vh),132px)}
+  /* PC: 横向き(疲労)のカードが隣に重ならないよう、カード同士の間を必ず空ける(横向きは左右に0.2枚分はみ出す)。余裕があれば広く、枚数が多くて入らないときはカードを少し小さくする */
+  .field{container-type:inline-size;--cw0:var(--cw)}
+  .lane{--cw:min(var(--cw0), calc((100cqw - 16px) / (var(--n, 1) * 1.5)));--gx:clamp(calc(var(--cw) * .46), calc((100cqw - 16px - var(--n, 1) * var(--cw)) / max(1, var(--n, 1) - 1)), calc(var(--cw) * .9));column-gap:var(--gx);row-gap:8px;justify-content:center;align-items:center;height:calc(var(--cw0) * 1.4 + 8px)}
 }
 
 .symx{display:inline-block;background:#6fe3a1;color:#08210f;border-radius:6px;padding:0 4px;font-size:10px;font-weight:800;animation:symp 1.6s ease-in-out infinite}
