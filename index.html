@@ -2975,21 +2975,23 @@ function setupDC() {
     showGame();
     if (!isHost) {
       // 同じカードは1回だけ送る(40枚分まるごと送ると50KB前後になり、接続先によっては途中で止まるため)
-      const u = [], ix = myDefs.map(d => { let i = u.findIndex(x => x === d || (x.id && x.id === d.id && x.name === d.name)); if (i < 0) { i = u.length; u.push(d); } return i; });
+      const u = [], ix = myDefs.map(d => { let i = u.findIndex(x => x === d || (x.id && x.id === d.id && x.name === d.name)); if (i < 0) { i = u.length; const L = CARD_LIST.find(c => c.def.id === d.id); u.push(L && d.id && JSON.stringify(L.def) === JSON.stringify(d) ? { id: d.id } : d); } return i; });
       try { dc.send({ t: 'deck', u, ix, name: getName() }); } catch (e) { say('デッキの送信に失敗しました: ' + e.message); }
-      $('side').textContent = 'ホストの開始を待っています…';
-    } else $('side').textContent = '相手のデッキを受信中…';
+      $('side').textContent = 'ホストの開始を待っています…(通信v22)';
+    } else $('side').textContent = '相手のデッキを受信中…(通信v22)';
   });
-  dc.on('data', m => {
+  dc.on('data', m => { try { onDcData(m); } catch (e) { const t = '受信処理でエラー: ' + (e && e.message || e); try { $('side').textContent = t; } catch (e2) { } toast(t); } });
+  dc.on('error', e => { try { $('side').textContent = '通信エラー: ' + (e && (e.type || e.message) || e); } catch (e2) { } });
+  const onDcData = m => {
     if (!m || typeof m !== 'object') return;
-    if (m.t === 'deck' && isHost && Array.isArray(m.u) && Array.isArray(m.ix)) { guestDefs = m.ix.slice(0, 100).map(i => m.u[i]).filter(Boolean).map(cleanDef); guestName = str(m.name, 12).trim(); startGame(); }
+    if (m.t === 'deck' && isHost && Array.isArray(m.u) && Array.isArray(m.ix)) { const miss = []; guestDefs = m.ix.slice(0, 100).map(i => { const x = m.u[i]; if (x && x.id && Object.keys(x).length === 1) { const L = CARD_LIST.find(c => c.def.id === x.id); if (!L) { miss.push(x.id); return null; } return L.def; } return x; }).filter(Boolean).map(cleanDef); if (miss.length) toast('相手のカードがこちらに無いため外しました: ' + [...new Set(miss)].join(',')); guestName = str(m.name, 12).trim(); startGame(); }
     else if (m.t === 'deck' && isHost && Array.isArray(m.defs)) { guestDefs = m.defs.slice(0, 100).map(cleanDef); guestName = str(m.name, 12).trim(); startGame(); }
     else if (m.t === 'state' && !isHost) { setV(m.v); }
     else if (m.t === 'act' && isHost && G) hostAct(1, m.a);
     else if (m.t === 'rematch') { rematchOpp = true; if (isHost) tryRematch(); else renderResult(); }
     else if (m.t === 'rematchgo' && !isHost) resetForNew();
     else if (m.t === 'bye') resetToHome('相手が退出したため、ホームに戻りました');
-  });
+  };
   dc.on('close', () => { toast('接続が切断されました'); });
 }
 let cpu = false, matchTest = false, guestName = '';
