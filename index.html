@@ -98,7 +98,7 @@ a.cn{color:#ffe08a;text-decoration:underline dotted;cursor:pointer}
 .cc.own,.core.own{cursor:grab}
 .cc.sel,.core.sel,.tok.sel{filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px var(--ok)) drop-shadow(0 0 5px var(--ok))}
 .cc.zero{opacity:.35;filter:grayscale(1)}
-.symi,.souli,.symp{display:inline-block;width:1.15em;height:1.15em;background:var(--symred) center/contain no-repeat;vertical-align:-.22em}.souli{background-image:var(--pent)}.symp{background-image:var(--sympurple)}.symb{display:inline-block;width:1.15em;height:1.15em;background:var(--symblue) center/contain no-repeat;vertical-align:-.22em}.symy{display:inline-block;width:1.15em;height:1.15em;background:var(--symyellow) center/contain no-repeat;vertical-align:-.22em}.symw{display:inline-block;width:1.15em;height:1.15em;background:var(--symwhite) center/contain no-repeat;vertical-align:-.22em}.symg{display:inline-block;width:1.15em;height:1.15em;background:var(--symgreen) center/contain no-repeat;vertical-align:-.22em}.heavyb{display:none}
+.symi,.souli,.symp{display:inline-block;width:1.15em;height:1.15em;background:var(--symred) center/contain no-repeat;vertical-align:-.22em}.souli{background-image:var(--pent)}.symp{background-image:var(--sympurple)}.symb{display:inline-block;width:1.15em;height:1.15em;background:var(--symblue) center/contain no-repeat;vertical-align:-.22em}.symy{display:inline-block;width:1.15em;height:1.15em;background:var(--symyellow) center/contain no-repeat;vertical-align:-.22em}.symw{display:inline-block;width:1.15em;height:1.15em;background:var(--symwhite) center/contain no-repeat;vertical-align:-.22em}.symg{display:inline-block;width:1.15em;height:1.15em;background:var(--symgreen) center/contain no-repeat;vertical-align:-.22em}.cardbox.tapped.heavy{width:var(--cw)}.cardbox.tapped.heavy .card{transform:translate(-50%,-50%) rotate(180deg)}.cardbox.heavy::after{content:'重疲労';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#000d;color:#ffd34d;border:1px solid #ffd34d;border-radius:6px;padding:0 4px;font-size:10px;font-weight:900;z-index:5;pointer-events:none;white-space:nowrap}.heavyb{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#000c;color:#ffd34d;border:1px solid #ffd34d;border-radius:6px;padding:0 4px;font-size:10px;font-weight:900;z-index:5;pointer-events:none;white-space:nowrap}
 .cscore{pointer-events:auto;width:46px;height:46px;display:inline-block;background:var(--hex) center/contain no-repeat;cursor:pointer;transition:transform .12s,filter .12s;margin:3px}.cscore.soul{background-image:var(--pent)}.cscore.on{transform:translateY(-8px) scale(1.08);filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px #ff5a5a)}
 .cmini{display:inline-block;width:1.3em;height:1.3em;background:var(--hex) center/contain no-repeat;vertical-align:-.3em;margin-right:2px}.cmini.soul{background-image:var(--pent)}
 .csrow{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;padding:6px 0}.csinfo{font-size:12px;text-align:center;opacity:.9}
@@ -132,6 +132,7 @@ a.cn{color:#ffe08a;text-decoration:underline dotted;cursor:pointer}
 #me.turnglow::after,#opp.turnglow::after{content:"";position:absolute;inset:0;border-radius:12px;pointer-events:none;z-index:6;mix-blend-mode:screen;animation:tglow 2.4s ease-in-out both}
 @keyframes tglow{0%{box-shadow:inset 0 0 0 0 #7fa8ff00,0 0 0 0 #7fa8ff00;background:#7fa8ff00}40%{box-shadow:inset 0 0 40px 10px #7fa8ffcc,0 0 24px 4px #7fa8ff99;background:#7fa8ff1c}100%{box-shadow:inset 0 0 0 0 #7fa8ff00,0 0 0 0 #7fa8ff00;background:#7fa8ff00}}
 .cardbox.lvk2 .card{outline:2px solid #f0a020;outline-offset:0}
+.cardbox.lvks .card{outline:3px solid #c04df0;outline-offset:0}
 .bp.up{color:#7dffb0;text-shadow:0 0 6px #2ecf7a}.bp.dn{color:#ff8c97}
 .bpnote{color:#7dffb0}
 .slot{display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -144,7 +145,6 @@ a.cn{color:#ffe08a;text-decoration:underline dotted;cursor:pointer}
 .cardbox.tapped{width:var(--cw)}   /* 横向きでも場所を取らない(アタックで隣のカードが詰めたり動いたりしないように) */
 .cardbox .card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .cardbox.tapped .card{transform:translate(-50%,-50%) rotate(90deg);opacity:.8}
-.cardbox.tapped.heavy .card{transform:translate(-50%,-50%) rotate(180deg)}
 .handbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 8px}
 .hn{font-size:12px;color:var(--sub);margin-bottom:3px}
 .handrow{--cw:calc(var(--cwb) * .66);display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding-bottom:3px;min-height:calc(var(--cw) * 1.4 + 4px)}
@@ -207,8 +207,6 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .card.picked::before{content:'✔';position:absolute;right:2px;top:2px;background:var(--ok);color:#06210f;font-weight:900;font-size:12px;border-radius:50%;width:1.5em;height:1.5em;display:grid;place-items:center;z-index:4}
 @keyframes bw{from{width:calc(var(--cw) * 1.4)}to{width:var(--cw)}}
 .cardbox.untapping{animation:none !important}
-.cardbox.coreup{animation:coreupg 1.5s ease-out both}
-@keyframes coreupg{0%{filter:drop-shadow(0 0 0 rgba(120,255,200,0))}25%{filter:drop-shadow(0 0 10px rgba(120,255,200,.95)) drop-shadow(0 0 18px rgba(120,255,200,.8))}100%{filter:drop-shadow(0 0 0 rgba(120,255,200,0))}}
 .card.hasart{background-size:cover;background-position:center;padding:0}
 .card.hasart .cost,.card.hasart .nm{display:none}
 .card.hasart .lw{position:absolute;left:0;right:0;bottom:0;background:#000b;color:var(--gold);padding:0 2px;text-align:center;font-size:.95em}
@@ -333,9 +331,9 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .ldl .bc{cursor:default;font-size:10px}
 #gate{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:radial-gradient(#1b2a58e6,#05070fee);animation:gatebg .4s ease-out both}
 #gate[hidden]{display:none}
-#cutin{position:fixed;left:0;right:0;top:34%;min-height:clamp(84px,17vh,150px);padding:4px 0;z-index:92;display:flex;align-items:center;justify-content:center;gap:16px;pointer-events:auto;overflow:hidden;animation:cutin 1.35s ease-out both;background:linear-gradient(90deg,#0000,#1d3f9ccc 12%,#2f6bffd9 50%,#1d3f9ccc 88%,#0000);border-block:3px solid #cfe0ff;box-shadow:0 0 40px #6ea8ff88}
+#cutin{position:fixed;left:0;right:0;top:34%;height:clamp(84px,17vh,150px);z-index:92;display:flex;align-items:center;justify-content:center;gap:16px;pointer-events:auto;overflow:hidden;animation:cutin 1.35s ease-out both;background:linear-gradient(90deg,#0000,#1d3f9ccc 12%,#2f6bffd9 50%,#1d3f9ccc 88%,#0000);border-block:3px solid #cfe0ff;box-shadow:0 0 40px #6ea8ff88}
 #cutin[hidden]{display:none}#cutin.opp{background:linear-gradient(90deg,#0000,#8c1d2fcc 12%,#e0334dd9 50%,#8c1d2fcc 88%,#0000);border-color:#ffd0d6;box-shadow:0 0 40px #ff6e7f88}
-#cutin .ct{font-size:clamp(22px,5.6vw,64px);font-weight:900;color:#fff;letter-spacing:.04em;text-shadow:0 0 14px #fff8,0 4px 10px #000;white-space:normal;word-break:break-all;line-height:1.2;text-align:center;max-width:92vw;max-height:100%;overflow:hidden;font-style:italic}
+#cutin .ct{font-size:clamp(26px,6.4vw,64px);font-weight:900;color:#fff;letter-spacing:.06em;text-shadow:0 0 14px #fff8,0 4px 10px #000;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;font-style:italic}
 #cutin img{height:100%;max-height:150px;border-radius:6px;box-shadow:0 0 18px #000a;aspect-ratio:auto}
 @keyframes cutin{0%{opacity:0;transform:translateX(-60%) scaleY(.4)}14%{opacity:1;transform:translateX(0) scaleY(1)}82%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(40%)}}
 #result{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:#05070fd9;animation:gatebg .5s ease-out both}
@@ -378,7 +376,7 @@ body.shake #mat{animation:lzshake .7s linear both}
   .vs{font-size:10px;padding:2px 5px;border:1px solid var(--line);border-radius:999px}
   .vs.on{font-size:12px;padding:3px 8px}
   .vs.on .ar{display:none}
-  .paywrap{position:fixed;left:6px;right:6px;bottom:6px;z-index:15;max-height:92vh;overflow:auto;grid-template-columns:1fr}
+  .paywrap{position:fixed;left:6px;right:6px;bottom:6px;z-index:15;max-height:60vh;overflow:auto;grid-template-columns:1fr}
   .pzs{flex-direction:row}
 }
 
@@ -386,9 +384,6 @@ body.shake #mat{animation:lzshake .7s linear both}
 .sidetog,#endbtn,.pv2{display:none}
 @media (max-width:899px){
   :root{--cwb:clamp(44px,min(12vw,6.6vh),84px)}
-  .sin>.cores .cc{min-width:calc(var(--cw) * .34);height:calc(var(--cw) * .36);font-size:calc(var(--cw) * .14)}
-  .cc,.cscore,.core{position:relative}
-  .cc::before,.core::before{content:'';position:absolute;inset:-7px}   /* 見た目より広く反応させる(指で押しやすく) */
   .col{width:calc(var(--cw) * 1.25)}
   .lifegrid{--lc:calc(var(--cw) * .3);gap:2px;padding:1px}
   #side{display:flex;flex-direction:row;flex-wrap:wrap;gap:4px 8px;align-items:center;padding:3px 8px;max-height:60vh;overflow:auto}
@@ -418,7 +413,7 @@ body.shake #mat{animation:lzshake .7s linear both}
   #endbtn button{pointer-events:auto;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;border:2px solid #cfe0ff;background:#4f7fe0;color:#fff;box-shadow:0 2px 8px #000a;opacity:.92}
   #hand{position:sticky;bottom:0;z-index:5;background:var(--bg)}
   /* 支払いポップアップは相手の盤面の上に出し、自分の面を隠さない */
-  .paywrap{top:calc(var(--sideh,90px) + 2px);bottom:auto !important;max-height:calc(100dvh - var(--sideh,90px) - 12px);gap:6px;padding:6px 8px;font-size:12px;box-shadow:0 8px 24px #000c}
+  .paywrap{top:calc(var(--sideh,90px) + 2px);bottom:auto !important;max-height:42vh;gap:6px;padding:6px 8px;font-size:12px;box-shadow:0 8px 24px #000c}
   /* 決定・パスなどのボタンは下部に小さく(手札の上) */
   #cbtn{position:fixed;left:6px;right:6px;top:auto;bottom:calc(var(--handh,120px) + 4px);transform:none;z-index:20;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px 8px;background:#0b1020ee;border:1px solid #3b4263;border-radius:12px;padding:4px 8px}
   #cbtn button{font-size:13px;padding:6px 14px;border-width:2px;animation:none;box-shadow:0 2px 8px #000a}
@@ -533,7 +528,6 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
 .pickc{position:relative}.pnew{position:absolute;left:50%;top:-9px;transform:translateX(-50%);z-index:4;background:#ffd24a;color:#2a1c00;font-size:10px;font-weight:800;padding:0 6px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 4px #000a}.pickc.on{outline:4px solid #fff;box-shadow:0 0 0 7px var(--ok),0 0 22px 8px #2ee08a;border-radius:8px}
 .rvn{position:absolute;left:0;right:0;bottom:-2px;text-align:center;background:#000c;color:#fff;font-size:11px;font-weight:800;border-radius:0 0 6px 6px}
 .rvctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}.rvh{color:#ffe9a8;font-size:13px}
-.selcard .sin>.cores{pointer-events:none}
 </style>
 <script src="cards/cards-data.js"></script>
 <script src="cards/art-extra-1.js" onerror="void 0"></script><script src="cards/art-extra-2.js" onerror="void 0"></script>
@@ -892,20 +886,7 @@ function act(G, pi, a) {
 }
 function act0(G, pi, a) {
   G.trace = []; G.fx = []; G.evs = [];
-  // 召喚/使用の取り消し: メインステップで出した直前の1回だけ。ほかの操作をすると取り消せなくなる
-  let upSnap = null, upLog = 0;
-  if (a && a.k === 'undoPlay') {
-    const u = G.undoPlay; G.undoPlay = null;
-    if (u && u.pi === pi && !G.pending && !G.battle && G.winner == null) {
-      const o = JSON.parse(u.snap); G.p = o.p; G.lifeLost = o.lifeLost; G.log = o.log; G.cast = o.cast; G.mLog = o.mLog; G.discards = o.discards; G.vanLog = o.vanLog; G.ctx = o.ctx; G.queue = []; G.fx = []; G.evs = [{ t: 'undo' }];
-      lg(G, pi, '「' + u.name + '」を出す前に戻しました'); G.seq++; refreshLv(G);
-    }
-    return;
-  }
-  if (a && a.k === 'play' && G.turn === pi && (G.step === 'main' || G.step === 'main2') && !G.battle && !G.pending && G.winner == null) { upSnap = JSON.stringify({ p: G.p, lifeLost: G.lifeLost, log: G.log, cast: G.cast, mLog: G.mLog, discards: G.discards, vanLog: G.vanLog, ctx: G.ctx }); upLog = G.log.length; }
-  else G.undoPlay = null;
   refreshLv(G); actInner(G, pi, a); refreshLv(G);
-  if (upSnap) { const nm = (G.log.slice(upLog).map(l => (l.m || '').match(/^「(.+?)」を(召喚|配置|使用)/)).find(Boolean) || [])[1]; G.undoPlay = G.log.length > upLog ? { snap: upSnap, pi, name: nm || 'カード' } : null; }
   if (G.winner == null) G.p.forEach((Q, i) => { if (!Q.life.length) { G.winner = 1 - i; G.loseWhy = 'life'; G.evs.push({ t: 'lifeZero', p: i }); lg(G, -1, 'ライフが0になりました'); } });
   if (G.trace.length || G.fx.length || G.evs.length) G.seq++;
 }
@@ -930,7 +911,6 @@ function actInner(G, pi, a) {
   }
   G.effPi = null;
   mustAtkHook(G);
-  if (a.k === 'vanishZero') { const kz = P.field.find(x => x.iid === String(a.iid)); if (kz && kz.def.type === 'spirit' && kz.cores.length === 0 && G.turn === pi && !G.battle && !G.pending) { G.zeroWait = (G.zeroWait || []).filter(i => i !== kz.iid); vanishCard(G, pi, kz); } return; }
   if (a.k !== 'moveCores') sweepEmpty(G);
   switch (a.k) {
     case 'moveCores':
@@ -1265,7 +1245,7 @@ function collectTrig(k, event) {
 }
 function applyTrig(G, qi, k, todo, ctx) {
   todo.act.forEach(e => { if (e.cond && e.timing.limit === 'turn' && !evalCond(G, qi, e.cond, Object.assign({ srcIid: k.iid, srcTapped: !!k.tapped }, ctx))) return; if (e.timing.limit === 'turn') { const ei = k.def.effects.indexOf(e); if (k.used && k.used[ei] === 't' + G.turnNo) return; (k.used = k.used || {})[ei] = 't' + G.turnNo; } enqueue(G, qi, k, e, ctx); });
-  if (false) todo.inact.forEach(x => {   // レベルが足りない効果は、そもそも効果を持っていないのと同じなので何も表示しない
+  todo.inact.forEach(x => {
     const why = '現在のレベル(' + (x.lv ? 'Lv' + x.lv : '—') + ')では効果が働きません(' + lvLabel(x.e.levels) + (x.e.shinkai ? '《真界放》' : '') + 'が必要)';
     lg(G, qi, '「' + k.def.name + '」の「' + (EVENT_JP[x.e.timing.event] || '') + '」効果: ' + why);
     G.fx.push({ n: k.def.name, t: x.e.text, p: qi, r: [why], fail: true });
@@ -1380,7 +1360,7 @@ function revAdvance(G) {
     G.pending = { pi: pd.pi, name: pd.name, n: 1, cands: [c0.iid], qi: pd.pi, text: pd.text, kind: 'sumPay', opt: true, limbo: { iid: c0.iid, rest: rest.map(c => c.iid), x } };
     return;
   }
-  if (x.take === 'free') pcs.forEach(pc => { const c = pc.inst; freeSummonCard(G, pd.pi, c, {}); });
+  if (x.take === 'free') pcs.forEach(pc => { const c = pc.inst; c.cores = []; c.tapped = false; P.field.push(c); lg(G, pd.pi, '　' + pd.name + ': 「' + c.def.name + '」をコストを支払わずに配置'); applyTrig(G, pd.pi, c, collectTrig(c, 'summon'), { event: 'summon' }); });
   for (const pc of pcs) {
     if (x.take === 'free') continue;
     if (x.take === 'trash') { G.evs.push({ t: 'sweep', p: pd.pi, cards: [{ iid: pc.iid, id: pc.def.id, name: pc.def.name, color: pc.def.color }] }); P.trash.push(pc.inst); (G.discards = G.discards || []).push({ fam: pc.def.family, turn: G.turnNo, p: pd.pi, iid: pc.iid, id: pc.def.id, name: pc.def.name, type: pc.def.type, ex: !!pc.def.symbols.ex, color: pc.def.color, src: pd.name }); lg(G, pd.pi, '　' + pd.name + ': 「' + pc.def.name + '」を破棄'); }
@@ -1516,12 +1496,10 @@ function execOpX(G, it, op) {
   if (op.op === 'openAsk') { it.acted = false; return XH; }
   if (op.op === 'topOpen') {   // デッキの上をオープン(分岐)。times回くり返す(毎回「できる」を確認)
     const c = P.deck.length ? P.deck[P.deck.length - 1] : null;
-    if (op.auto && (op.iter | 0) > 0) { it.fx = { n: it.name, t: '', p: it.pi, r: [] }; G.fx.push(it.fx); }   // 2回目以降は、効果の表示をあらためて出す
-    const iterTxt = op.auto ? '(' + ((op.iter | 0) + 1) + '/' + (op.tot || op.times) + '回目) ' : '';
     if (!c) { lg(G, it.pi, '　' + it.name + ': デッキがありません'); if (it.fx) it.fx.r.push('デッキがないため、何も起きません'); return; }
     P.deck.pop(); G.evs.push({ t: 'open', p: it.pi, cards: [{ iid: c.iid, id: c.def.id, name: c.def.name, color: c.def.color }] });
     lg(G, it.pi, '　' + it.name + ': デッキの上から「' + c.def.name + '」(コスト' + c.def.cost + ')をオープン');
-    let rr = iterTxt + 'デッキの上の「' + c.def.name + '」(コスト' + c.def.cost + ')をオープンしました', add = [], keep = false;
+    let rr = 'デッキの上の「' + c.def.name + '」(コスト' + c.def.cost + ')をオープンしました', add = [], keep = false;
     for (const br of (op.branch || [])) {
       if (!matchDef(c.def, br.flt || {})) continue;
       if (br.toHand) { P.hand.push(c); keep = true; rr += '。手札に加えました'; lg(G, it.pi, '　' + it.name + ': 「' + c.def.name + '」を手札に加えた'); }
@@ -1530,9 +1508,8 @@ function execOpX(G, it, op) {
     if (!keep) { if (op.back === 'top') P.deck.push(c); else P.deck.unshift(c); }
     if (it.fx) it.fx.r.push(rr);
     const more = [];
-    if ((op.times || 1) > 1 && op.auto) more.push(Object.assign({}, op, { times: op.times - 1, iter: (op.iter | 0) + 1, tot: op.tot || op.times }));   // 毎回確認せず、決まった回数を最後まで自動でくり返す
-    else if ((op.times || 1) > 1) more.push({ op: 'act', target: { who: 'you', type: 'spirit', count: 1, choose: true, selfOnly: true }, acts: [{ verb: 'open' }], opt: true }, Object.assign({}, op, { times: op.times - 1, needActed: true }));
-    insertOps(it, add.concat(more)); if (more.length && !op.auto) it.acted = false; return;
+    if ((op.times || 1) > 1) more.push({ op: 'act', target: { who: 'you', type: 'spirit', count: 1, choose: true, selfOnly: true }, acts: [{ verb: 'open' }], opt: true }, Object.assign({}, op, { times: op.times - 1, needActed: true }));
+    insertOps(it, add.concat(more)); if (more.length) it.acted = false; return;
   }
   if (op.op === 'oppLifeToReserve') { const Q = G.p[1 - it.pi]; const c = Q.life[Q.life.length - 1]; if (c && moveCore(G, 1 - it.pi, c.id, { zone: 'reserve' })) { G.evs.push({ t: 'life', p: 1 - it.pi, n: 1 }); const r = '相手のライフのコア1個をリザーブに置きました(残り' + Q.life.length + ')'; lg(G, it.pi, '　' + it.name + ': ' + r); if (it.fx) it.fx.r.push(r); if (!Q.life.length && G.winner == null) { G.winner = it.pi; G.loseWhy = 'life'; G.evs.push({ t: 'lifeZero', p: 1 - it.pi }); } } return; }
   if (op.op === 'mark') { it.mk = (G.vanLog || []).length; G.lastActN = 0; return; }
@@ -1722,9 +1699,7 @@ function execOp(G, it, op) {
     if (tc && !G.p[it.pi].coreTrash.some(c => tc.soul === 'only' ? c.soul : !c.soul)) { lg(G, it.pi, '　' + it.name + ': トラッシュに対象のコアがありません'); if (it.fx) it.fx.r.push('トラッシュに対象のコアがないため、何も起きません'); return; }
     const byOpp = op.chooser === 'opp';
     if (t.upToAll) t = Object.assign({}, t, { count: Math.max(1, G.p[qi].field.filter(c => matchT(G, it.pi, qi, c, t)).length) });   // 「相手が指定する」: 相手が自分のスピリットから選ぶ(迷彩のコストは不要)
-    let cands = (t.who === 'both' ? [it.pi, 1 - it.pi] : [qi]).flatMap(q => G.p[q].field.filter(c => matchT(G, it.pi, q, c, t) && !(t.notSelf && c.iid === it.src) && (!t.selfOnly || c.iid === it.src) && (!t.blkOfSrc || (((G.battle && { iid: G.battle.iid, blocker: G.battle.blocker }) || (G.lastB && G.lastB.bn === G.battleNo && G.lastB)) || {}).iid === it.src && (G.battle ? G.battle.blocker : (G.lastB || {}).blocker) === c.iid) && !hexed(G, it, q, c)).map(c => c.iid));
-    { const lvA = op.acts.find(a => a.leave != null); if (lvA) cands = cands.filter(i => { const c = G.p[0].field.concat(G.p[1].field).find(x => x.iid === i); return c && c.cores.length > lvA.leave; }); }   // コアを減らせない(すでに残す数以下の)スピリットは、そもそも対象にしない
-    if (t.sumMax) cands = cands.filter(i => { const c = G.p[0].field.concat(G.p[1].field).find(x => x.iid === i); return c && (t.sumMax.k === 'cost' ? c.def.cost : curBP(G, c)) <= t.sumMax.max; });   // 合計の上限を超える1体だけのものは、そもそも選べない
+    const cands = G.p[qi].field.filter(c => matchT(G, it.pi, qi, c, t) && !(t.notSelf && c.iid === it.src) && (!t.selfOnly || c.iid === it.src) && (!t.blkOfSrc || (((G.battle && { iid: G.battle.iid, blocker: G.battle.blocker }) || (G.lastB && G.lastB.bn === G.battleNo && G.lastB)) || {}).iid === it.src && (G.battle ? G.battle.blocker : (G.lastB || {}).blocker) === c.iid) && !hexed(G, it, qi, c)).map(c => c.iid);
     if (!cands.length) { lg(G, it.pi, '　' + it.name + ': 対象がありません'); if (it.fx) it.fx.r.push('対象がいないため、何も起きません'); return; }
     const camoAny = !t.all && !byOpp && qi !== it.pi && it.st === 'spirit' && cands.some(i => camoCost(G, G.p[qi].field.find(x => x.iid === i)) > 0);
     if (t.all || ((t.autoFit || byOpp) && !camoAny && cands.length <= (t.count || 1))) { G.pending = { pi: byOpp ? qi : it.pi, by: it.pi, name: it.name, n: cands.length, cands, qi, text: it.text, kind: 'act', acts: op.acts, alt: null, opt: false, upto: false }; chooseAct(G, byOpp ? qi : it.pi, cands, false); return 'wait'; }
@@ -1732,13 +1707,6 @@ function execOp(G, it, op) {
     G.pending = { pi: byOpp ? qi : it.pi, by: it.pi, name: it.name, n: t.count || 1, cands, qi, text: it.text, kind: 'act', acts: dynActs(G, it, op), alt: (op.alt && evalCond(G, it.pi, op.alt.cond, it.ctx)) ? op.alt : null, opt: !!op.opt, yn: !!(t.selfOnly && op.opt && !op.alt && !op.upto && !t.pair3000 && cands.length === 1), upto: !!op.upto, pair: !!t.pair3000, sumMax: t.sumMax || null,
       why: op.acts.filter(a => VJ[a.verb]).map(a => VJ[a.verb] + (a.verb === 'bpMod' ? (a.amount >= 0 ? '+' : '') + a.amount : '')).join('→') };
     if (byOpp) { G.pending.opt = false; G.pending.why = '相手の「' + it.name + '」の効果: あなたのスピリットを選びます(' + G.pending.why + ')'; }
-    else if (t.who === 'both') {   // 自分と相手をまとめて指定する。必ず指定できる数(足りなければ全部)を指定する
-      const ownC = cands.filter(i => G.p[it.pi].field.some(x => x.iid === i)), oppC = cands.filter(i => !ownC.includes(i));
-      G.pending.both = true; G.pending.qi = it.pi; G.pending.upto = false; G.pending.opt = false;
-      const pdn = G.pending; pdn.cands = oppC; camoSetup(G, it, 1 - it.pi, oppC, pdn, false); pdn.cands = ownC.concat(pdn.cands);
-      if (!pdn.camo) pdn.n = Math.min(pdn.n, pdn.cands.length);
-      if (!pdn.cands.length) { G.pending = null; lg(G, it.pi, '　' + it.name + ': 対象がありません'); if (it.fx) it.fx.r.push('対象がいないため、何も起きません'); return; }
-    }
     else if (!camoSetup(G, it, qi, cands, G.pending, false).length) { G.pending = null; lg(G, it.pi, '　' + it.name + ': 対象がありません(迷彩のコストを支払えません)'); if (it.fx) it.fx.r.push('対象がいないため、何も起きません'); return; }
     { const nxa = op.acts.find(a => a.verb === 'nxSpirit' && a.place);
       if (nxa && G.pending) {
@@ -1862,7 +1830,7 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
   } else if (pd.kind === 'recover') {
     const P = G.p[pi], got = [];
     if (pd.sum) { ids.forEach(i => { const c = P.trash.find(x => x.iid === i); if (c) { P.trash.splice(P.trash.indexOf(c), 1); c.cores = []; c.tapped = false; P.field.push(c); const need = (c.def.levels[0] && c.def.levels[0].core) || 1; for (let j = 0; j < need && P.reserve.length; j++) c.cores.push(P.reserve.pop()); lg(G, pi, '　' + pd.name + ': 「' + c.def.name + '」をコストを支払わずに召喚(コア' + c.cores.length + '個)'); G.fx.push({ n: pd.name, t: '', p: pi, r: ['トラッシュから「' + c.def.name + '」を召喚しました'] }); G.evs.push({ t: 'coreAdd', p: pi, iid: c.iid, n: c.cores.length }); if (pd.tempSum && G.battle) { (G.battle.endQ = G.battle.endQ || []).push([pi, c, { levels: [], timing: { kind: 'trigger', event: 'battleEnd' }, ops: [{ op: 'destroyTemp' }], text: 'このバトル終了時、召喚したそれを破壊する。' }]); } applyTrig(G, pi, c, collectTrig(c, 'summon'), { event: 'summon' }); } }); G.queue[0].i++; runQueue(G); return; }
-    if (pd.field) { ids.forEach(i => { const c = P.trash.find(x => x.iid === i); if (c) { P.trash.splice(P.trash.indexOf(c), 1); const vb = c.def.type === 'spirit' ? '召喚' : '配置'; G.fx.push({ n: pd.name, t: '', p: pi, r: ['トラッシュから「' + c.def.name + '」を' + vb + 'しました'] }); freeSummonCard(G, pi, c, {}); } }); G.queue[0].i++; runQueue(G); return; }
+    if (pd.field) { ids.forEach(i => { const c = P.trash.find(x => x.iid === i); if (c) { P.trash.splice(P.trash.indexOf(c), 1); c.cores = []; c.tapped = false; P.field.push(c); lg(G, pi, '　' + pd.name + ': 「' + c.def.name + '」をコストを支払わずに配置'); G.fx.push({ n: pd.name, t: '', p: pi, r: ['トラッシュから「' + c.def.name + '」を配置しました'] }); applyTrig(G, pi, c, collectTrig(c, 'summon'), { event: 'summon' }); } }); G.queue[0].i++; runQueue(G); return; }
     ids.forEach(i => { const c = P.trash.find(x => x.iid === i); if (c) { P.trash.splice(P.trash.indexOf(c), 1); (pd.deck ? P.deck : P.hand).push(c); got.push(c); } });
     if (got.length) { got.forEach(c => lg(G, pi, '　' + pd.name + ': 「' + c.def.name + '」をトラッシュから' + (pd.deck ? 'デッキの上へ' : '手札へ'))); G.evs.push({ t: 'recover', p: pi, from: 'trash', cards: got.map(c => ({ iid: c.iid, id: c.def.id, name: c.def.name, color: c.def.color })) }); }
     G.fx.push({ n: pd.name, t: '', p: pi, r: got.length ? got.map(c => 'トラッシュから「' + c.def.name + '」を' + (pd.deck ? 'デッキの上に' : '手札に') + '戻しました') : ['対象を指定しませんでした'] });
@@ -1878,9 +1846,8 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
   } else if (pd.kind === 'act') {
     const rs = [], jobs = []; G.effPi = pd.by != null ? pd.by : pi; G.effTapped = false; G.effHeavy = false;
     if (!ids.length) { rs.push('対象を指定しませんでした'); lg(G, pi, '　' + pd.name + ': 対象を指定しない'); }
-    G.lastActCards = ids.map(i => G.p[0].field.concat(G.p[1].field).find(x => x.iid === i)).filter(Boolean);
+    G.lastActCards = ids.map(i => G.p[pd.qi].field.find(x => x.iid === i)).filter(Boolean);
     ids.forEach(i => {
-      if (pd.both) pd.qi = G.p[0].field.some(x => x.iid === i) ? 0 : 1;
       const c = G.p[pd.qi].field.find(x => x.iid === i); if (!c) return;
       const nm = '「' + c.def.name + '」';
       for (const a of (useAlt && pd.alt ? pd.alt.acts : pd.acts)) {
@@ -2068,7 +2035,7 @@ function endBattle(G) {
       if (e.timing.limit === 'turn') { k.used = k.used || {}; k.used[ei] = tag; }
       todo.push([b.pi, k, e]);
     }));
-    if (G.turn === b.pi && !b.gone && G.p[b.pi].field.some(x => x.iid === b.iid)) G.p[b.pi].field.forEach(k => k.def.effects.forEach((e, ei) => { if (e.timing.kind !== 'trigger' || e.timing.event !== 'allyBattleEnd' || !effectActive(k, e)) return; if (e.timing.flt && e.timing.flt.srcUntapped && k.tapped) return; const AA = G.p[b.pi].field.find(x => x.iid === b.iid); if (e.timing.flt && e.timing.flt.color && !(AA && AA.def.color === e.timing.flt.color)) return; if (e.timing.flt && e.timing.flt.tapped != null && !(AA && !!AA.tapped === !!e.timing.flt.tapped)) return; if (e.timing.flt && e.timing.flt.bpMin != null && !(AA && curBP(G, AA) >= e.timing.flt.bpMin)) return; if (e.timing.flt && e.timing.flt.kw && !(AA && AA.def.effects.some(e2 => e2.keyword === e.timing.flt.kw && effectActive(AA, e2)))) return; if (e.timing.limit === 'turn') { if (k.used && k.used[ei] === 't' + G.turnNo) return; (k.used = k.used || {})[ei] = 't' + G.turnNo; } todo.push([b.pi, k, e]); }));
+    if (G.turn === b.pi && !b.gone && G.p[b.pi].field.some(x => x.iid === b.iid)) G.p[b.pi].field.forEach(k => k.def.effects.forEach((e, ei) => { if (e.timing.kind !== 'trigger' || e.timing.event !== 'allyBattleEnd' || !effectActive(k, e)) return; if (e.timing.flt && e.timing.flt.srcUntapped && k.tapped) return; const AA = G.p[b.pi].field.find(x => x.iid === b.iid); if (e.timing.flt && e.timing.flt.bpMin != null && !(AA && curBP(G, AA) >= e.timing.flt.bpMin)) return; if (e.timing.flt && e.timing.flt.kw && !(AA && AA.def.effects.some(e2 => e2.keyword === e.timing.flt.kw && effectActive(AA, e2)))) return; if (e.timing.limit === 'turn') { if (k.used && k.used[ei] === 't' + G.turnNo) return; (k.used = k.used || {})[ei] = 't' + G.turnNo; } todo.push([b.pi, k, e]); }));
     (b.endQ || []).forEach(x => todo.push(x));
     if (todo.length) { b.phase = 'end'; todo.forEach(([qi, k, e]) => enqueue(G, qi, k, e, { event: 'battleEnd' })); runQueue(G); return; }
   }
@@ -2506,7 +2473,6 @@ function cpuDecide(G) {
       if (ids.length < need) P.field.forEach(k => { if (k.iid !== pd.cands[0]) k.cores.slice(1).forEach(c => { if (ids.length < need) ids.push(c.id); }); });
       return ids.length >= need && !pd.opt ? { k: 'choose', iids: pd.cands.slice(0, 1), pay: ids } : { k: 'choose', iids: [], pay: [] };
     }
-    if (pd.kind === 'act' && pd.both) { const bpb = id => { const k = O.field.concat(P.field).find(x => x.iid === id); return k ? curBP(G, k) : 0; }, mine = id => P.field.some(x => x.iid === id); const nn = Math.min(pd.n, pd.cands.length); return { k: 'choose', iids: pd.cands.filter(x => !(pd.camo && pd.camo[x])).sort((a, b) => (mine(a) - mine(b)) || (mine(a) ? bpb(a) - bpb(b) : bpb(b) - bpb(a))).slice(0, nn), pay: [] }; }   // CPUは、相手の強いスピリット→自分の弱いスピリットの順に指定する
     if (pd.kind === 'act' && pd.camo) { const non = pd.cands.filter(x => !pd.camo[x]).slice(0, pd.n); return { k: 'choose', iids: non, pay: [] }; }   // CPUは迷彩にコストを払って指定しない
     if (pd.kind === 'act' && pd.by != null && pd.by !== i && pd.qi === i) { const bpq = id => { const k = P.field.find(x => x.iid === id); return k ? curBP(G, k) : 0; }; return { k: 'choose', iids: pd.cands.slice().sort((a, b) => bpq(a) - bpq(b)).slice(0, Math.min(pd.n, pd.cands.length)) }; }   // 相手が指定する: CPUは一番弱いスピリットを差し出す
     const c = pd.cands.slice();
@@ -2549,7 +2515,7 @@ function viewFor(G, i) {
   const me = G.p[i], op = G.p[1 - i];
   const pub = P => ({ exIid: P.exIid || null, field: P.field, trash: P.trash, removed: P.removed, life: P.life, reserve: P.reserve, coreTrash: P.coreTrash, void: P.void, handN: P.hand.length, deckN: P.deck.length });
   return { names: (G.names || []).map(x => String(x || '').slice(0, 14)), pick: G.pick ? { pi: G.pick.pi } : null, mull: G.mull ? { pi: G.mull.order[G.mull.idx] } : null, me: i, turn: G.turn, turnNo: G.turnNo, step: G.step, pause: G.settings.pause, lifeLost: G.lifeLost, noAttack: G.noAttack, lifeManual: !!G.settings.lifeManual, battle: G.battle ? { pi: G.battle.pi, iid: G.battle.iid, phase: G.battle.phase, prio: G.battle.prio, blocker: G.battle.blocker, gone: G.battle.gone, bgone: G.battle.bgone, forced: clashForced(G) || !!mustBlocker(G) } : null,
-           pending: G.pending ? { pi: G.pending.pi, name: G.pending.name, n: G.pending.n, cands: G.pending.cands, qi: G.pending.qi, text: G.pending.text, kind: G.pending.kind || 'destroy', hand: !!G.pending.hand, exTemp: !!G.pending.exTemp, opt: !!G.pending.opt, yn: !!G.pending.yn, upto: !!G.pending.upto, why: G.pending.why || '', camo: G.pending.camo || null, place: G.pending.place || null, by: G.pending.by == null ? null : G.pending.by, x: G.pending.x ? (G.pending.kind === 'reveal' ? G.pending.x.hidden && G.pending.pi !== i ? { cards: [], takeN: 1, cands: [], phase: 'order', take: 'hand', rest: 'bottom', mode: '', auto: false, optional: false, restIds: [], desc: '', live: [], hidden: true } : { cards: G.pending.x.cards.map(c => ({ iid: c.iid, def: c.def })), hidden: !!G.pending.x.hidden, takeN: G.pending.x.takeN || 1, cands: G.pending.x.cands, phase: G.pending.x.phase, take: G.pending.x.take, rest: G.pending.x.rest, mode: G.pending.x.mode || '', auto: !!G.pending.x.auto, optional: G.pending.x.optional, restIds: G.pending.x.restIds, desc: G.pending.x.desc, live: G.pending.x.live || [] } : G.pending.x) : null, fam: G.pending.fam || '' } : null, undoPlay: G.undoPlay && G.undoPlay.pi === i && !G.pending && !G.battle ? G.undoPlay.name : null, canUndo: !!(G.undo && G.pending && !(G.pending.by != null && G.pending.by !== G.pending.pi)), evs: G.evs, winner: G.winner, loseWhy: G.loseWhy || '', usable: usableFor(G, i), trace: G.trace, fx: G.fx, seq: G.seq, notice: G.notice,
+           pending: G.pending ? { pi: G.pending.pi, name: G.pending.name, n: G.pending.n, cands: G.pending.cands, qi: G.pending.qi, text: G.pending.text, kind: G.pending.kind || 'destroy', hand: !!G.pending.hand, exTemp: !!G.pending.exTemp, opt: !!G.pending.opt, yn: !!G.pending.yn, upto: !!G.pending.upto, why: G.pending.why || '', camo: G.pending.camo || null, place: G.pending.place || null, by: G.pending.by == null ? null : G.pending.by, x: G.pending.x ? (G.pending.kind === 'reveal' ? G.pending.x.hidden && G.pending.pi !== i ? { cards: [], takeN: 1, cands: [], phase: 'order', take: 'hand', rest: 'bottom', mode: '', auto: false, optional: false, restIds: [], desc: '', live: [], hidden: true } : { cards: G.pending.x.cards.map(c => ({ iid: c.iid, def: c.def })), hidden: !!G.pending.x.hidden, takeN: G.pending.x.takeN || 1, cands: G.pending.x.cands, phase: G.pending.x.phase, take: G.pending.x.take, rest: G.pending.x.rest, mode: G.pending.x.mode || '', auto: !!G.pending.x.auto, optional: G.pending.x.optional, restIds: G.pending.x.restIds, desc: G.pending.x.desc, live: G.pending.x.live || [] } : G.pending.x) : null, fam: G.pending.fam || '' } : null, canUndo: !!(G.undo && G.pending && !(G.pending.by != null && G.pending.by !== G.pending.pi)), evs: G.evs, winner: G.winner, loseWhy: G.loseWhy || '', usable: usableFor(G, i), trace: G.trace, fx: G.fx, seq: G.seq, notice: G.notice,
            noAtk: G.p.flatMap(Q => Q.field.filter(k => k.def.type === 'spirit' && !canAttackNow(G, k)).map(k => k.iid)), symDyn: symDynOf(G),
            bps: Object.fromEntries(G.p.flatMap(Q => Q.field.map(k => [k.iid, curBP(G, k)]))), bpx: Object.fromEntries(G.p.flatMap(Q => Q.field.map(k => { const w = []; curBP(G, k, w); return [k.iid, w]; }))), test: !!G.settings.test, log: G.log.slice(-100), cast: G.cast ? { n: G.cast.n, p: G.cast.pi, def: G.cast.def } : null,
            you: Object.assign(pub(me), { hand: me.hand, fl: me.fl }, G.settings.test ? { deck: me.deck } : {}), opp: pub(op) };
@@ -3093,7 +3059,7 @@ function focusP() {
 // ステップが自動で進んだときは、1つずつ短く(約0.3秒)見せる
 const TICK = 400;
 const FXW = 2000;   // 効果の文言が出てから、実際の動きを見せるまでの待ち(ms)
-let fxQ = [], fxBusy = false, anim = { until: 0, coreUp: new Map(), tap: new Map(), summon: new Map(), flip: new Map(), drawn: new Map(), untap: new Map(), pop: {}, oppN: 0, oppAt: 0 };
+let fxQ = [], fxBusy = false, anim = { until: 0, tap: new Map(), summon: new Map(), flip: new Map(), drawn: new Map(), untap: new Map(), pop: {}, oppN: 0, oppAt: 0 };
 function zoneRect(root, loc) {
   const el = document.querySelector(root + ' .cores[data-zloc="' + loc + '"]'); if (!el) return null;
   const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
@@ -3102,8 +3068,8 @@ function zoneRect(root, loc) {
 let snap = null;
 function snapOf(v) {
   const pl = []; pl[v.me] = v.you; pl[1 - v.me] = v.opp;
-  const tapped = {}, cn = {}; pl.forEach(P => P.field.forEach(k => { tapped[k.iid] = k.tapped; cn[k.iid] = (k.cores || []).length; }));
-  return { tapped, cn, p: pl.map((P, i) => {
+  const tapped = {}; pl.forEach(P => P.field.forEach(k => { tapped[k.iid] = k.tapped; }));
+  return { tapped, p: pl.map((P, i) => {
     const hand = solo ? G.p[i].hand : (i === v.me ? P.hand : null);
     return { hand: hand ? new Set(hand.map(k => k.iid)) : null, handN: hand ? hand.length : P.handN, life: new Set(P.life.map(c => c.id)), ct: new Set(P.coreTrash.map(c => c.id)), resN: P.reserve.length, resIds: new Set(P.reserve.map(c => c.id)) };
   }) };
@@ -3128,11 +3094,9 @@ function setV(v) {
       const el = $('cutin'), art = ct.t === 'attack' && ct.id ? artOf(String(ct.id)) : '';
       el.className = (ct.t === 'attack' ? ct.p : V.me) === V.me ? '' : 'opp';
       el.innerHTML = (art ? '<img src="' + art + '" alt="">' : '') + '<span class="ct">' + (ct.t === 'attack' ? esc('「' + ct.name + '」がアタック!') : 'あなたのターン') + '</span>';
-      const gOff = (V.evs || []).some(e => e.t === 'gate') ? 2300 : 0;   // 「ゲートオープン」と「あなたのターン」が重ならないように、あとから出す
-      clearTimeout(cutinT); el.hidden = true;
-      const showCut = () => { el.hidden = false; el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; clearTimeout(cutinT); cutinT = setTimeout(() => { el.hidden = true; }, 1350); };
-      if (gOff) setTimeout(showCut, gOff); else showCut();
-      gateUntil = Math.max(gateUntil, Date.now() + gOff + 1350);
+      el.hidden = false; el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+      clearTimeout(cutinT); cutinT = setTimeout(() => { el.hidden = true; }, 1350);
+      gateUntil = Math.max(gateUntil, Date.now() + 1350);
     }
   }
   if (newSeq && oldS && lastSeq !== null && ((V.fx && V.fx.length) || V.pending)) {   // カードが出る → 効果が出る → 動き、の順にするため、登場演出の間は効果の表示を待たせる
@@ -3172,13 +3136,9 @@ function setV(v) {
       }
     });
     (V.evs || []).forEach(ev => { if (ev.t === 'mull' && ev.yes && ev.p === V.me) V.you.hand.forEach((k, i) => anim.drawn.set(k.iid, now + i * 130)); });
-    (V.evs || []).forEach(ev => { if (ev.t === 'coreAdd' && ev.soul) { const dl = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0); soulHold[ev.iid] = now + dl + 1100; setTimeout(() => { if (typeof render === 'function' && V) render(); }, dl + 1150); } });   // ソウルコアが飛んで乗るまでは、カードの上に出さない
-    Object.keys(snap.tapped).forEach(id => { if (oldS.tapped[id] && !snap.tapped[id]) anim.untap.set(id, soulHold[id] > now ? soulHold[id] + 450 : rAt); });
+    Object.keys(snap.tapped).forEach(id => { if (oldS.tapped[id] && !snap.tapped[id]) anim.untap.set(id, rAt); });
     Object.keys(snap.tapped).forEach(id => { if (id in oldS.tapped && !oldS.tapped[id] && snap.tapped[id]) anim.tap.set(id, now); });
     Object.keys(snap.tapped).forEach(id => { if (!(id in oldS.tapped)) anim.summon.set(id, Date.now()); });
-    { const cuW = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0);   // 効果でコアが増えたカードを光らせる(効果の文言のあと)
-      const covered = new Set((V.evs || []).filter(e => e.iid && (e.t === 'coreAdd' || e.t === 'coreIn')).map(e => e.iid));
-      if ((V.fx && V.fx.length) || (V.evs || []).some(e => e.t === 'coreAdd' || e.t === 'coreIn' || e.t === 'cmove')) Object.keys(snap.cn || {}).forEach(id => { if (oldS.cn && id in oldS.cn && snap.cn[id] > oldS.cn[id]) anim.coreUp.set(id, { at: now + cuW + 300, n: snap.cn[id] - oldS.cn[id], pop: !covered.has(id) }); }); }
     anim.until = now + 4500;
     // 破壊(ガラスが割れてトラッシュへ)・消滅(ふわっと消えて粒子がトラッシュへ)
     const fxWait = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0);
@@ -3211,7 +3171,7 @@ function setV(v) {
   if (newSeq && had && oldS) {
     (V.evs || []).forEach(ev => {
       if (ev.t === 'turn') { const el = $(ev.p === V.me ? 'me' : 'opp'); if (el) { el.classList.remove('turnglow'); void el.offsetWidth; el.classList.add('turnglow'); setTimeout(() => el.classList.remove('turnglow'), 2600); } }
-      if (ev.t === 'coreAdd') { const t = grabRects().cards[ev.iid]; let z = null; if (ev.from && ev.from.startsWith('card:')) { const fr = grabRects().cards[ev.from.slice(5)]; if (fr) z = { x: fr.cx, y: fr.cy }; } else z = zoneRect(ev.p === V.me ? '#me' : '#opp', ev.from || 'reserve'); if (t) { const dl = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0); coreFly(z ? { cx: z.x, cy: z.y } : { cx: t.cx, cy: t.cy - 90 }, t, ev.n, ev.soul, dl); setTimeout(() => popText(ev.soul ? 'ソウルコア+1' : 'コア+' + ev.n, t.cx, t.cy), dl + 900); } }
+      if (ev.t === 'coreAdd') { const t = grabRects().cards[ev.iid]; let z = null; if (ev.from && ev.from.startsWith('card:')) { const fr = grabRects().cards[ev.from.slice(5)]; if (fr) z = { x: fr.cx, y: fr.cy }; } else z = zoneRect(ev.p === V.me ? '#me' : '#opp', ev.from || 'reserve'); if (t) { coreFly(z ? { cx: z.x, cy: z.y } : { cx: t.cx, cy: t.cy - 90 }, t, ev.n, ev.soul); popText(ev.soul ? 'ソウルコア+1' : 'コア+' + ev.n, t.cx, t.cy); } }
       if (ev.t === 'lifeAdd') { const ls = [...document.querySelectorAll((ev.p === V.me ? '#me' : '#opp') + ' .lc')], l = ls[ls.length - 1], z = zoneRect(ev.p === V.me ? '#me' : '#opp', 'reserve'); if (l) { const r = l.getBoundingClientRect(), c = { cx: r.left + r.width / 2, cy: r.top + r.height / 2 }; coreFly(z ? { cx: z.x, cy: z.y } : { cx: c.cx, cy: c.cy - 80 }, c, ev.n); popText('ライフ+' + ev.n, c.cx, c.cy); } }
       if (ev.t === 'plusDmg') { const r = grabRects().cards[ev.iid]; if (r) popText('減るコア+' + ev.n + '!', r.cx, r.cy - 40); }
       if (ev.t === 'lifeZero') {
@@ -3321,13 +3281,12 @@ function discardAnim(ev) {
   });
 }
 // 効果でスピリットからスピリットへコアが移る: コアが1つずつ飛んでいく
-function coreFly(a, b, n, soul, dl) {
-  dl = dl | 0;
+function coreFly(a, b, n, soul) {
   if (!a || !b) return;
   for (let i = 0; i < Math.min(n, 6); i++) {
     const el = document.createElement('div'); el.className = 'fly' + (soul ? ' soul' : ''); document.body.appendChild(el);
     el.animate([{ transform: 'translate(' + (a.cx - 11) + 'px,' + (a.cy - 11) + 'px) scale(1.4)', opacity: 0 }, { transform: 'translate(' + (a.cx - 11) + 'px,' + (a.cy - 11) + 'px) scale(1.7)', opacity: 1, offset: .18 },
-      { transform: 'translate(' + (b.cx - 11) + 'px,' + (b.cy - 11) + 'px) scale(1.1)', opacity: 1 }], { duration: 850, delay: 200 + dl + i * 220, easing: 'ease-in-out', fill: 'both' }).onfinish = () => el.remove();
+      { transform: 'translate(' + (b.cx - 11) + 'px,' + (b.cy - 11) + 'px) scale(1.1)', opacity: 1 }], { duration: 850, delay: 200 + i * 220, easing: 'ease-in-out', fill: 'both' }).onfinish = () => el.remove();
   }
 }
 let pendingFly = [], evQ = [], lifeQ = [];
@@ -3427,10 +3386,6 @@ function applyAnim() {
   document.querySelectorAll('#hand [data-card],#mullbox [data-card]').forEach(el => { const t = anim.drawn.get(el.dataset.card); if (t !== undefined && now < t + 1200) { el.classList.add('drawin'); el.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); } });
   document.querySelectorAll('.slot[data-slot]').forEach(sl => { const t = anim.summon.get(sl.dataset.slot); if (t !== undefined && now < t + 1300) { sl.classList.add('summonin'); sl.style.setProperty('--sy', sl.dataset.own === '1' ? '38vh' : '-38vh'); sl.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); } });
   document.querySelectorAll('.cardbox.tapped').forEach(cb => { const c = cb.querySelector('[data-card]'); if (!c) return; const t = anim.tap.get(c.dataset.card); if (t !== undefined && now < t + 700) { c.classList.add('tapin'); c.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); cb.classList.add('tapping'); cb.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); } });
-  document.querySelectorAll('.cardbox').forEach(cb => {
-    const c0 = cb.querySelector('[data-card]'); const cu = c0 && anim.coreUp.get(c0.dataset.card);
-    if (cu && now < cu.at + 1600) { cb.classList.add('coreup'); cb.style.setProperty('animation-delay', (cu.at - now) + 'ms', 'important'); if (cu.pop && !cu.done) { cu.done = true; const r = cb.getBoundingClientRect(); setTimeout(() => popText('コア+' + cu.n, r.left + r.width / 2, r.top + r.height / 2), Math.max(0, cu.at - now)); } }
-  });
   document.querySelectorAll('.cardbox').forEach(cb => {
     const c = cb.querySelector('[data-card]'); if (!c || cb.classList.contains('tapped')) return;
     const t = anim.untap.get(c.dataset.card); if (t !== undefined && now < t + 1000) { c.classList.add('untap'); c.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); cb.classList.add('untapping'); cb.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); }
@@ -3641,9 +3596,8 @@ function setResHold(key, base, arr, extra) {
     if (el && !pay && V) { const sp = el.classList.contains('sel') ? null : holdVal(key, V[key === 'me' ? 'you' : 'opp'].reserve.filter(c => !c.soul).length); if (sp !== null) el.textContent = String(sp); }
   }, Math.max(0, t - Date.now())));
 }
-const soulHold = {};
 function coresHTML(list, loc, own) {
-  const n = list.filter(c => !c.soul), so = (loc.indexOf('card:') === 0 && soulHold[loc.slice(5)] > Date.now()) ? [] : list.filter(c => c.soul);
+  const n = list.filter(c => !c.soul), so = list.filter(c => c.soul);
   let h = so.map(c => soulHTML(c, loc, own)).join('');
   if (n.length) {
     let cls = 'cc' + (own ? ' own' : ''), txt = String(loc === 'reserve' ? holdVal(own ? 'me' : 'opp', n.length) : n.length), tags = '';
@@ -3664,8 +3618,7 @@ const ART_EMBED = {'26RSD09-002': 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
 const ART_URL = {};
 const pn = p => { if (!V) return p === 0 ? 'あなた' : '相手'; if (p === V.me) return 'あなた'; const n = V.names && V.names[p]; return n ? esc(n) : '相手'; };
 const vsLine = () => (V && V.names && V.names[0] && V.names[1]) ? '<div class="vsname"><b>' + esc(V.names[V.me]) + '</b> vs <b>' + esc(V.names[1 - V.me]) + '</b></div>' : '';
-const TOKEN_ART = { 'TOKEN-ソーディッシュ': '26RSD10-T001' };
-const artOf = id => { id = TOKEN_ART[id] || id; const v = VARIANTS.find(x => x.id === id); return ART_EMBED[id] || ART_URL[id] || (v ? (ART_EMBED[v.of] || ART_URL[v.of] || '') : ''); };
+const artOf = id => { const v = VARIANTS.find(x => x.id === id); return ART_EMBED[id] || ART_URL[id] || (v ? (ART_EMBED[v.of] || ART_URL[v.of] || '') : ''); };
 const artCls = k => artOf(k.def.id) ? ' hasart' : '';
 const cardAttr = (k, own, zone) => 'style="--cc:' + (COLOR_HEX[k.def.color] || '#6a7499') + (artOf(k.def.id) ? ';background-image:url(' + artOf(k.def.id) + ')' : '') + '" data-card="' + k.iid + '" data-zone="' + zone + '" data-own="' + (own ? 1 : 0) + '"';
 function cardHTML(k, own, zone) {
@@ -3721,19 +3674,6 @@ function payState() {
   return { k, d, info, need, minPlace, nPay, nPlace, payOk, placeOk, over: info.ok && nPay > need };
 }
 // 自動で選ぶ: 支払いはリザーブの通常コアから、置くコアは残りから。ソウルコアは極力温存する
-// 場のコアを n 個、できるだけスピリットを消滅させないように選ぶ(コアが多いスピリットから1個ずつ。どうしても足りないときだけ最後の1個も使う)
-function pickFieldCores(n, skip, soulOk) {
-  const out = [], left = new Map(V.you.field.map(k => [k, k.cores.filter(c => !skip.has(c.id) && (soulOk || !c.soul)).slice()]));
-  const total = k => k.cores.filter(c => !out.includes(c)).length;
-  while (out.length < n) {
-    let best = null;
-    left.forEach((arr, k) => { if (!arr.length) return; const t = total(k); if (t > 1 && (!best || t > total(best))) best = k; });   // 2個以上残るスピリットを優先
-    if (!best) left.forEach((arr, k) => { if (!arr.length) return; if (!best || (k.def.cost || 0) < (best.def.cost || 0)) best = k; });   // 最後の1個を使うなら、コストの低いスピリットから
-    if (!best) break;
-    out.push(left.get(best).pop());
-  }
-  return out;
-}
 function autoPay() {
   const st = payState(); if (!st) return;
   pay.pay = new Set(); pay.place = new Set();
@@ -3756,15 +3696,16 @@ function autoPay() {
     soul.slice(0, ns).forEach(id => pay.pay.add(id));
     let rest = st.need - nr - ns;
     if (rest > 0) {
-      const fc = pickFieldCores(rest, new Set(), false);
-      fc.forEach(c => pay.pay.add(c.id)); rest -= fc.length;
+      const fc = V.you.field.slice().sort((a, b) => b.cores.length - a.cores.length).flatMap(k => k.cores.filter(c => !c.soul));
+      fc.slice(0, rest).forEach(c => pay.pay.add(c.id)); rest -= Math.min(rest, fc.length);
       if (rest > 0) V.you.field.flatMap(k => k.cores.filter(c => c.soul)).slice(0, rest).forEach(c => pay.pay.add(c.id));
     }
     // 置くコア: 真界放を持つスピリットには、まずソウルコアを置く(Lv2になる)。それ以外はソウルコアを温存する
     const soulLeft = soul.slice(ns), pool = st.d.type === 'spirit' && st.d.keywords.includes('shinkai') ? soulLeft.concat(norm.slice(nr)) : norm.slice(nr).concat(soulLeft);
     pool.slice(0, want).forEach(id => pay.place.add(id));
     if (pay.place.size < st.minPlace) {   // リザーブだけでは置けないとき、場のコアから(支払い済みは除く)
-      pickFieldCores(st.minPlace - pay.place.size, pay.pay, true).forEach(c => pay.place.add(c.id));
+      const fc2 = V.you.field.slice().sort((a, b) => b.cores.length - a.cores.length).flatMap(k => k.cores.filter(c => !pay.pay.has(c.id)));
+      fc2.slice(0, st.minPlace - pay.place.size).forEach(c => pay.place.add(c.id));
     }
   }
   const s2 = payState();
@@ -3906,8 +3847,7 @@ function ctlHTML() {
     '';
   const menuBtns = '<button class="sub" data-menu="1">' + (menuOpen ? '▲ メニュー' : '⚙ メニュー') + '</button><button class="sub" data-log="1">📜 ログ' + (logOpen ? ' ▲' : '') + '</button>';
   const menuBtns1 = '<button class="sub" data-menu="1">' + (menuOpen ? '▲メニュー' : 'メニュー') + '</button><button class="sub" data-log="1">ログ' + (logOpen ? '▲' : '') + '</button>';
-  const undoBtn = V.undoPlay ? '<button class="sub undo" data-undoplay="1">↩ 「' + esc(V.undoPlay) + '」を出す前に戻る</button>' : '';
-  const menuRow = '<div class="row">' + menuBtns + '</div>' + undoBtn + (logOpen ? '<div class="inlog">' + V.log.slice().reverse().map(l => logLine(l)).join('') + '</div>' : '') +
+  const menuRow = '<div class="row">' + menuBtns + '</div>' + (logOpen ? '<div class="inlog">' + V.log.slice().reverse().map(l => logLine(l)).join('') + '</div>' : '') +
     // ソロ・テスト用のボタンはメニューの中に隠しておく
     (menuOpen ? '<div class="menu"><button class="sub" data-pause="1">自動で進めない：' + (V.pause ? 'ON' : 'OFF') + '</button>' +
       '<button class="sub" data-home="1">ホームに戻る</button>' + (solo ? '<button class="sub" data-stepback="1">◀ ステップを戻す(ソロ)</button>' : '') +
@@ -3923,7 +3863,7 @@ function ctlHTML() {
   if (sel.size) h += '<div class="note" style="color:var(--ok)"><b>コア' + sel.size + '個を選択中</b> 移動先をタップ(他をクリックで解除)</div>';
   h += menuRow.replace(/^<div class="row">.*?<\/div>/, '');
   const last = V.log[V.log.length - 1];
-  h += '<div class="lastlog">' + (last ? logLine(last, 1) : '') + '</div>' + (V.undoPlay ? '<button class="sub undo" data-undoplay="1">↩ 「' + esc(V.undoPlay) + '」を出す前に戻る</button>' : '');
+  h += '<div class="lastlog">' + (last ? logLine(last, 1) : '') + '</div>';
   return h;
 }
 const SYMI = '<i class="symi"></i>', SOULI = '<i class="souli"></i>';
@@ -3948,6 +3888,7 @@ function effectsPlain(d) {
 const glowOf = iid => !pay && !!((V.usable && ((V.usable.abil || []).some(x => x.startsWith(iid + ':')) || V.usable.hand.includes(iid) || V.usable.block.includes(iid) || V.usable.attack.includes(iid))) || (V.pending && V.pending.pi === V.me && V.pending.cands.includes(iid)));
 const fieldK = iid => V.you.field.find(k => k.iid === iid) || V.opp.field.find(k => k.iid === iid);
 function promptHTML() {
+  if (Date.now() < gateUntil && V && V.pending) return null;
   const R = (t, mine, b, low) => ({ t, mine: !!mine, b: b || '', low: !!low });
   if (V.winner != null) { const dk = V.loseWhy === 'deck'; return R('<b class="hl">' + (V.winner === V.me ? 'あなたの勝ちです!' + (dk ? '(相手がデッキ切れでドローできず)' : '') : '相手の勝ちです' + (dk ? '(あなたがデッキ切れでドローできず)' : '')) + '</b>', true); }
   if (V.pick) {
@@ -3996,9 +3937,8 @@ function promptHTML() {
     const camoBox = pd.camo ? '<div class="camoh ' + (camoOk ? 'ok' : '') + '"><b>迷彩</b> ' + Object.keys(pd.camo).map(i => { const k = V.opp.field.find(x => x.iid === i); return esc(k ? k.def.name : '?') + '(コア' + pd.camo[i] + '個)'; }).join('、') + '<br>' + (camoNeed ? '指定した迷彩のぶん、リザーブ/場のコアを<b>' + camoNeed + '個</b>タップで選んでください(トラッシュへ支払います)  選択中 ' + sel.size + '/' + camoNeed + (sel.size > camoNeed ? ' ※多すぎます' : '') : '迷彩のスピリットを指定する場合は、数だけコアを支払います') + '</div>' : '';
     const placeOk = !pd.place || (pickSel.size === 0 ? sel.size === 0 : sel.size >= pd.place.min);
     const placeBox = pd.place ? '<div class="camoh ' + (placeOk && pickSel.size ? 'ok' : '') + '"><b>コアを置く</b> 選んだネクサスに置くコアを、リザーブ/場のコアからタップで<b>' + pd.place.min + '個以上</b>選んでください(そのネクサスはスピリットとして扱います)  選択中 ' + sel.size + '個</div>' : '';
-    const smT = pd.sumMax ? [...pickSel].reduce((sm, i) => { const k = V.opp.field.concat(V.you.field).find(x => x.iid === i); return sm + (k ? (pd.sumMax.k === 'cost' ? k.def.cost : (V.bps && V.bps[k.iid]) || 0) : 0); }, 0) : 0, smOk = !pd.sumMax || smT <= pd.sumMax.max;
-    const okSel = (pd.upto ? pickSel.size >= 1 : pickSel.size === n) && camoOk && placeOk && smOk;
-    return R('<b class="hl">' + (mv ? '「' + esc(pd.name) + '」: コアを置く' + (pd.fam ? '「' + esc(pd.fam) + '」の' : '') + 'スピリットを選んでください' + (pd.opt ? '(任意)' : '') : '「' + esc(pd.name) + '」の対象を' + (pd.upto ? n + '体まで' : n + '体') + '選んでください' + (pd.why ? '(' + esc(pd.why) + ')' : '') + (pd.opt && !pd.upto ? '(任意)' : '') + (pd.sumMax ? ' 合計' + (pd.sumMax.k === 'cost' ? 'コスト' : 'BP') + pd.sumMax.max + 'まで(今 ' + smT + (smOk ? '' : ' ✕多すぎます') + ')' : '')) + '</b><span>(' + pickSel.size + '/' + n + ')</span>', true,
+    const okSel = (pd.upto ? pickSel.size >= 1 : pickSel.size === n) && camoOk && placeOk;
+    return R('<b class="hl">' + (mv ? '「' + esc(pd.name) + '」: コアを置く' + (pd.fam ? '「' + esc(pd.fam) + '」の' : '') + 'スピリットを選んでください' + (pd.opt ? '(任意)' : '') : '「' + esc(pd.name) + '」の対象を' + (pd.upto ? n + '体まで' : n + '体') + '選んでください' + (pd.why ? '(' + esc(pd.why) + ')' : '') + (pd.opt && !pd.upto ? '(任意)' : '')) + '</b><span>(' + pickSel.size + '/' + n + ')</span>', true,
       camoBox + placeBox + '<div class="row2"><button data-pchoose="1"' + (okSel ? '' : ' disabled') + '>' + (pd.alt ? esc(pd.alt.base || '決定') : '決定') + '</button>' + (pd.alt ? '<button data-pchoose="1" data-alt="1"' + (okSel ? '' : ' disabled') + '>' + esc(pd.alt.label) + '</button>' : '') + (pd.opt ? '<button class="sec" data-pnone="1">指定しない</button>' : '') + (V.canUndo ? '<button class="sec" data-cancelcast="1">戻る</button>' : '') + '</div>');
   }
   if (!b) return null;
@@ -4024,9 +3964,6 @@ function promptHTML() {
 }
 function render() {
   if (!V) return;
-  { const pd = V.pending, b0 = V.battle;   // カードを選ぶ場面(対象の指定・ブロック宣言)では、カード上のコアの判定をなくして、カードを選びやすくする
-    const selCard = !!(pd && pd.pi === V.me && pd.cands && pd.cands.length && !['coreSel', 'colorPick', 'order', 'reveal'].includes(pd.kind) && !pd.camo && !pd.place) || !!(b0 && b0.phase === 'block' && b0.prio === V.me);
-    document.body.classList.toggle('selcard', selCard && !pay); }
   const you = V.you, opp = V.opp, my = V.turn === V.me;
   let mine = new Set(allCores(you).map(c => c.id));
   if (pay) { const pd0 = (you.hand.find(k => k.iid === pay.iid) || {}).def; if (pd0 && V.battle && pd0.effects.some(e => e.keyword === 'flashSummon')) mine = new Set(you.reserve.map(c => c.id)); }
@@ -4046,7 +3983,7 @@ function render() {
   $('hand').classList.toggle('mull', mulMine);
   { const mb = $('mullbox'); mb.hidden = !mulMine; mb.innerHTML = pickMine ? '<div class="mt"><div class="fl" style="font-size:17px">先攻・後攻を選んでください</div></div><div class="mrow">' + you.hand.map(k => cardHTML(k, true, 'mull')).join('') + '</div><div class="mbtn"><button data-first="1">先攻</button><button class="sec" data-first="0">後攻</button></div>' : mulMine ? '<div class="mt"><div class="fl">あなたは' + (V.me === V.turn ? '先攻' : '後攻') + 'です</div><b>マリガン: 手札を全て入れ替えますか?</b></div><div class="mrow">' + you.hand.map(k => cardHTML(k, true, 'mull')).join('') + '</div><div class="mbtn"><button data-mull="1">マリガン</button><button class="sec" data-mull="0">キープ</button></div>' : ''; }
   { const hd = $('hand'); if (pay && matchMedia('(min-width:900px)').matches) { if (!hd.classList.contains('paying')) hd.style.height = hd.offsetHeight + 'px'; hd.classList.add('paying'); } else { hd.classList.remove('paying'); hd.style.height = ''; } }
-  $('hand').innerHTML = pay ? payHTML() : '<div class="hn">あなたの手札 <b>' + you.hand.length + '</b> <span class="dim">(カードを盤面へドラッグで召喚・使用)</span>' + (V.undoPlay ? ' <button class="sub undo" data-undoplay="1">↩ 「' + esc(V.undoPlay) + '」を出す前に戻る</button>' : '') + '</div><div class="handrow">' +
+  $('hand').innerHTML = pay ? payHTML() : '<div class="hn">あなたの手札 <b>' + you.hand.length + '</b> <span class="dim">(カードを盤面へドラッグで召喚・使用)</span></div><div class="handrow">' +
     (you.hand.length ? you.hand.map(k => cardHTML(k, true, 'hand')).join('') : '<span class="note">手札なし</span>') + '</div>';
   const nh = document.querySelector('.handrow'); if (nh) nh.scrollLeft = hsl;
   if (!(V.pending && V.pending.pi === V.me) && !(V.usable && V.usable.block.length)) pickSel.clear();
@@ -4144,7 +4081,6 @@ function openCard(iid) {
   if (zone === 'hand') h += payPreview(k);
   const mv = (label, to, sub) => sbtn(label, () => doAct({ k: 'moveCard', iid, to }), sub);
   let b = '';
-  const vz = (zone === 'field' && d.type === 'spirit' && k.cores.length === 0 && V.turn === V.me && (V.step === 'main' || V.step === 'main2') && !V.battle && !V.pending) ? sbtn('消滅させる', () => doAct({ k: 'vanishZero', iid })) : '';   // メインステップでコアが0個になったとき、自分で消滅させる
   if (!V.test) {
     if (zone === 'hand') b = canCastNow(k) ? sbtn(VERB[d.type] + 'する', () => startPay(iid)) : '<button disabled>' + VERB[d.type] + 'する</button>';
     else if (zone === 'field' && V.turn === V.me && V.step === 'attack' && !V.noAttack && d.type === 'spirit' && !V.battle && !V.pending && !k.tapped) b = (V.noAtk || []).includes(iid) ? '<button disabled>このターンはアタックできません</button>' : sbtn('アタック', () => doAct({ k: 'attack', iid }));
@@ -4157,7 +4093,7 @@ function openCard(iid) {
       : sbtn(k.tapped ? '回復' : '疲労', () => doAct({ k: 'tap', iid }))) + mv('トラッシュへ(破壊)', 'trash', 1) + mv('手札へ', 'hand', 1) + mv('デッキの下へ', 'deckBottom', 1) + mv('除外', 'removed', 1);
   else if (zone === 'trash') b = mv('手札へ', 'hand') + (d.type !== 'magic' ? mv('場に出す', 'field', 1) : '') + mv('デッキの下へ', 'deckBottom', 1) + mv('除外', 'removed', 1);
   else if (zone === 'removed') b = mv('手札へ', 'hand') + mv('トラッシュへ', 'trash', 1);
-  showSheet(h + '<div class="acts">' + vz + b + '<button class="sub" data-close="1">閉じる</button></div>', COLOR_HEX[d.color]);
+  showSheet(h + '<div class="acts">' + b + '<button class="sub" data-close="1">閉じる</button></div>', COLOR_HEX[d.color]);
 }
 let listMode = 'new';
 function openList(who, zone) {
@@ -4289,7 +4225,6 @@ function handleClick(t) {
   if (t.closest('[data-abil]')) { const [i, e] = t.closest('[data-abil]').dataset.abil.split(':'); hideSheet(); doAct({ k: 'ability', iid: i, ei: +e }); return; }
   if (t.closest('[data-noblock]')) { pickSel.clear(); doAct({ k: 'block', iid: null }); return; }
   if (t.closest('[data-doblock]')) { const i = [...pickSel][0]; pickSel.clear(); if (i) doAct({ k: 'block', iid: i }); return; }
-  if (t.closest('[data-undoplay]')) { doAct({ k: 'undoPlay' }); return; }
   if (t.closest('[data-cancelcast]')) { pickSel.clear(); doAct({ k: 'cancelCast' }); return; }
   if (t.closest('[data-orderpick]')) { doAct({ k: 'orderPick', id: t.closest('[data-orderpick]').dataset.orderpick }); return; }
   if (t.closest('[data-rvpick]')) { const l = revSel.slice(); revSel = []; doAct({ k: 'revTake', iids: l }); return; }
@@ -4353,22 +4288,7 @@ function handleClick(t) {
   const dest = t.closest('[data-dest]');
   if (dest && sel.size && !camoMode()) { moveCoresGuarded([...sel], { zone: dest.dataset.dest }); sel.clear(); return; }
 }
-/* スマホ: 指を離した時点で、押したカード/コアと同じものの上なら、その場でタップとして処理する
-   (画面が更新されて押した部品が作り直されると、クリックが出ずに反応しないことがあるため) */
-let tapD = null, lastTapT = -1e9;
-const tapKey = el => el ? (el.dataset.card || el.dataset.core || ('cc:' + el.dataset.cc + ':' + (el.dataset.loc || ''))) : null;
-document.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') { tapD = null; return; } const el = e.target.closest && e.target.closest('[data-card],[data-cc],[data-core]'); tapD = el ? { k: tapKey(el), x: e.clientX, y: e.clientY, t: e.timeStamp, moved: false } : null; }, true);
-document.addEventListener('pointermove', e => { if (tapD && Math.hypot(e.clientX - tapD.x, e.clientY - tapD.y) > 9) tapD.moved = true; }, true);
-document.addEventListener('pointerup', e => {
-  const d = tapD; tapD = null;
-  if (!d || d.moved || e.pointerType === 'mouse' || e.timeStamp - d.t > 700 || document.body.classList.contains('dragging') || !V || !$('sheet').hidden) return;
-  const el = e.target.closest && e.target.closest('[data-card],[data-cc],[data-core]');
-  if (!el || tapKey(el) !== d.k) return;
-  lastTapT = e.timeStamp;
-  const cleared = clearOnOutside(e.target); handleClick(e.target); if (cleared) render();
-}, true);
 document.addEventListener('click', e => {
-  if (e.timeStamp - lastTapT < 700) return;   // 直前に指を離した時点で処理済み
   // ドロップの直後(30ms以内)に出るクリックは、ドラッグ操作そのものが生むものなので無視する
   if (dragEndT >= 0 && e.timeStamp - dragEndT < 30) { dragEndT = -1; return; }
   const cleared = clearOnOutside(e.target);
