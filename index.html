@@ -16,7 +16,13 @@ h1{font-size:18px;margin:4px 0 10px}
 button{background:var(--acc);color:#0b1020;border:0;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer;font-size:14px}
 button.sub{background:var(--panel);color:var(--fg);border:1px solid var(--line)}
 button.sub.newon{background:#2f7bff;color:#fff;border-color:#2f7bff}
+button{transition:transform .08s ease,filter .12s ease,box-shadow .12s ease,background .12s ease,border-color .12s ease}
+button:not(:disabled):hover{filter:brightness(1.18);transform:translateY(-1px);box-shadow:0 4px 14px #0008,0 0 0 2px #ffffff30}
+button.sub:not(:disabled):hover{background:#27324f;border-color:var(--acc);filter:none;box-shadow:0 4px 14px #0008,0 0 0 1px var(--acc)}
+button:not(:disabled):active{transform:translateY(1px) scale(.96);filter:brightness(.82);box-shadow:inset 0 3px 8px #0009}
+button:focus-visible{outline:3px solid #ffd36e;outline-offset:2px}
 button:disabled{opacity:.4;cursor:default}
+#appver{position:fixed;right:8px;bottom:3px;z-index:3;font-size:10px;color:var(--sub);opacity:.6;pointer-events:none;letter-spacing:.04em}
 input,select,textarea{width:100%;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:9px;font-size:16px}
 textarea{height:150px;font-size:12px;font-family:ui-monospace,Menlo,monospace}
 .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}
@@ -136,7 +142,7 @@ a.cn{color:#ffe08a;text-decoration:underline dotted;cursor:pointer}
 .bpnote{color:#7dffb0}
 .slot{display:flex;flex-direction:column;align-items:center;gap:2px}
 .sin{display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
-.sin>.cores{position:absolute;left:0;right:0;top:calc(var(--cw) * .5);z-index:3;gap:1px;pointer-events:none}
+.sin>.cores{position:absolute;left:0;right:0;top:calc(var(--cw) * .5);z-index:6;gap:1px;pointer-events:none}
 .sin>.cores>*{pointer-events:auto}
 .sin>.cores .cc{min-width:calc(var(--cw) * .27);height:calc(var(--cw) * .29);font-size:calc(var(--cw) * .12);padding:0 2px}
 .sin>.cores .souli,.sin>.cores .core{transform:scale(.85)}.sin.opp{transform:rotate(180deg)}
@@ -314,6 +320,16 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .box h2{margin:0;font-size:18px;letter-spacing:.02em}
 .box.b-deck{border-top:5px solid #6ea8ff;background:linear-gradient(#18203a,var(--panel) 60px)}.box.b-deck h2{color:#9cc2ff}
 .box.b-net{border-top:5px solid #6fe3a1;background:linear-gradient(#143025,var(--panel) 60px)}.box.b-net h2{color:#8ff0bb}
+.box.b-free{border-top:5px solid #ffcf5a;background:linear-gradient(#33290f,var(--panel) 60px)}.box.b-free h2{color:#ffdf8a}
+button[hidden]{display:none!important}
+.freegrid[hidden]{display:none}
+.freegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:6px}
+.frm{background:linear-gradient(#202a4a,#161d36);border:1px solid #3a4a80;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;box-shadow:0 2px 8px #0006;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+.frm:hover{transform:translateY(-3px);border-color:#ffcf5a;box-shadow:0 8px 18px #000a}
+.frm .fn{font-weight:800;font-size:15px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frm .fm{font-size:12.5px;color:var(--sub);min-height:2.6em;line-height:1.3;word-break:break-all}
+.frm button{align-self:stretch}
+.frm.mine{border-color:#6fe3a1;background:linear-gradient(#17382b,#10261e)}
 .box.b-cpu{border-top:5px solid #d78bff;background:linear-gradient(#2b1838,var(--panel) 60px)}.box.b-cpu h2{color:#e2a8ff}
 .box.b-solo{border-top:5px solid #ffb454;background:linear-gradient(#35280f,var(--panel) 60px)}.box.b-solo h2{color:#ffc878}
 .box.b-name{border-top:5px solid #ffcc66;background:linear-gradient(#35290f,var(--panel) 60px)}.box.b-name h2{color:#ffd98a}
@@ -511,7 +527,7 @@ body:has(#builder:not([hidden])) h1{display:none}
 .symx{display:inline-block;background:#6fe3a1;color:#08210f;border-radius:6px;padding:0 4px;font-size:10px;font-weight:800;animation:symp 1.6s ease-in-out infinite}
 @keyframes symp{50%{box-shadow:0 0 8px 2px #6fe3a1}}
 #revbox .rvc.chosen{outline:4px solid #fff;box-shadow:0 0 0 7px var(--ok),0 0 22px 8px #2ee08a;border-radius:8px}
-#cbtn .pickc{pointer-events:auto}#cbtn .pickrow{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}.pickrow{max-height:34vh;overflow:auto}.pickc{cursor:pointer}.pickc:active{outline:2px solid var(--acc)}
+#cbtn .pickc{pointer-events:auto}#cbtn .pickrow{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;pointer-events:none}.pickrow{max-height:34vh;overflow:auto;padding-top:18px}.pickc{cursor:pointer}.pickc:active{outline:2px solid var(--acc)}
 .milc{position:fixed;left:0;top:0;width:54px;height:76px;border-radius:6px;background:#1c2030 center/cover;border:2px solid #9aa1bd;font-size:9px;color:#fff;overflow:hidden;z-index:60;pointer-events:none;text-shadow:0 0 3px #000}
 .whypop{position:fixed;z-index:70;pointer-events:none;background:#1a0d12ee;color:#ffd0d6;border:1px solid #ff6e7f;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 4px 14px #000a}
 .corepop{position:fixed;z-index:60;pointer-events:none;font-weight:900;color:#ffd36e;text-shadow:0 0 6px #000}
@@ -539,7 +555,7 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
 .rvc.gray{filter:grayscale(1) brightness(.7);cursor:default}.rvc.gone{opacity:.35}
 .rvc.ord{outline:3px solid #6fe3a1}
 .rvnum,.pnum{position:absolute;top:-9px;left:-9px;z-index:3;min-width:30px;height:30px;border-radius:50%;background:#ffd34d;color:#1a1200;font-weight:900;font-size:19px;display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 8px #000a;pointer-events:none}
-.pickc{position:relative}.pnew{position:absolute;left:50%;top:-9px;transform:translateX(-50%);z-index:4;background:#ffd24a;color:#2a1c00;font-size:10px;font-weight:800;padding:0 6px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 4px #000a}.pickc.on{outline:4px solid #fff;box-shadow:0 0 0 7px var(--ok),0 0 22px 8px #2ee08a;border-radius:8px}
+.pickc{position:relative}.pickc.pdrop{animation:drawin2 .9s ease-out both}.pnew{position:absolute;left:50%;top:-14px;transform:translateX(-50%);z-index:4;background:#ffd24a;color:#2a1c00;font-size:10px;font-weight:800;padding:0 6px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 4px #000a}.pickc.on{outline:4px solid #fff;box-shadow:0 0 0 7px var(--ok),0 0 22px 8px #2ee08a;border-radius:8px}
 .rvn{position:absolute;left:0;right:0;bottom:-2px;text-align:center;background:#000c;color:#fff;font-size:11px;font-weight:800;border-radius:0 0 6px 6px}
 .rvctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center}.rvh{color:#ffe9a8;font-size:13px}
 .selcard .sin>.cores{pointer-events:none}
@@ -573,8 +589,16 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     <h2>対戦する</h2>
     <p class="note">同じ合言葉を入力した2人が自動でマッチングします。ランダムで選ばれた側が、先攻・後攻を選びます。</p>
     <input id="pass" placeholder="合言葉(4文字以上)" maxlength="30" autocomplete="off" style="margin:8px 0">
-    <div class="row"><button id="bMatch">対戦開始</button></div>
+    <div class="row"><button id="bMatch">対戦開始</button><label class="ck dev-only"><input type="checkbox" id="testModeNet">テストモード(デッキサーチを有効にする)</label></div>
     <div id="conn" style="margin-top:8px;font-size:13px;color:var(--sub)"></div>
+  </div>
+  <div class="box b-free">
+    <h2>フリー対戦</h2>
+    <p class="note">合言葉なしで、いま募集中の部屋に入って対戦できます。自分で部屋を作って、相手を待つこともできます。</p>
+    <div class="row" style="margin:8px 0"><input id="freeMsg" placeholder="ひとこと(例: 初心者歓迎・ゆっくりやりましょう)" maxlength="24" autocomplete="off" style="flex:1;min-width:180px"><button id="bFreeMake">部屋を作る</button></div>
+    <div id="freeStat" class="note"></div>
+    <div id="freeList" class="freegrid" hidden></div>
+    <div class="row" style="margin-top:8px"><button class="sub" id="bFreeShuffle">別の部屋を見る</button></div>
   </div>
   <div class="box b-cpu">
     <h2>CPUと対戦する</h2>
@@ -696,11 +720,22 @@ function cleanEffect(e) {
     text: str(e.text, 400)
   };
 }
+// カードテキストの「〔重複不可〕」と書かれた項目に対応する誘発効果に、nodup の印をつける
+function markNodup(out) {
+  if (!/重複不可/.test(out.text)) return out;
+  const nz = x => String(x || '').replace(/\s+/g, ''), lines = out.text.split('\n');
+  lines.forEach((ln, i) => {
+    if (!ln.includes('重複不可')) return;
+    let body = nz(lines[i + 1]); if (!body) return;
+    out.effects.forEach(e => { if (e.timing.kind !== 'trigger' || e.timing.nodup) return; const et = nz(e.text); if (et && (et.startsWith(body) || body.startsWith(et))) e.timing.nodup = true; });
+  });
+  return out;
+}
 function cleanDef(d) {
   d = d && typeof d === 'object' ? d : {};
   const lv = Array.isArray(d.levels) ? d.levels.slice(0, 3).map(l => ({ lv: int(l && l.lv, 1, 3, 1), core: int(l && l.core, 0, 20), bp: int(l && l.bp, 0, 99999) })) : [];
   const sy = d.symbols && typeof d.symbols === 'object' ? d.symbols : {};
-  return {
+  return markNodup({
     id: str(d.id || '?', 24), name: str(d.name || '名称未設定', 60), reading: str(d.reading, 60),
     type: TYPES.includes(d.type) ? d.type : 'spirit', color: str(d.color, 12),
     family: Array.isArray(d.family) ? d.family.slice(0, 6).map(x => str(x, 20)) : [],
@@ -710,7 +745,7 @@ function cleanDef(d) {
     keywords: Array.isArray(d.keywords) ? d.keywords.slice(0, 10).map(x => str(x, 20)) : [],
     soulMagic: !!d.soulMagic, noMain: !!d.noMain, vanilla: !!d.vanilla, auto: !!d.auto, partial: !!d.partial, levels: lv, text: str(d.text, 800),
     effects: Array.isArray(d.effects) ? d.effects.slice(0, 8).map(cleanEffect) : []
-  };
+  });
 }
 // テスト用ダミー: マルグリース(効果なしスピリット)
 const DUMMY_DEF = cleanDef({ id: '26RSD09-002', name: 'マルグリース', type: 'spirit', color: 'red', family: ['紅雲', '風炎'], cost: 2, reduction: 0,
@@ -1092,6 +1127,7 @@ function playCard(G, pi, a) {
   if (d.type === 'magic' ? place.length !== 0 : place.length < minPlaceOf(d)) return false;
   { const rmBy = new Map(); payF.concat(placeF).forEach(f => { if (f && f.zone === 'card') rmBy.set(f.card, (rmBy.get(f.card) || 0) + 1); }); for (const [kc, n] of rmBy) if (coreFloorBlock(G, pi, kc, n)) return false; }
   const paidSoul = payF.some(f => f.arr[f.i].soul);
+  const fieldBefore = P.field.slice();   // コアの支払いで消滅するカードも「待機状態」として効果の計算に含める
   const exInfo = info.exCards.map(c => ({ id: c.def.id, name: c.def.name, family: c.def.family, team: c.def.team || [] }));
   info.exCards.forEach(c => { P.trash.splice(P.trash.indexOf(c), 1); P.removed.push(c); });
   pay.forEach(id => moveCore(G, pi, id, { zone: 'coreTrash' }));
@@ -1104,7 +1140,7 @@ function playCard(G, pi, a) {
   }
   lg(G, pi, '　コスト: コア' + pay.length + '個をトラッシュへ' + (info.applied ? '(軽減' + info.applied + ')' : '') + (info.soul ? '(ソウルマジック)' : '') + (exInfo.length ? '、EXシンボル' + exInfo.length + '枚を除外' : ''));
   // 効果の処理で使うための記録(召喚時にソウルコアを使ったか、除外したEXの名前・系統)
-  G.ctx = { event: d.type === 'magic' ? 'use' : 'summon', pi, iid: k.iid, name: d.name, paidWithSoulCore: paidSoul, excludedEx: exInfo };
+  G.ctx = { event: d.type === 'magic' ? 'use' : 'summon', pi, iid: k.iid, name: d.name, paidWithSoulCore: paidSoul, excludedEx: exInfo, waitField: d.type === 'magic' ? fieldBefore.filter(x => !P.field.includes(x)).map(x => ({ def: x.def })) : [] };
   G.cast = { n: (G.cast ? G.cast.n : 0) + 1, pi, def: d };
   if (fl0.sk && d.effects.some(e => e.keyword === 'costRule' && ((e.ops[0] || {}).rule) === 'cost6Sk')) P.d6t = G.turnNo;
   if (d.type === 'magic') (G.mLog = G.mLog || []).push({ pi, turn: G.turnNo, fam: d.family.slice(), team: (d.team || []).slice(), color: d.color });
@@ -1248,7 +1284,7 @@ function evalCond(G, pi, c, ctx) {
   if (c.reserveMin && G.p[who(c.reserveMin.of)].reserve.length < c.reserveMin.gte) return false;
   if (c.atkCostMax != null && !(ctx && ctx.atkCost != null && ctx.atkCost <= c.atkCostMax)) return false;
   if (c.allSp && !G.p[pi].field.filter(x => x.def.type === 'spirit').every(x => matchT(G, pi, pi, x, Object.assign({}, c.allSp, { who: 'you' })))) return false;
-  if (c.allField && !G.p[pi].field.every(x => matchT(G, pi, pi, x, Object.assign({}, c.allField, { who: 'you' })))) return false;
+  if (c.allField && !(G.p[pi].field.every(x => matchT(G, pi, pi, x, Object.assign({}, c.allField, { who: 'you' }))) && ((ctx && ctx.waitField) || []).every(w => matchT(G, pi, pi, { def: w.def, iid: 'w', cores: [], tapped: false, mods: [] }, Object.assign({}, c.allField, { who: 'you' }))))) return false;
   if (c.onlyColorSym) { const P0 = G.p[pi]; if (fieldSymbols(P0, c.onlyColorSym) < 1 || ['red', 'purple', 'green', 'white', 'yellow', 'blue'].some(co => co !== c.onlyColorSym && fieldSymbols(P0, co) > 0)) return false; }
   if (c.reserveSoul && !G.p[pi].reserve.some(x => x.soul)) return false;
   if (c.exclTeam && !(ctx && ctx.excludedEx && ctx.excludedEx.filter(x => (x.team || []).includes(c.exclTeam.team)).length >= c.exclTeam.gte)) return false;
@@ -1261,7 +1297,14 @@ function evalCond(G, pi, c, ctx) {
   if (c.ownFam && !(ctx && ctx.ownFam && c.ownFam.some(f => ctx.ownFam.includes(f)))) return false;
   return true;
 }
-function enqueue(G, qi, k, e, ctx) { G.queue.push({ fam: (k.def && k.def.family) || [], pi: qi, name: k.def.name, ops: e.ops, cond: e.cond, text: e.text, ctx: ctx || {}, i: 0, src: k.iid, st: k.def.type, kw: e.keyword }); }
+function enqueue(G, qi, k, e, ctx) {
+  // 〔重複不可〕: 同じタイミングでは同名カードの同じ効果は1つしか発動しない(別タイミングなら2枚目も発動する)
+  if (e.timing && e.timing.nodup && G.queue.some(q => q.nd && q.i === 0 && q.pi === qi && q.name === k.def.name && q.text === e.text)) {
+    const ei = k.def.effects.indexOf(e);
+    if (k.used && ei >= 0 && (k.used[ei] === 't' + G.turnNo || k.used[ei] === 'b' + G.battleNo)) delete k.used[ei];   // 発動していないのでターン1回を消費させない
+    return;
+  }
+  G.queue.push({ nd: !!(e.timing && e.timing.nodup),  fam: (k.def && k.def.family) || [], pi: qi, name: k.def.name, ops: e.ops, cond: e.cond, text: e.text, ctx: ctx || {}, i: 0, src: k.iid, st: k.def.type, kw: e.keyword }); }
 function trigEffects(k, event) {
   return k.def.effects.filter(e => e.timing.kind === 'trigger' && e.timing.event === event && (!e.timing.of || e.timing.of === 'self') && effectActive(k, e));
 }
@@ -1515,7 +1558,13 @@ function execOpX(G, it, op) {
     const S = G.p[it.pi].field.find(x => x.iid === it.src); if (!S) return;
     const first = !(S.abT && S.abT === G.turnNo); S.abT = G.turnNo;
     if (!first) { lg(G, it.pi, '　' + it.name + ': このターンの最初のアタック/ブロックではないため、何も起きません'); if (it.fx) it.fx.r.push('このターンの最初のアタック/ブロックではないため、何も起きません'); return; }
-    S.lvUpB = G.battleNo; refreshLv(G); lg(G, it.pi, '　' + it.name + ': このバトル中、Lv2として扱う'); if (it.fx) it.fx.r.push('このバトル中、「' + S.def.name + '」をLv2として扱います'); return;
+    const L0 = (lvInfo(S) || {}).lv;
+    S.lvUpB = G.battleNo; refreshLv(G);
+    { // レベルが上がったので、新しく有効になったアタック時/ブロック時の効果も発動する
+      const evn = G.battle && G.battle.iid === S.iid ? 'attack' : G.battle && G.battle.blocker === S.iid ? 'block' : null;
+      if (evn) S.def.effects.forEach((e, ei) => { const t = e.timing; if (t.kind !== 'trigger' || t.event !== evn || e.keyword === 'levelup' || (e.levels || []).includes(L0) || !effectActive(S, e)) return; if (t.limit === 'turn') { if (S.used && S.used[ei] === 't' + G.turnNo) return; (S.used = S.used || {})[ei] = 't' + G.turnNo; } enqueue(G, it.pi, S, e, { event: evn }); });
+    }
+    lg(G, it.pi, '　' + it.name + ': このバトル中、Lv2として扱う'); if (it.fx) it.fx.r.push('このバトル中、「' + S.def.name + '」をLv2として扱います'); return;
   }
   const P = G.p[it.pi];
   if (op.needActed && !it.acted && op.op !== 'act') { lg(G, it.pi, '　' + it.name + ': 前の処理が行われていないため、続きは行いません'); return; }
@@ -1639,7 +1688,7 @@ function execOp(G, it, op) {
   if (op.op === 'quake') return;
   if (op.op === 'clearActed') { it.acted = false; return; }
   if (op.op === 'quakeBoost') { const b = G.battle; if (b && !b.gone) { b.quakeAdd = (b.quakeAdd | 0) + (op.n | 0); if (it.fx) it.fx.r.push('このバトル中、「' + ((G.p[b.pi].field.find(x => x.iid === b.iid) || { def: { name: 'アタックしているスピリット' } }).def.name) + '」の地鳴を+' + (op.n | 0) + '枚'); } return; }
-  if (op.op === 'mill') { const q = op.who === 'you' ? it.pi : 1 - it.pi, n0 = (G.discards || []).length; mill(G, q, op.n | 0, it.name); const nn = (G.discards || []).length - n0; if (it.fx) it.fx.r.push((q === it.pi ? '自分' : '相手') + 'のデッキの上から' + nn + '枚を破棄しました'); return; }
+  if (op.op === 'mill') { const q = op.who === 'you' ? it.pi : 1 - it.pi, n0 = (G.discards || []).length; mill(G, q, op.n | 0, it.name, { sep: true }); const nn = (G.discards || []).length - n0; if (it.fx) it.fx.r.push((q === it.pi ? '自分' : '相手') + 'のデッキの上から' + nn + '枚を破棄しました'); return; }
   if (op.op === 'trashCores') {
     const S = G.p[it.pi].field.find(x => x.iid === it.src);
     const n = S ? trashToCard(G, it.pi, S, op.n, op.soul) : 0;
@@ -1657,11 +1706,16 @@ function execOp(G, it, op) {
     let nn0 = op.n || 1; if (op.nAlt && evalCond(G, it.pi, op.nAlt.cond, it.ctx)) nn0 = op.nAlt.n; if (op.nPerEx) { nn0 = (it.ctx && it.ctx.excludedEx ? it.ctx.excludedEx.length : 0) * op.nPerEx; if (!nn0) { lg(G, it.pi, '　' + it.name + ': 除外したEXシンボルがないため、何も起きません'); if (it.fx) it.fx.r.push('継召で除外したEXシンボルがないため、何も起きません'); return; } }
     const P = G.p[it.pi], n = Math.min(nn0, P.deck.length);
     if (!n) { lg(G, it.pi, '　' + it.name + ': デッキがありません'); return; }
+    if (op.opt && !it.revAsk && !op.auto && !G.autoYn) {   // 「オープンできる」: まず、オープンするかどうかを選ぶ
+      it.revAsk = true; G.pending = { pi: it.pi, name: it.name, n: 1, cands: ['yes'], qi: it.pi, text: it.text, kind: 'ynx', yn: true, opt: true, x: { q: 'デッキの上から' + n + '枚をオープンしますか?', skipOp: true } }; return 'wait';
+    }
+    it.revAsk = false;
     const cards = []; for (let i = 0; i < n; i++) { const c = P.deck.pop(); cards.push({ iid: c.iid, def: c.def, inst: c }); }
     const grp = op.groups ? op.groups.map(f => cards.filter(c => matchDef(c.def, f)).map(c => c.iid)) : null;
     const cands = grp ? [...new Set([].concat(...grp))] : cards.filter(c => matchDef(c.def, op.filter || {})).map(c => c.iid);
     lg(G, it.pi, '　' + it.name + ': デッキの上から' + n + '枚をオープン(' + cards.map(c => '「' + c.def.name + '」').join('') + ')');
     G.pending = { pi: it.pi, name: it.name, n: 1, cands, qi: it.pi, text: it.text, kind: 'reveal', opt: true, x: { desc: op.groups ? op.groups.map(f => descFilter(f)).join('と') : descFilter(op.filter || {}), cards, cands, phase: 'pick', take: op.take || 'hand', rest: op.rest || 'bottom', optional: !!op.opt, picked: null, pickedList: [], takeN: grp ? Math.max(1, grp.filter(g => g.length).length) : ((op.pickAlt && evalCond(G, it.pi, op.pickAlt.cond, it.ctx)) ? op.pickAlt.n : (op.pick || 1)), groups: grp, restIds: [] } };
+    if (op.all) { G.pending.x.all = true; G.pending.x.optional = false; G.pending.x.takeN = Math.max(1, cands.length); }   // 条件に合うカードをすべて加える(強制)
     if (op.auto) G.pending.x.auto = true;
     G.pending.x.immediate = true;
     if (!cands.length && !op.auto) G.pending.x.phase = 'none';
@@ -1724,7 +1778,7 @@ function execOp(G, it, op) {
     if (t.bpEqSrc) { const S0 = G.p[it.pi].field.find(x => x.iid === it.src); if (S0) t = Object.assign({}, t, { bpEq: curBP(G, S0) }); }
     if (t.countDiv) { const cn = Math.floor(G.p[it.pi].field.filter(x => matchT(G, it.pi, it.pi, x, Object.assign({ who: 'you' }, t.countDiv.flt))).length / t.countDiv.d); if (cn < 1) { lg(G, it.pi, '　' + it.name + ': 指定できる体数が0です'); if (it.fx) it.fx.r.push('何も起きません'); return; } t = Object.assign({}, t, { count: cn }); }
     if (t.costPlusLast) t = Object.assign({}, t, { costMax: (t.costMax | 0) + (G.lastCost | 0) });
-    if (t.costPlusField) t = Object.assign({}, t, { costMax: (t.costMax | 0) + G.p[it.pi].field.length });
+    if (t.costPlusField) t = Object.assign({}, t, { costMax: (t.costMax | 0) + G.p[it.pi].field.length + (((it.ctx && it.ctx.waitField) || []).length) });
     if (t.bpMaxLastLv1) { const L0 = (G.lastActCards || [])[0]; t = Object.assign({}, t, { bpMax: L0 && L0.def.levels.length ? L0.def.levels[0].bp : -1 }); }
     if (t.bpMaxExPer) t = Object.assign({}, t, { bpMax: t.bpMaxExPer.base + t.bpMaxExPer.per * ((it.ctx && it.ctx.excludedEx) || []).filter(x => (x.family || []).some(f => t.bpMaxExPer.famAny.includes(f))).length });
     if (t.costMaxPer) t = Object.assign({}, t, { costMax: t.costMaxPer.base + G.p[it.pi].field.filter(x => matchT(G, it.pi, it.pi, x, Object.assign({ who: 'you', type: 'spirit' }, t.costMaxPer.per))).length });
@@ -1733,6 +1787,8 @@ function execOp(G, it, op) {
     if (t.countKw) { const cn = G.p[it.pi].field.filter(x => x.def.type === 'spirit' && matchT(G, it.pi, it.pi, x, { kw: t.countKw })).length; if (cn < 1) { lg(G, it.pi, '　' + it.name + ': 対象にできる数が0です'); if (it.fx) it.fx.r.push('何も起きません'); return; } t = Object.assign({}, t, { count: cn }); }
     const tc = op.acts.find(a => a.verb === 'trashCores');
     if (tc && !G.p[it.pi].coreTrash.some(c => tc.soul === 'only' ? c.soul : !c.soul)) { lg(G, it.pi, '　' + it.name + ': トラッシュに対象のコアがありません'); if (it.fx) it.fx.r.push('トラッシュに対象のコアがないため、何も起きません'); return; }
+    if (t.tapped == null && op.acts.length && op.acts.every(a => a.verb === 'untap')) t = Object.assign({}, t, { tapped: true });   // 回復させる効果は、疲労しているものだけを対象にする
+    else if (t.tapped == null && op.acts.length && op.acts.every(a => a.verb === 'tap')) t = Object.assign({}, t, { tapped: false });   // 疲労させる効果は、回復状態のものだけを対象にする
     const byOpp = op.chooser === 'opp';
     if (t.upToAll) t = Object.assign({}, t, { count: Math.max(1, G.p[qi].field.filter(c => matchT(G, it.pi, qi, c, t)).length) });   // 「相手が指定する」: 相手が自分のスピリットから選ぶ(迷彩のコストは不要)
     let cands = (t.who === 'both' ? [it.pi, 1 - it.pi] : [qi]).flatMap(q => G.p[q].field.filter(c => matchT(G, it.pi, q, c, t) && !(t.notSelf && c.iid === it.src) && (!t.selfOnly || c.iid === it.src) && (!t.blkOfSrc || (((G.battle && { iid: G.battle.iid, blocker: G.battle.blocker }) || (G.lastB && G.lastB.bn === G.battleNo && G.lastB)) || {}).iid === it.src && (G.battle ? G.battle.blocker : (G.lastB || {}).blocker) === c.iid) && !hexed(G, it, q, c)).map(c => c.iid));
@@ -1743,7 +1799,7 @@ function execOp(G, it, op) {
     if (t.all || ((t.autoFit || byOpp) && !camoAny && cands.length <= (t.count || 1))) { G.pending = { pi: byOpp ? qi : it.pi, by: it.pi, name: it.name, n: cands.length, cands, qi, text: it.text, kind: 'act', acts: op.acts, alt: null, opt: false, upto: false }; chooseAct(G, byOpp ? qi : it.pi, cands, false); return 'wait'; }
     const VJ = { trashCores: 'トラッシュのコアを置く', addSym: 'シンボル追加', destroy: '破壊', bounce: '手札に戻す', untap: '回復', tap: '疲労', noLifeDmg: 'ライフが減らない', mustAttack: '最初にアタック', heavyTap: '重疲労', mustBlock: 'ブロック強制', bpMod: 'BP増減', coreOut: 'コアをリザーブへ', coreSel: 'コアをリザーブへ(相手が選ぶ)', addCore: 'コアを置く', deckBottom: 'デッキの下へ', open: 'デッキの上をオープン', soulFromTrash: '[ソウルコア]を置く', unb: 'ブロックされない' };
     G.pending = { pi: byOpp ? qi : it.pi, by: it.pi, name: it.name, n: t.count || 1, cands, qi, text: it.text, kind: 'act', acts: dynActs(G, it, op), alt: (op.alt && evalCond(G, it.pi, op.alt.cond, it.ctx)) ? op.alt : null, opt: !!op.opt, yn: !!(t.selfOnly && op.opt && !op.alt && !op.upto && !t.pair3000 && cands.length === 1), upto: !!op.upto, pair: !!t.pair3000, sumMax: t.sumMax || null,
-      why: op.acts.filter(a => VJ[a.verb]).map(a => VJ[a.verb] + (a.verb === 'bpMod' ? (a.amount >= 0 ? '+' : '') + a.amount : '')).join('→') };
+      why: op.acts.filter(a => VJ[a.verb]).map(a => VJ[a.verb] + (a.verb === 'bpMod' ? (a.amount >= 0 ? '+' : '') + a.amount : '')).join('→') + (t.costPlusField ? ' / 指定できるコストは' + t.costMax + '以下(場のスピリット/ネクサス' + (G.p[it.pi].field.length + ((it.ctx && it.ctx.waitField) || []).length) + '+3、コスト支払いで消滅したものも含む)' : '') };
     if (byOpp) { G.pending.opt = false; G.pending.why = '相手の「' + it.name + '」の効果: あなたのスピリットを選びます(' + G.pending.why + ')'; }
     else if (t.who === 'both') {   // 自分と相手をまとめて指定する。必ず指定できる数(足りなければ全部)を指定する
       const ownC = cands.filter(i => G.p[it.pi].field.some(x => x.iid === i)), oppC = cands.filter(i => !ownC.includes(i));
@@ -1781,11 +1837,18 @@ function ampHook(G, before) {
 function runQueue(G) {
   while (!G.pending && G.queue.length && G.winner == null) {
     const it = G.queue[0];
-    if (it.i === 0) {
+    if (it.i === 0 && !it.ynDone) {
       { const S0 = G.p[it.pi].field.find(x => x.iid === it.src); it.ctx = Object.assign({}, it.ctx, { srcIid: it.src, srcBp: S0 ? curBP(G, S0) : null, srcTapped: !!(S0 && S0.tapped), srcBlocked: !!(G.battle && G.battle.iid === it.src && G.battle.blocker) }); }
       if (!evalCond(G, it.pi, it.cond, it.ctx)) { lg(G, it.pi, '「' + it.name + '」の効果: 条件を満たさないため発動しません'); G.fx.push({ n: it.name, t: it.text, p: it.pi, r: ['条件を満たしていないため、発動しません'], fail: true }); G.queue.shift(); continue; }
       lg(G, it.pi, '「' + it.name + '」の効果が発動');
       it.fx = { n: it.name, t: it.text, p: it.pi, r: [] }; G.fx.push(it.fx);
+      // 「〜できる」の効果は、使うかどうかを選べる(自動で処理されるドロー・回復などは、先に確認する)
+      const o0 = it.ops[0], c0 = ((it.text || '').split('。')[0]) || '';
+      if (!G.autoYn && /できる/.test(c0) && o0 && (['draw', 'drawTo', 'selfAct', 'symLoss'].includes(o0.op) || (o0.op === 'act' && !o0.opt && o0.target && !o0.target.choose))) {
+        it.ynDone = true; G.pending = { pi: it.pi, name: it.name, n: 1, cands: ['yes'], qi: it.pi, text: it.text, kind: 'ynx', yn: true, opt: true, x: { q: c0 } };
+        return;
+      }
+      if (/できる/.test(c0) && o0 && o0.op === 'act' && !o0.opt && o0.target && o0.target.choose) it.ops = [Object.assign({}, o0, { opt: true })].concat(it.ops.slice(1));
     }
     while (it.i < it.ops.length) { const w = G.p.some(P => P.field.some(k => k.def.effects.some(e => e.timing.event === 'ampBp'))) ? ampSnap(G) : null; const rr = execOp(G, it, it.ops[it.i]); if (w) ampHook(G, w); if (rr === 'wait') return; it.i++; }
     G.queue.shift();
@@ -1806,6 +1869,11 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
     if (col) { (G.symLoss = G.symLoss || []).push({ pi: 1 - pi, color: col, bpMax: pd0.x.bpMax, turn: G.turnNo }); const r = COLOR_JP_E[col] + 'を指定。このステップ中、BP' + pd0.x.bpMax + '以下の相手のスピリットは' + COLOR_JP_E[col] + 'シンボル1つを失います'; lg(G, pi, '　' + pd0.name + ': ' + r); G.fx.push({ n: pd0.name, t: '', p: pi, r: [r] }); }
     else { lg(G, pi, '　' + pd0.name + ': 色を指定しない'); G.fx.push({ n: pd0.name, t: '', p: pi, r: ['色を指定しませんでした'] }); }
     G.queue[0].i++; runQueue(G); return;
+  }
+  if (pd0 && pd0.kind === 'ynx' && pd0.pi === pi && Array.isArray(iids)) {
+    G.pending = null; G.undo = null; const yes = iids.map(String).includes('yes'), it = G.queue[0];
+    if (yes) { lg(G, pi, '　' + pd0.name + ': 効果を使う'); runQueue(G); return; }
+    lg(G, pi, '　' + pd0.name + ': 効果を使わない'); G.fx.push({ n: pd0.name, t: '', p: pi, r: ['効果を使いませんでした'] }); if (it) { if (pd0.x && pd0.x.skipOp) it.i++; else G.queue.shift(); } runQueue(G); return;
   }
   const pd = G.pending; if (!pd || pd.pi !== pi || !Array.isArray(iids) || pd.kind === 'sumPay' || pd.kind === 'reveal' || pd.kind === 'order' || pd.kind === 'coreSel') return;
   const ids = [...new Set(iids.map(String))].filter(i => pd.cands.includes(i));
@@ -1953,7 +2021,7 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
         else if (a.verb === 'loseSym') { (G.symLoss = G.symLoss || []).push({ pi: pd.qi, color: c.def.color, bpMax: 999999, turn: G.turnNo, iid: i }); rs.push(nm + 'は、このステップ中、シンボル1つを失います'); }
         else if (a.verb === 'dmgCap1') { (G.dmgCap = G.dmgCap || []).push({ pi, iid: i, turn: G.turnNo }); rs.push('このターン中、自分のライフは' + nm + 'から1しか減らされません'); }
         else if (a.verb === 'open') { if (G.queue[0]) G.queue[0].acted = true; }
-        else if (a.verb === 'soulFromTrash') { const Pq = G.p[pd.qi]; let srcLoc = 'coreTrash'; let sc = Pq.coreTrash.find(x => x.soul); if (!sc && a.any) { sc = Pq.reserve.find(x => x.soul) || null; if (sc) srcLoc = 'reserve'; if (!sc) { const oc = Pq.field.find(x => x !== c && x.cores.some(y => y.soul)); sc = oc ? oc.cores.find(y => y.soul) : null; if (oc) srcLoc = 'card:' + oc.iid; } } if (sc && moveCore(G, pd.qi, sc.id, { zone: 'card', iid: i })) { if (G.queue[0]) G.queue[0].acted = true; rs.push('[ソウルコア]を' + nm + 'に置きました'); G.evs.push({ t: 'coreAdd', p: pd.qi, iid: i, n: 1, from: srcLoc, soul: true }); } else rs.push('置ける[ソウルコア]がありません'); }
+        else if (a.verb === 'soulFromTrash') { const Pq = G.p[pd.qi]; let srcLoc = 'coreTrash'; let sc = Pq.coreTrash.find(x => x.soul); if (!sc && a.any) { const oc = Pq.field.find(x => x !== c && x.cores.some(y => y.soul)); sc = oc ? oc.cores.find(y => y.soul) : null; if (oc) srcLoc = 'card:' + oc.iid; } /* フィールド(他のカードの上)/トラッシュのみ。リザーブは不可 */ if (sc && moveCore(G, pd.qi, sc.id, { zone: 'card', iid: i })) { if (G.queue[0]) G.queue[0].acted = true; rs.push('[ソウルコア]を' + nm + 'に置きました'); G.evs.push({ t: 'coreAdd', p: pd.qi, iid: i, n: 1, from: srcLoc, soul: true }); } else rs.push('置ける[ソウルコア]がありません'); }
         else if (a.verb === 'coreSel') { const cn2 = a.total ? Math.max(1, Math.floor(a.total / ids.length)) : a.perKwN ? G.p[pi].field.filter(x => x.def.type === 'spirit' && matchT(G, pi, pi, x, { kw: a.perKwN })).length : (a.n || 1); if (cn2 > 0) jobs.push({ qi: pd.qi, iid: i, choose: true, keep: a.keep != null ? a.keep : null, leave: a.leave != null ? a.leave : null, n: cn2 + (a.perEx && G.queue[0] && G.queue[0].ctx && G.queue[0].ctx.excludedEx ? G.queue[0].ctx.excludedEx.length : 0) }); }
       }
     });
@@ -2050,23 +2118,25 @@ function startAttack(G, pi, k) {
   }));
   runQueue(G);
 }
-function mill(G, qi, n, src) {
+function mill(G, qi, n, src, mo) {
   const P = G.p[qi], cards = []; G.lastMill = { turn: G.turnNo, sp: false };
   while (n-- > 0 && P.deck.length) { const c = P.deck.pop(); P.trash.push(c); cards.push(c); if (c.def.type === 'spirit') G.lastMill.sp = true; (G.discards = G.discards || []).push({ turn: G.turnNo, p: qi, iid: c.iid, id: c.def.id, name: c.def.name, type: c.def.type, ex: !!c.def.symbols.ex, color: c.def.color, src }); }
-  if (cards.length) { G.evs.push({ t: 'mill', p: qi, cards: cards.map(c => ({ iid: c.iid, id: c.def.id, name: c.def.name, color: c.def.color })) }); lg(G, qi, '「' + src + '」の効果: デッキの上から' + cards.length + '枚を破棄(' + cards.map(c => '「' + c.def.name + '」').join('') + ')'); G.fx.push({ n: src, t: '', p: 1 - qi, r: ['相手のデッキの上から' + cards.length + '枚を破棄'], quick: true }); }
+  if (cards.length) { G.evs.push({ t: 'mill', p: qi, src, note: (mo && mo.note) || '', sep: !!(mo && mo.sep), cards: cards.map(c => ({ iid: c.iid, id: c.def.id, name: c.def.name, color: c.def.color })) }); lg(G, qi, '「' + src + '」の効果: デッキの上から' + cards.length + '枚を破棄(' + cards.map(c => '「' + c.def.name + '」').join('') + ')'); G.fx.push({ n: src, t: '', p: 1 - qi, r: ['相手のデッキの上から' + cards.length + '枚を破棄'], quick: true }); }
 }
 function quakeResolve(G, b) {
   const A = b.gone ? null : G.p[b.pi].field.find(x => x.iid === b.iid); if (!A) return;
-  const o = 1 - b.pi; let n = 0;
+  const o = 1 - b.pi; let n = 0; const qParts = [];
   A.def.effects.forEach(e => { if (e.timing.kind === 'static' && e.timing.when === 'attacking' && effectActive(A, e)) e.ops.forEach(op => { if (op.op === 'quake') n += op.n | 0; }); });
   if (!n) return;
-  G.p[b.pi].field.forEach(K => K.def.effects.forEach(e => { if (e.timing.kind === 'static' && e.timing.when === 'step' && e.timing.step === 'attack' && e.timing.turn === 'you' && G.turn === b.pi && effectActive(K, e)) e.ops.forEach(op => { if (op.op === 'quakePlus') n += op.n | 0; }); }));
+  const qBase = n;
+  G.p[b.pi].field.forEach(K => K.def.effects.forEach(e => { if (e.timing.kind === 'static' && e.timing.when === 'step' && e.timing.step === 'attack' && e.timing.turn === 'you' && G.turn === b.pi && effectActive(K, e)) e.ops.forEach(op => { if (op.op === 'quakePlus') { n += op.n | 0; qParts.push('「' + K.def.name + '」の効果 +' + (op.n | 0)); } }); }));
   // 桜樹結界など: 待機中の「地鳴+N」を先に反映する(地鳴の破棄より前に処理)
   for (let qi2 = (G.queue || []).length - 1; qi2 >= 0; qi2--) { const it2 = G.queue[qi2]; if (it2 && it2.ops && it2.i === 0 && it2.ops.some(o => o.op === 'quakeBoost')) { G.queue.splice(qi2, 1); it2.ops.forEach(o => { if (o.op === 'quakeBoost') { b.quakeAdd = (b.quakeAdd | 0) + (o.n | 0); lg(G, it2.pi, '「' + it2.name + '」の効果: このバトル中、「' + A.def.name + '」の地鳴を+' + (o.n | 0) + '枚'); G.fx.push({ n: it2.name, t: '', p: it2.pi, r: ['「' + A.def.name + '」の地鳴を+' + (o.n | 0) + '枚'], quick: true }); } }); } }
-  n += b.quakeAdd | 0;
+  n += b.quakeAdd | 0; if (b.quakeAdd) qParts.push('他の効果 +' + (b.quakeAdd | 0));
   const bl = b.blocker ? G.p[o].trash.find(x => x.iid === b.blocker) : null;
-  if (bl) n = Math.max(0, n - bl.def.cost);
-  if (n) { const n0 = (G.discards || []).length; mill(G, o, n, A.def.name); if (G.turn === b.pi && G.step === 'attack' && (G.discards || []).slice(n0).some(x => x.ex)) G.p[b.pi].field.forEach(X => X.def.effects.forEach((e, ei) => { if (e.timing.kind === 'trigger' && e.timing.event === 'quakeEx' && effectActive(X, e)) { if (e.timing.limit === 'turn') { if (X.used && X.used[ei] === 't' + G.turnNo) return; (X.used = X.used || {})[ei] = 't' + G.turnNo; } enqueue(G, b.pi, X, e, { event: 'quakeEx' }); } })); if (G.turn === b.pi && G.step === 'attack' && (G.discards || []).length > n0) G.p[b.pi].field.forEach(X => X.def.effects.forEach((e, ei) => { if (X.iid !== A.iid && X.tapped && e.timing.kind === 'trigger' && e.timing.event === 'quakeOther' && effectActive(X, e)) { if (e.timing.limit === 'turn') { if (X.used && X.used[ei] === 't' + G.turnNo) return; (X.used = X.used || {})[ei] = 't' + G.turnNo; } enqueue(G, b.pi, X, e, { event: 'quakeOther' }); } })); } else lg(G, b.pi, '「' + A.def.name + '」の地鳴: 破棄する枚数は0枚');
+  if (bl) { n = Math.max(0, n - bl.def.cost); qParts.push('ブロックしたスピリットのコスト -' + bl.def.cost); }
+  const qNote2 = '【地鳴】' + qBase + '枚' + qParts.map(x => ' / ' + x).join('') + (qParts.length ? ' = ' + n + '枚' : '');
+  if (n) { const n0 = (G.discards || []).length; mill(G, o, n, A.def.name, { note: qNote2 }); if (G.turn === b.pi && G.step === 'attack' && (G.discards || []).slice(n0).some(x => x.ex)) G.p[b.pi].field.forEach(X => X.def.effects.forEach((e, ei) => { if (e.timing.kind === 'trigger' && e.timing.event === 'quakeEx' && effectActive(X, e)) { if (e.timing.limit === 'turn') { if (X.used && X.used[ei] === 't' + G.turnNo) return; (X.used = X.used || {})[ei] = 't' + G.turnNo; } enqueue(G, b.pi, X, e, { event: 'quakeEx' }); } })); if (G.turn === b.pi && G.step === 'attack' && (G.discards || []).length > n0) G.p[b.pi].field.forEach(X => X.def.effects.forEach((e, ei) => { if (X.iid !== A.iid && X.tapped && e.timing.kind === 'trigger' && e.timing.event === 'quakeOther' && effectActive(X, e)) { if (e.timing.limit === 'turn') { if (X.used && X.used[ei] === 't' + G.turnNo) return; (X.used = X.used || {})[ei] = 't' + G.turnNo; } enqueue(G, b.pi, X, e, { event: 'quakeOther' }); } })); } else lg(G, b.pi, '「' + A.def.name + '」の地鳴: 破棄する枚数は0枚');
 }
 function endBattle(G) {
   const b = G.battle;
@@ -2242,6 +2312,7 @@ function abilityPay(G, pi, k, ei, disc) {
   let paySub = null; if (c.pay) { paySub = penSub(G, pi, k); if (paySub) { paySub.tapped = true; nexusTapEvt(G, pi, paySub); lg(G, pi, '　「' + paySub.def.name + '」を疲労させ、1コストを支払ったものとして扱った'); } }
   if (c.pay) { const take = P.reserve.slice().sort((x, y) => (x.soul ? 1 : 0) - (y.soul ? 1 : 0)).slice(0, c.pay - (paySub ? 1 : 0)); take.forEach(x => moveCore(G, pi, x.id, { zone: 'coreTrash' })); }
   if (e.timing.limit) { k.used = k.used || {}; k.used[ei] = e.timing.limit === 'battle' ? 'b' + G.battleNo : 't' + G.turnNo; }
+  if (c.pay) { G.fx.push({ n: k.def.name, t: '', p: pi, r: ['コスト: ' + (paySub ? '「' + paySub.def.name + '」を疲労(1コスト分)' : '') + ((c.pay - (paySub ? 1 : 0)) > 0 ? 'リザーブのコア' + (c.pay - (paySub ? 1 : 0)) + '個をトラッシュへ支払いました' : '')], quick: true }); }
   lg(G, pi, '「' + k.def.name + '」の【起動】を使用' + (c.pay ? '(コア' + c.pay + '個をトラッシュへ)' : '') + (c.tapSelf ? '(疲労)' : '') + (tnx ? '(「' + tnx.def.name + '」を疲労)' : '') + (disc ? '(手札を破棄)' : ''));
   enqueue(G, pi, k, e, { event: 'ability', flash: e.timing.step === 'flash' });
   if (e.keyword === 'amp') G.p[pi].field.forEach(X => X.def.effects.forEach((e2, ei2) => {   // 【増幅】を発揮した時
@@ -2510,6 +2581,7 @@ function cpuDecide(G) {
   if (G.mull) return G.mull.order[G.mull.idx] === i ? { k: 'mulligan', yes: cpuStrong(G, i) ? cpuWantMull(G, i) : false } : null;
   if (G.pending) {
     const pd = G.pending; if (pd.pi !== i) return null;
+    if (pd.kind === 'ynx') return { k: 'choose', iids: ['yes'] };
     if (pd.kind === 'colorPick') { const cnt = {}; G.p[1 - i].field.forEach(k => { if (k.def.type === 'spirit') cnt[k.def.color] = (cnt[k.def.color] || 0) + 1; }); const best = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0]; return { k: 'choose', iids: best ? [best] : [] }; }
     if (pd.kind === 'sumPay') return { k: 'sumSkip' };
     if (pd.kind === 'order') return { k: 'orderPick', id: pd.x.opts[0].id };
@@ -2603,7 +2675,7 @@ function effectActive(k, e) {
   return !!li && e.levels.includes(li.lv);
 }
 const EVENT_JP = { attack: 'アタック時', block: 'ブロック時', summon: '召喚時', destroyed: '破壊時', endstep: '自分のエンドステップ', magicUsed: 'マジック使用時', oppDestroy: '相手のスピリットを破壊した時', bpWin: 'BP比べで勝った時', attackstart: 'アタックステップ開始時', atkStart: '自分のアタックステップ開始時', bp0Kill: 'BP0の相手スピリットを破壊した時', allyDestroyed: '雷竜が破壊された時', oppAttack: '相手のスピリットがアタックした時', lifeHit: '相手のライフを減らした時', ampBp: '増幅スピリットのBPが8000以上になった時', drawStep: '自分のドローステップ', allyAttack: '自分のスピリットがアタックした時', allyBattleEnd: '自分のスピリットのバトル終了時', allyLifeHit: '自分のスピリットが相手のライフを減らした時', lifeLoss: '相手によって自分のライフが減った時', allyBpDestroyed: '自分のスピリットがBP比べで破壊された時', battleEnd: 'バトル終了時', allySummon: '自分のスピリットが召喚された時', ampMagicKill: '雷竜のマジックで相手のスピリットを破壊した時', blocked: '自分のスピリットがブロックされた時', mainStart: '自分のメインステップ開始時', oppAttackStart: '相手のアタックステップ開始時', quakeEx: '自分の地鳴でEXシンボルを持つカードを破棄した時', quakeOther: '他の自分の地鳴で相手のデッキを破棄した時', selfTapped: 'このカードが疲労した時', allyDestroyedAny: '自分のスピリットが破壊された時', selfUntapped: 'このスピリットが回復した時', lifeUp: '自分のライフが増えた時' };
-const KW_JP = { flashSummon: 'フラッシュ『相手のアタックステップ』', inheritance: '継召', shinkai: '真界放', soulmagic: 'ソウルマジック:[赤]', clash: '激突', amp: '増幅', puppet: '操霊', flow: '水流', quake: '地鳴', spell: '魔述', camo: '迷彩', todo: '未実装' };
+const KW_JP = { flashSummon: 'フラッシュ『相手のアタックステップ』', inheritance: '継召', shinkai: '真界放', soulmagic: 'ソウルマジック:[赤]', clash: '激突', amp: '増幅', puppet: '操霊', flow: '水流', quake: '地鳴', spell: '魔述', camo: '迷彩', todo: '未実装', levelup: 'レベルアップ', fchange: 'Fチェンジ', fc5: '', costRule: '', allYellow: '', atkCap1: '', bp0Bottom: '' };
 function timingLabel(t) {
   if (t.kind === 'text') return t.label || '効果';
   if (t.when === 'attacking') return 'アタック中';
@@ -3081,20 +3153,141 @@ $('bMatch').onclick = async () => {
   asHost(id, 0);
 };
 // 同じ合言葉で先に待っていた側が部屋になり、後から入った側が参加する(利用者はホスト/ゲストを意識しない)
-function asHost(id, n) {
+function asHost(id, n, fr) {
   isHost = true; if (peer) { try { peer.destroy(); } catch (e) { } }
   peer = new Peer(id);
-  peer.on('open', () => say('同じ合言葉の相手を待っています…(この画面を開いたままにしてください)'));
-  peer.on('connection', c => { if (dc && dc.open) { c.close(); return; } dc = c; setupDC(); });
-  peer.on('error', e => { if (e.type === 'unavailable-id' && n < 3) asGuest(id, n + 1); else say('エラー: ' + e.type); });
+  peer.on('open', () => { if (fr) { say('部屋を作りました。参加する人を待っています…(この画面を開いたままにしてください)'); freeReg(); } else say('同じ合言葉の相手を待っています…(この画面を開いたままにしてください)'); });
+  peer.on('connection', c => { if (dc && dc.open) { c.close(); return; } if (fr) freeCancelRoom(true); dc = c; setupDC(); });
+  peer.on('error', e => {
+    if (e.type === 'unavailable-id' && fr && n < 5) { const nid = 'bsprac-f-' + Math.random().toString(36).slice(2, 10); if (free.mine) free.mine.id = nid; asHost(nid, n + 1, true); }
+    else if (e.type === 'unavailable-id' && n < 3) asGuest(id, n + 1); else say('エラー: ' + e.type);
+  });
 }
-function asGuest(id, n) {
+function asGuest(id, n, fr) {
   isHost = false; if (peer) { try { peer.destroy(); } catch (e) { } }
-  say('相手を探しています…');
+  say(fr ? '部屋に入っています…' : '相手を探しています…');
   peer = new Peer();
   peer.on('open', () => { lastRoom = id; dc = peer.connect(id, { reliable: true, serialization: 'json' }); setupDC(); });
-  peer.on('error', e => { if (e.type === 'peer-unavailable' && n < 3) setTimeout(() => asHost(id, n + 1), 800); else say('エラー: ' + e.type); });
+  peer.on('error', e => {
+    if (fr && e.type === 'peer-unavailable') { say('この部屋はもう閉じられていました。一覧を更新します'); try { peer.destroy(); } catch (x) { } peer = null; lastRoom = null; free.joining = false; freeStart(); freeAsk(); return; }
+    if (e.type === 'peer-unavailable' && n < 3) setTimeout(() => asHost(id, n + 1), 800); else { free.joining = false; say('エラー: ' + e.type); }
+  });
 }
+/* --- フリー対戦(合言葉なし): 募集中の部屋の一覧 ---
+   固定IDの「ロビー係」を、最初に画面を開いた人が受け持つ。ほかの人はそこへつないで一覧をもらう。受け持ちの人が抜けたら、次の人が引き継ぐ。 */
+const HUB_ID = 'bsprac-free-hub-v1', FREE_MAX = 8;
+const free = { peer: null, hub: false, conns: new Map(), rooms: new Map(), link: null, mine: null, list: [], shown: [], stopped: true, timer: null, joining: false, got: false };
+const freeSay = m => { };   // 部屋がある時だけ一覧を表示する(状態の文言は出さない)
+const freeSnap = () => [...free.rooms.values()].map(r => ({ id: r.id, name: r.name, msg: r.msg }));
+function hubBroadcast() { const rs = freeSnap(); free.conns.forEach(c => { try { if (c.open) c.send({ t: 'rooms', rooms: rs }); } catch (e) { } }); freeGotRooms(rs); }
+function hubHandle(c, m) {
+  if (!m || typeof m !== 'object') return;
+  if (m.t === 'reg' && typeof m.id === 'string') { free.rooms.set(m.id.slice(0, 40), { id: m.id.slice(0, 40), name: str(m.name, 12) || 'プレイヤー', msg: str(m.msg, 24) }); c._room = m.id; hubBroadcast(); }
+  else if (m.t === 'unreg') { free.rooms.delete(String(m.id)); hubBroadcast(); }
+  else if (m.t === 'list') { try { c.send({ t: 'rooms', rooms: freeSnap() }); } catch (e) { } }
+}
+function freeStart() {
+  if (!free.stopped || typeof Peer === 'undefined' || free.joining) return;
+  free.stopped = false; free.got = false; freeSay('ロビーにつないでいます…'); freeTryHub();
+}
+function freeStop() {
+  free.stopped = true; clearTimeout(free.timer);
+  const p = free.peer; free.peer = null; free.hub = false; free.link = null; free.conns.clear(); free.rooms.clear();
+  try { if (p) p.destroy(); } catch (e) { }
+  free.list = []; free.shown = []; freeRender();
+}
+function freeRetry(ms) { if (free.stopped) return; const p = free.peer; free.peer = null; free.hub = false; free.link = null; free.conns.clear(); free.rooms.clear(); try { if (p) p.destroy(); } catch (e) { } clearTimeout(free.timer); free.timer = setTimeout(freeTryHub, ms || (1500 + Math.random() * 2500)); }
+function freeTryHub() {
+  if (free.stopped || free.peer) return;
+  let p; try { p = new Peer(HUB_ID); } catch (e) { return; }
+  free.peer = p;
+  p.on('open', () => {
+    if (free.peer !== p) return; free.hub = true; freeSay('ロビーに接続しました(募集中の部屋を表示します)');
+    if (free.mine && peer && !peer.destroyed) free.rooms.set(free.mine.id, { id: free.mine.id, name: free.mine.name, msg: free.mine.msg });
+    hubBroadcast();
+  });
+  p.on('connection', c => {
+    free.conns.set(c.peer, c);
+    c.on('open', () => { try { c.send({ t: 'rooms', rooms: freeSnap() }); } catch (e) { } });
+    c.on('data', m => hubHandle(c, m));
+    c.on('close', () => { free.conns.delete(c.peer); if (c._room) free.rooms.delete(c._room); hubBroadcast(); });
+    c.on('error', () => { });
+  });
+  p.on('disconnected', () => { try { if (free.peer === p && !p.destroyed) p.reconnect(); } catch (e) { } });
+  p.on('error', e => {
+    if (free.peer !== p) return;
+    if (e.type === 'unavailable-id') { try { p.destroy(); } catch (x) { } free.peer = null; freeJoinHub(); }
+    else freeRetry();
+  });
+}
+function freeJoinHub() {
+  if (free.stopped || free.peer) return;
+  let p; try { p = new Peer(); } catch (e) { return; }
+  free.peer = p; let c = null;
+  const giveUp = setTimeout(() => { if (free.peer === p && !(c && c.open)) freeRetry(); }, 9000);
+  p.on('open', () => {
+    if (free.peer !== p) return;
+    c = p.connect(HUB_ID, { reliable: true, serialization: 'json' });
+    c.on('open', () => { if (free.peer !== p) return; clearTimeout(giveUp); free.link = c; freeSay('ロビーに接続しました(募集中の部屋を表示します)'); if (free.mine) freeReg(); c.send({ t: 'list' }); });
+    c.on('data', m => { if (m && m.t === 'rooms' && Array.isArray(m.rooms)) freeGotRooms(m.rooms); });
+    c.on('close', () => { if (free.peer === p) freeRetry(800 + Math.random() * 1500); });
+    c.on('error', () => { });
+  });
+  p.on('error', e => { if (free.peer !== p) return; clearTimeout(giveUp); freeRetry(); });
+  p.on('disconnected', () => { try { if (free.peer === p && !p.destroyed) p.reconnect(); } catch (e) { } });
+}
+function freeAsk() { try { if (free.link && free.link.open) free.link.send({ t: 'list' }); else if (free.hub) hubBroadcast(); } catch (e) { } }
+function freeReg() {
+  const m = free.mine; if (!m) return;
+  if (free.hub) { free.rooms.set(m.id, { id: m.id, name: m.name, msg: m.msg }); hubBroadcast(); }
+  else if (free.link && free.link.open) { try { free.link.send({ t: 'reg', id: m.id, name: m.name, msg: m.msg }); } catch (e) { } }
+}
+function freeUnreg() {
+  const m = free.mine; if (!m) return;
+  if (free.hub) { free.rooms.delete(m.id); hubBroadcast(); }
+  else if (free.link && free.link.open) { try { free.link.send({ t: 'unreg', id: m.id }); } catch (e) { } }
+}
+function freeCancelRoom(started) {
+  freeUnreg(); free.mine = null;
+  if (!started) { const pr = peer; peer = null; isHost = false; try { if (pr) pr.destroy(); } catch (e) { } say(''); }
+  freeButtons();
+}
+function freeButtons() { const b = $('bFreeMake'); if (b) b.textContent = free.mine ? '募集をやめる' : '部屋を作る'; }
+function freeGotRooms(rs) {
+  free.got = true; free.list = (Array.isArray(rs) ? rs : []).filter(r => r && typeof r.id === 'string' && !(free.mine && r.id === free.mine.id)).slice(0, 200);
+  const ids = new Set(free.list.map(r => r.id)), keep = free.shown.filter(i => ids.has(i));   // いま見えている部屋は、残っていればそのまま
+  const rest = free.list.map(r => r.id).filter(i => !keep.includes(i));
+  for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
+  free.shown = keep.concat(rest).slice(0, FREE_MAX); freeRender();
+}
+function freeShuffle() {
+  const ids = free.list.map(r => r.id); for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+  free.shown = ids.slice(0, FREE_MAX); freeRender(); freeAsk();
+}
+function freeRender() {
+  const box = $('freeList'); if (!box) return;
+  const me = free.mine ? '<div class="frm mine"><div class="fn">' + esc(free.mine.name) + '(あなた)</div><div class="fm">' + esc(free.mine.msg || '(ひとことなし)') + '</div><button class="sec" disabled>募集中…</button></div>' : '';
+  const cards = free.shown.map(i => free.list.find(r => r.id === i)).filter(Boolean).map(r => '<div class="frm"><div class="fn">' + esc(r.name) + '</div><div class="fm">' + esc(r.msg || '(ひとことなし)') + '</div><button data-fjoin="' + esc(r.id) + '">この部屋に入る</button></div>').join('');
+  box.innerHTML = me + cards; box.hidden = !(me || cards);
+  const sb = $('bFreeShuffle'); if (sb) sb.hidden = free.list.length <= FREE_MAX || !cards;
+}
+$('bFreeMake').onclick = () => {
+  if (free.mine) { freeCancelRoom(false); return; }
+  const d = getDeck(); if (!d) return;
+  myDefs = d.defs; matchTest = false; cpu = false; solo = false;
+  const id = 'bsprac-f-' + Math.random().toString(36).slice(2, 10);
+  free.mine = { id, name: getName(), msg: ($('freeMsg').value || '').trim().slice(0, 24) }; freeButtons(); freeRender();
+  asHost(id, 0, true);
+};
+$('bFreeShuffle').onclick = freeShuffle;
+$('freeList').addEventListener('click', e => {
+  const b = e.target.closest('[data-fjoin]'); if (!b) return;
+  const d = getDeck(); if (!d) return;
+  if (free.mine) freeCancelRoom(false);
+  myDefs = d.defs; matchTest = false; cpu = false; solo = false; free.joining = true;
+  asGuest(b.dataset.fjoin, 3, true);
+});
+freeRender(); setTimeout(() => { if (!$('lobby').hidden) freeStart(); }, 600);
 $('cpuLv').onchange = () => { try { localStorage.setItem('bs-cpulv', $('cpuLv').value); } catch (e) { } };
 $('bCpu').onclick = () => {
   const d = getDeck(); if (!d) return;
@@ -3114,7 +3307,7 @@ $('bSolo').onclick = () => {
   viewer = focusP() !== null ? focusP() : G.turn; pushState();
 };
 
-function showGame() { $('lobby').hidden = true; $('game').hidden = false; document.body.classList.add('ingame'); }
+function showGame() { freeStop(); free.joining = false; $('lobby').hidden = true; $('game').hidden = false; document.body.classList.add('ingame'); }
 let homeArm = 0;
 let resTimer = null, resShown = false, rematchMine = false, rematchOpp = false;
 function renderResult() {
@@ -3165,10 +3358,10 @@ function resetToHome(msg) {
   setTimeout(() => { try { if (c) c.close(); if (pr) pr.destroy(); } catch (e) { /* 無視 */ } }, 200);
   hideSheet(); $('banner').hidden = true; $('logpanel').hidden = true; logOpen = false; menuOpen = false;
   $('game').hidden = true; $('lobby').hidden = false; document.body.classList.remove('ingame');
-  say(msg || '');
+  say(msg || ''); free.mine = null; freeButtons(); free.joining = false; setTimeout(freeStart, 1200);
 }
 function startGame() {
-  G = newGame(myDefs, guestDefs, { first: $('first').value, test: false, mulligan: $('mullOn').checked });
+  G = newGame(myDefs, guestDefs, { first: $('first').value, test: DEV && !!($('testModeNet') && $('testModeNet').checked), mulligan: $('mullOn').checked });
   G.names = [getName(), guestName || 'ゲスト'];
   pushState();
 }
@@ -3355,14 +3548,24 @@ function faceEl(c, back) {
 }
 const rectC = el => { if (!el) return null; const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width }; };
 // 【地鳴】: トランプのように、デッキから1枚ずつ配られて表になり、少し見せてから、まとめてトラッシュへ払われる
+let millBusy = { until: 0, key: '', bottom: 0 };
 function millAnim(ev) {
   const key = ev.p === V.me ? 'me' : 'opp', n = ev.cards.length;
   const dk = rectC(document.querySelector('#' + key + ' .deck')) || { x: innerWidth - 60, y: innerHeight / 2 }, fd = rectC(document.querySelector('#' + key + ' .field')) || { x: innerWidth / 2, y: innerHeight / 2, w: 600 };
   const tp = trashPt(key) || dk, perRow = Math.max(3, Math.floor(((fd.w || 600) - 24) / 62)), rows = Math.ceil(n / perRow), DEAL = 190, FLIP = 160, HOLD = 1500, SWEEP = 650;
   const total = 250 + (n - 1) * DEAL + 520 + FLIP * 2 + HOLD + SWEEP + (n - 1) * 70;
   holdTrash(key, ev.cards.map(c => c.iid), total);
+  // 地鳴の破棄が表示中なら、効果による別の破棄(マンデアなど)はその下に、枠つきで並べる
+  const nowT = performance.now(), shiftY = ev.sep && millBusy.until > nowT && millBusy.key === key ? millBusy.bottom + 70 - fd.y + (rows - 1) * 42 : 0;
+  millBusy = { until: nowT + total, key, bottom: fd.y + shiftY + (rows - 1) * 42 + 38 };
+  { const topY = fd.y + shiftY - (rows - 1) * 42, wid = Math.min(perRow, n) * 62 + 16, cap = ev.sep ? '「' + (ev.src || '') + '」の効果で破棄' : (ev.note || '');
+    if (cap || ev.sep) {
+      const box = document.createElement('div'); box.className = 'millbox' + (ev.sep ? ' sep' : ''); box.style.cssText = 'position:fixed;z-index:9990;pointer-events:none;left:' + (fd.x - wid / 2) + 'px;top:' + (topY - 46) + 'px;width:' + wid + 'px;height:' + (rows * 84 + 8) + 'px;' + (ev.sep ? 'border:2px dashed #ffd54a;border-radius:10px;background:rgba(255,213,74,.08);' : '');
+      const lab = document.createElement('div'); lab.className = 'millcap'; lab.textContent = cap; lab.style.cssText = 'position:absolute;left:50%;transform:translateX(-50%);bottom:100%;margin-bottom:3px;white-space:nowrap;font-size:12px;font-weight:700;color:#fff;background:rgba(20,24,40,.88);border:1px solid #ffd54a;border-radius:8px;padding:2px 8px;max-width:92vw;overflow:hidden;text-overflow:ellipsis';
+      box.appendChild(lab); document.body.appendChild(box); setTimeout(() => box.remove(), total);
+    } }
   ev.cards.forEach((c, i) => {
-    const rw = Math.floor(i / perRow), cnt = Math.min(perRow, n - rw * perRow), el = faceEl(c, true), ex = fd.x + ((i % perRow) - (cnt - 1) / 2) * 62, ey = fd.y + (rw - (rows - 1) / 2) * 84, rot = 0;
+    const rw = Math.floor(i / perRow), cnt = Math.min(perRow, n - rw * perRow), el = faceEl(c, true), ex = fd.x + ((i % perRow) - (cnt - 1) / 2) * 62, ey = fd.y + shiftY + (rw - (rows - 1) / 2) * 84, rot = 0;
     const t0 = 250 + i * DEAL, W = 27, H = 38;
     const at = (x, y, r, sx) => 'translate(' + (x - W) + 'px,' + (y - H) + 'px) rotate(' + r + 'deg) scaleX(' + sx + ')';
     const a1 = el.animate([{ transform: at(dk.x, dk.y, 0, 1), opacity: 0 }, { transform: at(dk.x, dk.y, 0, 1), opacity: 1, offset: .08 }, { transform: at(ex, ey, rot, 1), opacity: 1 }], { duration: 520, delay: t0, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'both' });
@@ -3702,6 +3905,7 @@ function renderRev() {
     else ctl = '<span class="rvh">対象のカードではないため、デッキの下に戻します…</span>';
     if (mine && auto && revAutoKey !== key) { revAutoKey = key; const ids = x.cands.slice(0, x.takeN || 1); setTimeout(() => { const p2 = V && V.pending; if (revKey === key && p2 && p2.kind === 'reveal' && p2.x.phase === 'pick') doAct({ k: 'revTake', iids: ids }); }, 2000); }
   }
+  else if (mine && x.phase === 'pick' && x.all) ctl = x.cands.length ? '<span class="rvh">' + x.cands.map(i => { const c = x.cards.find(c => c.iid === i); return '「' + esc(c ? c.def.name : '') + '」'; }).join('') + 'を手札に加えます</span><button data-rvall="1">OK</button>' : '<span class="rvh">' + esc(x.desc || '対象のカード') + 'はありません</span><button data-rvnone="1">OK</button>';
   else if (mine && x.phase === 'pick') ctl = (tn > 1 ? '<button data-rvpick="1"' + (revSel.length === tn ? '' : ' disabled') + '>決定(' + revSel.length + '/' + tn + ')</button>' : '') + (x.optional || !x.cands.length ? '<button class="sec" data-rvnone="1">' + (x.take === 'trash' ? '破棄しない' : '加えない') + '</button>' : '') + '<span class="rvh">' + (x.cands.length ? esc(x.desc || '対象のカード') + 'を' + Math.min(x.takeN || 1, x.cands.length) + '枚選んでください(' + (x.take === 'trash' ? '破棄します' : '手札に加えます') + (x.rest === 'trash' ? '。残りは破棄' : '。残りはデッキの下へ') + ')' : '対象のカードはありません') + '</span>';
   else if (mine) ctl = '<span class="rvh">デッキの下に戻す順番を、<b>下から</b>1枚目→2枚目…の順にクリックしてください</span><button data-rvok="1"' + (revOrd.length === x.restIds.length ? '' : ' disabled') + '>この順で戻す</button><button class="sec" data-rvreset="1">やり直し</button>';
   else ctl = '<span class="rvh">' + (x.phase === 'pick' ? '相手が選んでいます…' : '相手が戻す順番を決めています…') + '</span>';
@@ -4041,15 +4245,33 @@ function symLabel(d) { const n = d.symbols.normal + (d.symbols.ex ? 1 : 0); retu
 const effHead = e => {
   const t = e.timing, lim = t.limit === 'turn' ? '〔ターン1回〕' : t.limit === 'battle' ? '〔バトル1回〕' : '';
   let main;
-  if (t.kind === 'keyword') main = e.keyword === 'camo' ? '【迷彩：' + ((e.ops && e.ops[0] && e.ops[0].n) || 1) + '】' : '《' + (KW_JP[e.keyword] || e.keyword) + '》';
+  if (t.kind === 'keyword' && KW_JP[e.keyword] === '') main = '';
+  else if (t.kind === 'keyword') main = e.keyword === 'camo' ? '【迷彩：' + ((e.ops && e.ops[0] && e.ops[0].n) || 1) + '】' : '《' + (KW_JP[e.keyword] || e.keyword) + '》';
   else if (t.label) main = t.label;
   else { const tl = timingLabel(t); main = (tl ? '『' + tl + '』' : '') + (t.kind === 'trigger' || t.kind === 'static' ? lim : ''); }
-  return [lvLabel(e.levels), e.shinkai ? '《真界放》' : '', e.keyword && t.kind !== 'keyword' && t.kind !== 'text' && t.kind !== 'ability' ? '【' + (KW_JP[e.keyword] || e.keyword) + '】' : '', main].filter(Boolean).join(' ');
+  return [lvLabel(e.levels), e.shinkai ? '《真界放》' : '', e.keyword && KW_JP[e.keyword] !== '' && t.kind !== 'keyword' && t.kind !== 'text' && t.kind !== 'ability' ? '【' + (KW_JP[e.keyword] || e.keyword) + '】' : '', main].filter(Boolean).join(' ');
 };
+// 効果の一覧表示: 本文が空の「ブロック時」などは、直前の同じ効果(アタック時)とまとめて「アタック/ブロック時」と表示する
+let pdropK = '', pdropT = 0;
+function pdropOn(pd) { const nk = pd && pd.x && pd.x.newIds && pd.x.newIds.length ? pd.name + pd.x.newIds.join() : ''; if (nk !== pdropK) { pdropK = nk; pdropT = Date.now(); } return !!nk && Date.now() - pdropT < 1100; }
+function effShow(d) {
+  const out = [];
+  d.effects.forEach((e, ei) => {
+    const prev = out[out.length - 1];
+    if (!e.text && prev && JSON.stringify(prev.e.ops) === JSON.stringify(e.ops) && JSON.stringify(prev.e.levels) === JSON.stringify(e.levels)) {
+      const pe = prev.e.timing.event, ne = e.timing.event;
+      if ((pe === 'attack' && ne === 'block') || (pe === 'allyAttack' && ne === 'allyBlock')) prev.head = effHead(prev.e).replace('アタック', 'アタック/ブロック');
+      return;
+    }
+    if (!e.text && e.timing.kind !== 'keyword' && prev) return;   // 本文のない補助的な効果は表示しない
+    out.push({ e, ei, head: effHead(e) });
+  });
+  return out;
+}
 function effectsPlain(d) {
   if (hasNoEffect(d)) return '';
   if (!d.effects.length) return '<div class="txt">' + esc(d.text || '').replace(/\n/g, '<br>') + '</div>';
-  return '<div class="txt">' + d.effects.map(e => '<div style="margin-bottom:5px"><b>' + rich(esc(effHead(e))) + '</b><br>' + rich(esc(e.text).replace(/\n/g, '<br>')) + '</div>').join('') + '</div>';
+  return '<div class="txt">' + effShow(d).map(x => '<div style="margin-bottom:5px"><b>' + rich(esc(x.head)) + '</b><br>' + rich(esc(x.e.text).replace(/\n/g, '<br>')) + '</div>').join('') + '</div>';
 }
 const glowOf = iid => !pay && !!((V.usable && ((V.usable.abil || []).some(x => x.startsWith(iid + ':')) || V.usable.hand.includes(iid) || V.usable.block.includes(iid) || V.usable.attack.includes(iid))) || (V.pending && V.pending.pi === V.me && V.pending.cands.includes(iid)));
 const fieldK = iid => V.you.field.find(k => k.iid === iid) || V.opp.field.find(k => k.iid === iid);
@@ -4075,7 +4297,7 @@ function promptHTML() {
       const zone = pd.kind === 'freeMagic' || pd.kind === 'costDiscard' || pd.kind === 'handPick' || (pd.kind === 'sumPay' && pd.hand) ? 'hand' : 'trash', arr = (zone === 'hand' ? V.you[zone].filter(k => pd.cands.includes(k.iid)) : V.you[zone].filter(k => pd.cands.includes(k.iid)).slice().reverse()), nn = Math.min(pd.n, pd.cands.length);
       const ttl = pd.kind === 'sumPay' && pd.limbo ? '公開したカードを、カードをクリックして召喚/配置します(コストを支払います。しない場合は「発動しない」)' : pd.kind === 'sumPay' ? (pd.hand ? '手札から召喚するスピリットを選んでください(コストを支払います。しない場合は「発動しない」)' : 'トラッシュから召喚するスピリットを選んでください(条件に合うカードをすべて表示。コストを支払います)') : pd.kind === 'handPick' ? (pd.x.free ? '手札から、コストを支払わずに' + (pd.x.free.fc ? '召喚(Fチェンジ)' : '出す') + 'カードを選んでください(カードをタップして「決定」)' : pd.x.discard ? '破棄する手札を' + nn + '枚選んでください(カードをタップして「決定」)' : '手札の' + (pd.x.desc || '') + 'を' + nn + '枚まで選んで、相手に見せてデッキの下に戻します') : pd.kind === 'recover' ? (pd.field ? 'トラッシュから、コストを支払わずに配置するカードを' + nn + '枚選んでください(カードをタップして「決定」)' : 'トラッシュから手札に戻すカードを' + nn + '枚選んでください') : pd.kind === 'costDiscard' ? (pd.x.to === 'bottom' ? 'コスト: 相手に見せてデッキの下に戻す' : 'コスト: 破棄する') + (pd.x.desc || '') + '手札を' + nn + '枚選んでください' : '使用するマジックを選んでください(コストなし)';
       return R('<b class="hl">「' + esc(pd.name) + '」: ' + ttl + '</b>', true,
-        '<div class="dh">⠿ ドラッグで移動できます</div><div class="lrow pickrow">' + arr.map(k => '<div class="pickc' + (pickSel.has(k.iid) ? ' on' : '') + '" data-pickc="' + esc(k.iid) + '">' + (pickSel.has(k.iid) && nn > 1 ? '<span class="pnum">' + ([...pickSel].indexOf(k.iid) + 1) + '</span>' : '') + (pd.x && pd.x.newIds && pd.x.newIds.includes(k.iid) ? '<span class="pnew">いま引いた</span>' : '') + cardHTML(k, true, zone) + '</div>').join('') + '</div><div class="row2">' +
+        '<div class="dh">⠿ ドラッグで移動できます</div><div class="lrow pickrow">' + arr.map(k => '<div class="pickc' + (pickSel.has(k.iid) ? ' on' : '') + (pdropOn(pd) && pd.x.newIds.includes(k.iid) ? ' pdrop' : '') + '" data-pickc="' + esc(k.iid) + '">' + (pickSel.has(k.iid) && nn > 1 ? '<span class="pnum">' + ([...pickSel].indexOf(k.iid) + 1) + '</span>' : '') + (pd.x && pd.x.newIds && pd.x.newIds.includes(k.iid) ? '<span class="pnew">いま引いた</span>' : '') + cardHTML(k, true, zone) + '</div>').join('') + '</div><div class="row2">' +
         (pd.kind === 'recover' || pd.kind === 'costDiscard' || pd.kind === 'handPick' ? '<button data-pchoose="1"' + ((pd.upto ? pickSel.size >= 1 : pickSel.size === nn) ? '' : ' disabled') + '>決定(' + pickSel.size + '/' + nn + ')</button>' : '') +
         (pd.kind === 'handPick' ? (pd.opt ? '<button class="sec" data-pnone="1">' + (pd.x.free ? '出さない' : pd.x.discard ? '破棄しない' : '戻さない') + '</button>' : '') : pd.kind === 'costDiscard' ? '<button class="sec" data-pnone="1">やめる</button>' : pd.kind === 'recover' ? (pd.opt ? '<button class="sec" data-pnone="1">戻さない</button>' : '') : '<button class="sec" data-' + (pd.kind === 'sumPay' ? 'sumskip' : 'pnone') + '="1">' + (pd.kind === 'sumPay' ? '発動しない' : '使用しない') + '</button>') + '</div>', true);
     }
@@ -4097,7 +4319,7 @@ function promptHTML() {
     if (pd.kind === 'order') return R('<b class="hl">エンドステップ効果: 使う順番を選んでください(1つずつ処理します)</b>', true,
       '<div class="dh">⠿ ドラッグで移動できます</div><div class="ordl">' + pd.x.opts.map(o => '<button class="sec ordb" data-orderpick="' + esc(o.id) + '"><b>' + esc(o.name) + '</b><small>' + esc(o.text).replace(/\n/g, ' ') + '</small></button>').join('') + '</div>', true);
     if (pd.kind === 'reveal') return null;
-    if (pd.yn && !pd.camo && !pd.place) return R('<b class="hl">「' + esc(pd.name) + '」の効果を使いますか?</b>', true, '<div class="row2"><button data-pyes="' + esc(pd.cands[0]) + '">使う</button><button class="sec" data-pnone="1">使わない</button></div>');
+    if (pd.yn && !pd.camo && !pd.place) return R('<b class="hl">「' + esc(pd.name) + '」の効果を使いますか?</b>' + (pd.x && pd.x.q ? '<span class="fl">' + esc(pd.x.q) + '</span>' : ''), true, '<div class="row2"><button data-pyes="' + esc(pd.cands[0]) + '">使う</button><button class="sec" data-pnone="1">使わない</button></div>');
     const camoNeed = pd.camo ? [...pickSel].reduce((sm, i) => sm + (pd.camo[i] | 0), 0) : 0, camoOk = !pd.camo || sel.size === camoNeed;
     const camoBox = pd.camo ? '<div class="camoh ' + (camoOk ? 'ok' : '') + '"><b>迷彩</b> ' + Object.keys(pd.camo).map(i => { const k = V.opp.field.find(x => x.iid === i); return esc(k ? k.def.name : '?') + '(コア' + pd.camo[i] + '個)'; }).join('、') + '<br>' + (camoNeed ? '指定した迷彩のぶん、リザーブ/場のコアを<b>' + camoNeed + '個</b>タップで選んでください(トラッシュへ支払います)  選択中 ' + sel.size + '/' + camoNeed + (sel.size > camoNeed ? ' ※多すぎます' : '') : '迷彩のスピリットを指定する場合は、数だけコアを支払います') + '</div>' : '';
     const placeOk = !pd.place || (pickSel.size === 0 ? sel.size === 0 : sel.size >= pd.place.min);
@@ -4105,7 +4327,7 @@ function promptHTML() {
     const smT = pd.sumMax ? [...pickSel].reduce((sm, i) => { const k = V.opp.field.concat(V.you.field).find(x => x.iid === i); return sm + (k ? (pd.sumMax.k === 'cost' ? k.def.cost : (V.bps && V.bps[k.iid]) || 0) : 0); }, 0) : 0, smOk = !pd.sumMax || smT <= pd.sumMax.max;
     const okSel = (pd.upto ? pickSel.size >= 1 : pickSel.size === n) && camoOk && placeOk && smOk;
     return R('<b class="hl">' + (mv ? '「' + esc(pd.name) + '」: コアを置く' + (pd.fam ? '「' + esc(pd.fam) + '」の' : '') + 'スピリットを選んでください' + (pd.opt ? '(任意)' : '') : '「' + esc(pd.name) + '」の対象を' + (pd.upto ? n + '体まで' : n + '体') + '選んでください' + (pd.why ? '(' + esc(pd.why) + ')' : '') + (pd.opt && !pd.upto ? '(任意)' : '') + (pd.sumMax ? ' 合計' + (pd.sumMax.k === 'cost' ? 'コスト' : 'BP') + pd.sumMax.max + 'まで(今 ' + smT + (smOk ? '' : ' ✕多すぎます') + ')' : '')) + '</b><span>(' + pickSel.size + '/' + n + ')</span>', true,
-      camoBox + placeBox + '<div class="row2"><button data-pchoose="1"' + (okSel ? '' : ' disabled') + '>' + (pd.alt ? esc(pd.alt.base || '決定') : '決定') + '</button>' + (pd.alt ? '<button data-pchoose="1" data-alt="1"' + (okSel ? '' : ' disabled') + '>' + esc(pd.alt.label) + '</button>' : '') + (pd.opt ? '<button class="sec" data-pnone="1">指定しない</button>' : '') + (V.canUndo ? '<button class="sec" data-cancelcast="1">戻る</button>' : '') + '</div>');
+      camoBox + placeBox + '<div class="row2"><button data-pchoose="1"' + (okSel ? '' : ' disabled') + '>' + (pd.alt ? esc(pd.alt.base || '決定') : '決定') + '</button>' + (pd.alt ? '<button data-pchoose="1" data-alt="1"' + (okSel ? '' : ' disabled') + '>' + esc(pd.alt.label) + '</button>' : '') + (pd.opt ? '<button class="sec" data-pnone="1">' + (pd.place ? 'スピリット化しない(次へ)' : '指定しない') + '</button>' : '') + (V.canUndo ? '<button class="sec" data-cancelcast="1">戻る</button>' : '') + '</div>');
   }
   if (!b) return null;
   const A = fieldK(b.iid), who = pn(b.pi);
@@ -4239,11 +4461,11 @@ function effectsHTML(k) {
   const d = k.def, fk = k.iid && V ? findK(k.iid) : null, dim = !!(fk && fk.zone === 'field');   // 手札などでは薄くせず、場のカードだけレベルで薄くする
   if (hasNoEffect(d)) return '';
   if (!d.effects.length) return '<div class="txt">' + rich(esc(d.text || '(効果テキスト未入力)').replace(/\n/g, '<br>')) + '</div>';
-  return '<div class="txt">' + d.effects.map(e => {
-    const act = !dim || effectActive(k, e), real = effectActive(k, e);
-    const ei = d.effects.indexOf(e), ab = e.timing.kind === 'ability';
+  return '<div class="txt">' + effShow(d).map(xx => {
+    const e = xx.e, act = !dim || effectActive(k, e), real = effectActive(k, e);
+    const ei = xx.ei, ab = e.timing.kind === 'ability';
     const can = ab && V && V.usable && V.usable.abil && V.usable.abil.includes(k.iid + ':' + ei);
-    return '<div style="margin-bottom:6px' + (act ? '' : ';opacity:.45') + '"><b>' + rich(esc(effHead(e))) + '</b>' + (act ? '' : ' <small>(現在のレベルでは無効)</small>') + '<br>' + rich(esc(e.text).replace(/\n/g, '<br>')) + (ab && real && dim ? '<div style="margin-top:4px"><button ' + (can ? '' : 'disabled ') + 'data-abil="' + esc(k.iid) + ':' + ei + '">【起動】' + (e.timing.step === 'main' ? 'メイン' : 'フラッシュ') + 'で使う' + (e.cost && e.cost.pay ? '(コア' + e.cost.pay + '個)' : '') + '</button>' + (can ? '' : ' <small>(今は使えません)</small>') + '</div>' : '') + '</div>';
+    return '<div style="margin-bottom:6px' + (act ? '' : ';opacity:.45') + '"><b>' + rich(esc(xx.head)) + '</b>' + (act ? '' : ' <small>(現在のレベルでは無効)</small>') + '<br>' + rich(esc(e.text).replace(/\n/g, '<br>')) + (ab && real && dim ? '<div style="margin-top:4px"><button ' + (can ? '' : 'disabled ') + 'data-abil="' + esc(k.iid) + ':' + ei + '">【起動】' + (e.timing.step === 'main' ? 'メイン' : 'フラッシュ') + 'で使う' + (e.cost && e.cost.pay ? '(コア' + e.cost.pay + '個)' : '') + '</button>' + (can ? '' : ' <small>(今は使えません)</small>') + '</div>' : '') + '</div>';
   }).join('') + '</div>';
 }
 function payPreview(k) {
@@ -4405,12 +4627,22 @@ function handleClick(t) {
   if (t.closest('[data-leave]')) { leaveNow(); return; }
   if (t.closest('[data-psoulc]')) { toggleSoulPay(); return; }
   if (t.closest('[data-pass]')) { doAct({ k: 'pass' }); return; }
-  if (t.closest('[data-abil]')) { const [i, e] = t.closest('[data-abil]').dataset.abil.split(':'); hideSheet(); doAct({ k: 'ability', iid: i, ei: +e }); return; }
+  if (t.closest('[data-abil]')) {
+    const [i, e] = t.closest('[data-abil]').dataset.abil.split(':'); hideSheet();
+    const ak = V.you.field.find(x => x.iid === i), ae = ak && ak.def.effects[+e], pn0 = ae && ae.cost && ae.cost.pay | 0;
+    if (pn0) {   // コストの支払い: どこから払うかを見せて、確認してから使う
+      const rv = V.you.reserve.length; sheetActs = [];
+      showSheet('<h3>コストの支払い</h3><div class="txt">「' + esc(ak.def.name) + '」の【起動】を使います。<br>コスト: <b>リザーブのコア' + pn0 + '個</b>をトラッシュへ支払います。<br><span class="dim">リザーブ ' + rv + '個 → ' + Math.max(0, rv - pn0) + '個</span></div><div class="acts">' + sbtn('支払って使う', () => { hideSheet(); doAct({ k: 'ability', iid: i, ei: +e }); }) + sbtn('やめる', () => hideSheet(), true) + '</div>');
+      return;
+    }
+    doAct({ k: 'ability', iid: i, ei: +e }); return;
+  }
   if (t.closest('[data-noblock]')) { pickSel.clear(); doAct({ k: 'block', iid: null }); return; }
   if (t.closest('[data-doblock]')) { const i = [...pickSel][0]; pickSel.clear(); if (i) doAct({ k: 'block', iid: i }); return; }
   if (t.closest('[data-undoplay]')) { doAct({ k: 'undoPlay' }); return; }
   if (t.closest('[data-cancelcast]')) { pickSel.clear(); doAct({ k: 'cancelCast' }); return; }
   if (t.closest('[data-orderpick]')) { doAct({ k: 'orderPick', id: t.closest('[data-orderpick]').dataset.orderpick }); return; }
+  if (t.closest('[data-rvall]')) { const pd = V.pending; if (pd && pd.kind === 'reveal') doAct({ k: 'revTake', iids: pd.x.cands.slice() }); return; }
   if (t.closest('[data-rvpick]')) { const l = revSel.slice(); revSel = []; doAct({ k: 'revTake', iids: l }); return; }
   if (t.closest('[data-rvinfo]')) { const pd = V.pending, id = t.closest('[data-rvinfo]').dataset.rvinfo, c = pd && pd.x && pd.x.cards.find(c => c.iid === id); if (c) { showSheet(detailHTML({ iid: c.iid, def: c.def, cores: [], tapped: false }) + '<div class="acts"><button class="sub" data-close="1">閉じる</button></div>', COLOR_HEX[c.def.color]); $('sheet').style.zIndex = 80; } return; }
   if (t.closest('[data-rvret]')) { doAct({ k: 'revTake', iids: [], top: t.closest('[data-rvret]').dataset.rvret === 'top' }); return; }
@@ -4518,6 +4750,11 @@ document.addEventListener('pointerdown', e => {
     const z = el.dataset.zone; if (z !== 'hand' && z !== 'field') return;
     if (z === 'field' && !V.test) return;
     d = { kind: z, iid: el.dataset.card };
+  } else if ((el.dataset.core || el.dataset.cc) && V.pending && V.pending.place && V.pending.pi === V.me) {
+    // ネクサスをスピリット化する: コアをネクサスへドラッグして置く
+    const ids = el.dataset.core ? [el.dataset.core] : coresAt(el.dataset.cc).filter(c => !c.soul && !sel.has(c.id)).slice(0, 1).map(c => c.id);
+    if (!ids.length) return;
+    d = { kind: 'placecore', ids, loc: el.dataset.loc || el.dataset.cc || '' };
   } else if (el.dataset.core) {
     if (!canMoveCores()) return;
     const id = el.dataset.core;
@@ -4534,6 +4771,7 @@ document.addEventListener('pointerdown', e => {
 });
 function dragTargets(d) {
   if (d.kind === 'paycore') return [...document.querySelectorAll('[data-pzone]')];
+  if (d.kind === 'placecore') return [...document.querySelectorAll('#me [data-card]')].filter(el => V.pending && V.pending.cands.includes(el.dataset.card));
   if (d.kind === 'core') return [...document.querySelectorAll('#me [data-dest],#me [data-slot]')];
   if (d.kind === 'hand') return [...document.querySelectorAll(V.test ? '#me .field,#me .trash' : '#me .field')];
   return [...document.querySelectorAll('#me .trash,#hand')];
@@ -4542,6 +4780,7 @@ function targetAt(x, y, d) {
   for (const el of document.elementsFromPoint(x, y)) {
     if (!el.closest) continue;
     if (d.kind === 'paycore') { const z = el.closest('[data-pzone]'); if (z) return { type: 'pz', b: z.dataset.pzone, el: z }; continue; }
+    if (d.kind === 'placecore') { const c = el.closest('#me [data-card]'); if (c && V.pending && V.pending.cands.includes(c.dataset.card)) return { type: 'pnx', iid: c.dataset.card, el: c }; const s2 = el.closest('#me [data-slot]'); if (s2 && V.pending && V.pending.cands.includes(s2.dataset.slot)) return { type: 'pnx', iid: s2.dataset.slot, el: s2 }; continue; }
     if (d.kind === 'core') {
       const z = el.closest('#me [data-dest]'); if (z) return { type: 'zone', zone: z.dataset.dest, el: z };
       const s = el.closest('#me [data-slot]'); if (s) return { type: 'card', iid: s.dataset.slot, el: s };
@@ -4559,6 +4798,8 @@ function startDrag(d) {
   const g = document.createElement('div'); g.className = 'ghost';
   if (d.kind === 'paycore') {
     g.innerHTML = '<span class="' + (d.soul ? 'core' : 'cc') + '">' + (d.soul ? '★' : '1') + '</span>';
+  } else if (d.kind === 'placecore') {
+    g.innerHTML = '<span class="cc">' + d.ids.length + '</span>';
   } else if (d.kind === 'core') {
     const soul = d.ids.length === 1 && d.el.dataset.soul;
     g.innerHTML = '<span class="' + (soul ? 'core' : 'cc') + '">' + (soul ? '★' : d.ids.length) + '</span>';
@@ -4596,7 +4837,8 @@ document.addEventListener('pointerup', e => {
   endDrag(d);
   dragEndT = e.timeStamp;
   if (!t) return;
-  if (d.kind === 'paycore') { if (t.type === 'pz') payAdd(t.b, d.loc, d.soulId); }
+  if (d.kind === 'placecore') { if (t.type === 'pnx' && V.pending) { pickSel.clear(); pickSel.add(t.iid); d.ids.forEach(id => sel.add(id)); render(); } }
+  else if (d.kind === 'paycore') { if (t.type === 'pz') payAdd(t.b, d.loc, d.soulId); }
   else if (d.kind === 'core') {
     if (t.type === 'nodrop') { return; }
     moveCoresGuarded(d.ids, t.type === 'zone' ? { zone: t.zone } : { zone: 'card', iid: t.iid });
@@ -4611,6 +4853,8 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
+const APP_VER = 'v31 (2026/11/13)';
+{ const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
 function setDev(on) { DEV = on; document.body.classList.toggle('dev', on); $('devOff').hidden = on; $('devOn').hidden = !on; try { localStorage.setItem('bs-dev', on ? '1' : ''); } catch (e) { } }

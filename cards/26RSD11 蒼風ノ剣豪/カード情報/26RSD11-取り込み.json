@@ -1,0 +1,411 @@
+[
+ {
+  "id": "26RSD11-001",
+  "name": "リコペルン",
+  "reading": "",
+  "type": "spirit",
+  "color": "blue",
+  "family": [
+   "嵐土",
+   "森菜"
+  ],
+  "cost": 2,
+  "reduction": 1,
+  "symbols": {
+   "normal": 0,
+   "ex": true
+  },
+  "levels": [
+   {
+    "lv": 1,
+    "core": 1,
+    "bp": 1000
+   },
+   {
+    "lv": 2,
+    "core": 2,
+    "bp": 2000
+   }
+  ],
+  "text": "Lv2『破壊時』\n相手のデッキの上から2枚を破棄する。",
+  "effects": [
+   {
+    "levels": [
+     2
+    ],
+    "text": "相手のデッキの上から2枚を破棄する。",
+    "timing": {
+     "kind": "trigger",
+     "event": "destroyed"
+    },
+    "ops": [
+     {
+      "op": "mill",
+      "who": "opp",
+      "n": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "26RSD11-008",
+  "name": "シザーズ・ラエルス",
+  "reading": "",
+  "type": "spirit",
+  "color": "blue",
+  "family": [
+   "嵐土",
+   "暴脚"
+  ],
+  "cost": 8,
+  "reduction": 4,
+  "symbols": {
+   "normal": 1,
+   "ex": false
+  },
+  "levels": [
+   {
+    "lv": 1,
+    "core": 1,
+    "bp": 9000
+   },
+   {
+    "lv": 2,
+    "core": 3,
+    "bp": 11000
+   }
+  ],
+  "text": "《継召》\nトラッシュのEXシンボルを除外し軽減できる。\nLv1-2『アタック/ブロック時』\n相手のデッキの上から1枚を破棄する。スピリットカードを破棄したなら、このバトル中、このスピリットをBP+3000する。",
+  "keywords": [
+   "inheritance"
+  ],
+  "effects": [
+   {
+    "levels": [],
+    "timing": {
+     "kind": "keyword"
+    },
+    "keyword": "inheritance",
+    "ops": [],
+    "text": "トラッシュのEXシンボルを除外し軽減できる。"
+   },
+   {
+    "levels": [
+     1,
+     2
+    ],
+    "text": "相手のデッキの上から1枚を破棄する。スピリットカードを破棄したなら、このバトル中、このスピリットをBP+3000する。",
+    "timing": {
+     "kind": "trigger",
+     "event": "attack"
+    },
+    "ops": [
+     {
+      "op": "mill",
+      "who": "opp",
+      "n": 1
+     },
+     {
+      "op": "selfBp",
+      "amount": 3000,
+      "dur": "battle",
+      "cond": {
+       "millSpirit": true
+      }
+     }
+    ]
+   },
+   {
+    "levels": [
+     1,
+     2
+    ],
+    "text": "",
+    "timing": {
+     "kind": "trigger",
+     "event": "block"
+    },
+    "ops": [
+     {
+      "op": "mill",
+      "who": "opp",
+      "n": 1
+     },
+     {
+      "op": "selfBp",
+      "amount": 3000,
+      "dur": "battle",
+      "cond": {
+       "millSpirit": true
+      }
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "26RSD11-010",
+  "name": "桜樹結界",
+  "reading": "おうじゅけっかい",
+  "type": "nexus",
+  "color": "blue",
+  "family": [
+   "青樹",
+   "嵐土"
+  ],
+  "cost": 4,
+  "reduction": 2,
+  "symbols": {
+   "normal": 1,
+   "ex": false
+  },
+  "levels": [
+   {
+    "lv": 1,
+    "core": 0,
+    "bp": 0
+   },
+   {
+    "lv": 2,
+    "core": 2,
+    "bp": 0
+   }
+  ],
+  "text": "Lv1-2『相手のアタックステップ』【起動：フラッシュ】〔ターン1回〕\nブロックしていない系統：「青樹」/「嵐土」を持つ自分のスピリット1体を破壊する▶コスト3以下の相手のスピリット1体を指定する。それを破壊する。\nLv2『自分のアタックステップ』〔重複不可・ターン1回〕\n【地鳴】を持つ自分のスピリットのアタックによって相手のライフを減らした時、アタックしている自分のスピリット1体を指定する。このバトル中、それの【地鳴】で指定された枚数を+2枚する。",
+  "effects": [
+   {
+    "levels": [
+     1,
+     2
+    ],
+    "text": "ブロックしていない系統：「青樹」/「嵐土」を持つ自分のスピリット1体を破壊する▶コスト3以下の相手のスピリット1体を指定する。それを破壊する。",
+    "timing": {
+     "kind": "ability",
+     "step": "flash",
+     "label": "『相手のアタックステップ』【起動：フラッシュ】〔ターン1回〕",
+     "limit": "turn"
+    },
+    "ops": [
+     {
+      "op": "act",
+      "target": {
+       "famAny": [
+        "青樹",
+        "嵐土"
+       ],
+       "state": "notBlocking",
+       "who": "you",
+       "type": "spirit",
+       "count": 1,
+       "choose": true
+      },
+      "acts": [
+       {
+        "verb": "destroy"
+       }
+      ]
+     },
+     {
+      "op": "act",
+      "target": {
+       "costMax": 3,
+       "who": "opp",
+       "type": "spirit",
+       "count": 1,
+       "choose": true
+      },
+      "acts": [
+       {
+        "verb": "destroy"
+       }
+      ],
+      "needActed": true
+     }
+    ],
+    "cost": null,
+    "cond": {
+     "oppAtkStep": true
+    }
+   },
+   {
+    "levels": [
+     2
+    ],
+    "text": "【地鳴】を持つ自分のスピリットのアタックによって相手のライフを減らした時、アタックしている自分のスピリット1体を指定する。このバトル中、それの【地鳴】で指定された枚数を+2枚する。",
+    "timing": {
+     "kind": "trigger",
+     "event": "allyLifeHit",
+     "limit": "turn",
+     "nodup": true,
+     "flt": {
+      "kw": "quake"
+     },
+     "label": "『自分のアタックステップ』〔重複不可・ターン1回〕"
+    },
+    "ops": [
+     {
+      "op": "quakeBoost",
+      "n": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "26RSD11-011",
+  "name": "フラワーテリング",
+  "reading": "",
+  "type": "magic",
+  "color": "blue",
+  "family": [
+   "嵐土"
+  ],
+  "cost": 3,
+  "reduction": 2,
+  "symbols": {
+   "normal": 0,
+   "ex": true
+  },
+  "text": "メイン：\n自分のデッキの上から5枚をオープンできる。その中の系統：「青樹」/「嵐土」を持つネクサスカード1枚を手札に加える。残りは好きな順でデッキの下に戻す。\nフラッシュ：\n自分のスピリット1体を指定する。このターン中、それをBP+3000する。",
+  "effects": [
+   {
+    "levels": [],
+    "text": "自分のデッキの上から5枚をオープンできる。その中の系統：「青樹」/「嵐土」を持つネクサスカード1枚を手札に加える。残りは好きな順でデッキの下に戻す。",
+    "timing": {
+     "kind": "main"
+    },
+    "ops": [
+     {
+      "op": "reveal",
+      "n": 5,
+      "filter": {
+       "type": "nexus",
+       "famAny": [
+        "青樹",
+        "嵐土"
+       ]
+      },
+      "take": "hand",
+      "rest": "bottom",
+      "opt": true
+     }
+    ]
+   },
+   {
+    "levels": [],
+    "text": "自分のスピリット1体を指定する。このターン中、それをBP+3000する。",
+    "timing": {
+     "kind": "flash"
+    },
+    "ops": [
+     {
+      "op": "act",
+      "target": {
+       "who": "you",
+       "type": "spirit",
+       "count": 1,
+       "choose": true
+      },
+      "acts": [
+       {
+        "verb": "bpMod",
+        "amount": 3000,
+        "dur": "turn"
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "26RSD11-012",
+  "name": "リーブスダガー",
+  "reading": "",
+  "type": "magic",
+  "color": "blue",
+  "family": [
+   "嵐土"
+  ],
+  "cost": 6,
+  "reduction": 3,
+  "symbols": {
+   "normal": 0,
+   "ex": true
+  },
+  "soulMagic": true,
+  "text": "《ソウルマジック：[青]》\n自分の青シンボルがあれば[ソウルコア]だけで使用できる。\nフラッシュ：\nコスト3以下の相手のスピリット1体を指定する。それを破壊する。\nその後、自分の青のネクサス1つを指定できる。それを疲労させる。疲労したなら、コスト5以下の相手のスピリット1体を指定する。それを破壊する。",
+  "effects": [
+   {
+    "levels": [],
+    "timing": {
+     "kind": "keyword"
+    },
+    "keyword": "soulmagic",
+    "ops": [],
+    "text": "自分の青シンボルがあれば[ソウルコア]だけで使用できる。"
+   },
+   {
+    "levels": [],
+    "text": "コスト3以下の相手のスピリット1体を指定する。それを破壊する。\nその後、自分の青のネクサス1つを指定できる。それを疲労させる。疲労したなら、コスト5以下の相手のスピリット1体を指定する。それを破壊する。",
+    "timing": {
+     "kind": "flash"
+    },
+    "ops": [
+     {
+      "op": "act",
+      "target": {
+       "costMax": 3,
+       "who": "opp",
+       "type": "spirit",
+       "count": 1,
+       "choose": true
+      },
+      "acts": [
+       {
+        "verb": "destroy"
+       }
+      ]
+     },
+     {
+      "op": "clearActed"
+     },
+     {
+      "op": "act",
+      "target": {
+       "color": "blue",
+       "tapped": false,
+       "who": "you",
+       "type": "nexus",
+       "count": 1,
+       "choose": true
+      },
+      "acts": [
+       {
+        "verb": "tap"
+       }
+      ],
+      "opt": true
+     },
+     {
+      "op": "act",
+      "target": {
+       "costMax": 5,
+       "who": "opp",
+       "type": "spirit",
+       "count": 1,
+       "choose": true
+      },
+      "acts": [
+       {
+        "verb": "destroy"
+       }
+      ],
+      "needActed": true
+     }
+    ]
+   }
+  ]
+ }
+]
