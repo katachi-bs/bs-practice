@@ -79,6 +79,9 @@ a.cn{color:#ffe08a;text-decoration:underline dotted;cursor:pointer}
 .half.opp .lane{flex-direction:row-reverse}
 .half.me .lane.sp{flex-wrap:wrap-reverse;align-content:flex-end}
 .lane.nx{align-content:flex-start}
+.lane.dn{flex-wrap:nowrap!important;justify-content:flex-start!important;align-items:center}
+.lane.dn .dnr{margin-left:auto;margin-right:calc(var(--gx, 8px) * -1)}
+:where(.lane.dn){--cw:min(var(--cwb), calc((54vw - 16px) / (var(--n) * 1.25)));column-gap:2px}
 .midline{height:16px;display:grid;place-items:center;border-top:1px solid #46507a;border-bottom:1px solid #46507a;color:#7b84a8;font-size:10px;letter-spacing:.4em;margin:2px 0}
 .zone{background:#1a1e2c;border:1px solid #4a5273;border-radius:8px;padding:3px;display:flex;flex-direction:column;gap:3px;align-items:center;min-height:calc(var(--cw) * 1.05);flex:1;min-width:0}
 .zone.drop,.zsub.drop{border-color:var(--acc);background:#202845;cursor:pointer}
@@ -320,6 +323,10 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .box h2{margin:0;font-size:18px;letter-spacing:.02em}
 .box.b-deck{border-top:5px solid #6ea8ff;background:linear-gradient(#18203a,var(--panel) 60px)}.box.b-deck h2{color:#9cc2ff}
 .box.b-net{border-top:5px solid #6fe3a1;background:linear-gradient(#143025,var(--panel) 60px)}.box.b-net h2{color:#8ff0bb}
+.box.b-bbs{border-top:5px solid #8be0b0}
+.bbslist{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.bbsi{background:#161d36;border:1px solid #2f3a66;border-radius:8px;padding:6px 10px;font-size:13px;line-height:1.4;word-break:break-all;white-space:pre-wrap}
+.bbsi b{color:#cfe0ff;font-size:12px;margin-right:8px}.bbsi small{color:var(--sub);font-size:10px}
 .box.b-free{border-top:5px solid #ffcf5a;background:linear-gradient(#33290f,var(--panel) 60px)}.box.b-free h2{color:#ffdf8a}
 button[hidden]{display:none!important}
 .freegrid[hidden]{display:none}
@@ -621,6 +628,14 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
   <div class="box b-dev" style="display:none">
     <div id="devOff" class="row"><input id="devPass" type="password" placeholder="開発者パス" autocomplete="off" style="width:150px;font-size:13px;padding:5px"><button id="devGo" class="sub" style="padding:5px 12px;font-size:12px">開発者モード</button></div>
     <div id="devOn" class="row" hidden><span class="note">開発者モード中(テスト用の項目が表示されています)</span><button id="devEnd" class="sub" style="padding:5px 12px;font-size:12px">終了</button></div>
+  </div>
+  <div class="box b-bbs">
+    <h2>バグ・要望報告掲示板</h2>
+    <p class="note">バグを見つけた時や、直してほしいところ・ほしい機能を書いてください。プレイヤー名と内容が保存されて、管理人があとで読めます。</p>
+    <div class="row" style="margin:6px 0"><input id="bbsName" maxlength="12" placeholder="プレイヤー名" style="width:150px" autocomplete="off"></div>
+    <textarea id="bbsText" maxlength="400" rows="3" placeholder="例: ○○のカードを使うと△△になる(どのカード・どの場面かも書いてもらえると助かります)" style="width:100%;box-sizing:border-box;background:#0f1424;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit"></textarea>
+    <div class="row" style="margin:6px 0"><button id="bbsPost">投稿する</button><span id="bbsStat" class="note"></span></div>
+    <div id="bbsList" class="bbslist"></div>
   </div>
 </section>
 
@@ -3288,6 +3303,34 @@ $('freeList').addEventListener('click', e => {
   asGuest(b.dataset.fjoin, 3, true);
 });
 freeRender(); setTimeout(() => { if (!$('lobby').hidden) freeStart(); }, 600);
+/* --- バグ・要望報告掲示板 ---
+   BBS_DB に Firebase Realtime Database のURLを入れると、投稿が保存されて一覧に出る(管理人はFirebaseの画面でも読める)。
+   空のままのときは、GitHubの「新しいIssue」の画面を開いて投稿する(GitHubのアカウントが必要)。 */
+const BBS_DB = 'https://bs-project-1c372-default-rtdb.firebaseio.com';
+const BBS_REPO = 'katachi-bs/bs-practice';
+let bbsLast = 0;
+async function bbsLoad() {
+  const box = $('bbsList'); if (!box) return;
+  if (!BBS_DB) { box.innerHTML = ''; return; }
+  try {
+    const r = await fetch(BBS_DB.replace(/\/$/, '') + '/reports.json?orderBy=%22$key%22&limitToLast=30'); const d = await r.json();
+    const rows = Object.values(d || {}).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+    box.innerHTML = rows.map(x => '<div class="bbsi"><b>' + esc(String(x.name || '').slice(0, 12)) + '</b><small>' + (x.ts ? new Date(x.ts).toLocaleString('ja-JP') : '') + '</small><br>' + esc(String(x.text || '').slice(0, 400)) + '</div>').join('') || '<div class="note">まだ投稿はありません。</div>';
+  } catch (e) { box.innerHTML = '<div class="note">掲示板を読み込めませんでした。</div>'; }
+}
+$('bbsPost').onclick = async () => {
+  const name = ($('bbsName').value || '').trim().slice(0, 12) || ($('myName') && $('myName').value.trim().slice(0, 12)) || 'プレイヤー', text = ($('bbsText').value || '').trim().slice(0, 400), st = $('bbsStat');
+  if (!text) { st.textContent = '内容を書いてください'; return; }
+  if (!BBS_DB) { window.open('https://github.com/' + BBS_REPO + '/issues/new?title=' + encodeURIComponent('【報告】' + text.slice(0, 30)) + '&body=' + encodeURIComponent('投稿者: ' + name + '\nバージョン: ' + APP_VER + '\n\n' + text), '_blank'); st.textContent = 'GitHubの画面が開きます'; return; }
+  if (Date.now() - bbsLast < 20000) { st.textContent = '少し待ってからもう一度投稿してください'; return; }
+  st.textContent = '送信中…';
+  try {
+    const r = await fetch(BBS_DB.replace(/\/$/, '') + '/reports.json', { method: 'POST', body: JSON.stringify({ name, text, ver: APP_VER, ts: { '.sv': 'timestamp' } }) });
+    if (!r.ok) throw 0; bbsLast = Date.now(); $('bbsText').value = ''; st.textContent = '投稿しました。ありがとうございます'; bbsLoad();
+  } catch (e) { st.textContent = '送信できませんでした。しばらくしてからもう一度お試しください'; }
+};
+setTimeout(bbsLoad, 800);
+
 $('cpuLv').onchange = () => { try { localStorage.setItem('bs-cpulv', $('cpuLv').value); } catch (e) { } };
 $('bCpu').onclick = () => {
   const d = getDeck(); if (!d) return;
@@ -4013,7 +4056,15 @@ function sideHTML(P, own) {
     '<a class="lk rm" data-list="removed" data-own="' + o + '">除外 <b>' + P.removed.length + '</b></a></div>';
   // スピリットは上の段、ネクサスは下の段(相手側は上下が反転)。多いときは、段からはみ出して相手の領域に入ってよい
   const sp = P.field.filter(k => k.def.type === 'spirit'), nx = P.field.filter(k => k.def.type !== 'spirit');
-  const field = '<div class="field"><div class="lane sp" style="--n:' + sp.length + '">' + sp.map(k => fieldCardHTML(k, own)).join('') + '</div><div class="lane nx" style="--n:' + nx.length + '">' + nx.map(k => fieldCardHTML(k, own)).join('') + '</div>' + '' + '</div>';
+  // 1段に並べる枚数は8枚まで。スピリットが9枚以上なら下の段の左から、ネクサスが9枚以上なら上の段の右から詰める。合計が17枚以上なら全体を小さくして収める
+  let K = 8; const S = sp.length, N = nx.length;
+  while (K < S + N && !(Math.min(S, K) + Math.max(0, N - K) <= K && Math.max(0, S - K) + Math.min(N, K) <= K)) K++;
+  let field;
+  if (S <= 8 && N <= 8) field = '<div class="field"><div class="lane sp" style="--n:' + S + '">' + sp.map(k => fieldCardHTML(k, own)).join('') + '</div><div class="lane nx" style="--n:' + N + '">' + nx.map(k => fieldCardHTML(k, own)).join('') + '</div></div>';
+  else {
+    const mk = a => a.map(k => fieldCardHTML(k, own)).join(''), rgt = h => h ? '<span class="dnr"></span>' + h : '';
+    field = '<div class="field"><div class="lane sp dn" style="--n:' + K + '">' + mk(sp.slice(0, K)) + rgt(mk(nx.slice(K))) + '</div><div class="lane nx dn" style="--n:' + K + '">' + mk(sp.slice(K)) + rgt(mk(nx.slice(0, K))) + '</div></div>';
+  }
   return colA + field + colB;
 }
 
@@ -4853,7 +4904,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v31 (2026/11/13)';
+const APP_VER = 'v33 (2026/11/13)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
