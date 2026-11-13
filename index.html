@@ -1169,6 +1169,8 @@ function markGone(G, iid) {
   if (b.iid === iid) b.gone = true;
   if (b.blocker === iid) b.bgone = true;
 }
+// 真界放状態: 真界放を持つカードに、ソウルコアが乗っている、またはLv2に必要な数のコアが乗っている
+function isShin(k) { const L = k.def.levels || []; return k.def.keywords.includes('shinkai') && (k.cores.some(c => c.soul) || (L.length > 1 && k.cores.length >= L[L.length - 1].core)); }
 // 対象の条件(si=効果の持ち主、qi=対象の持ち主)
 function matchT(G, si, qi, k, t) {
   if (!t || typeof t !== 'object') return false;
@@ -1208,14 +1210,14 @@ function matchT(G, si, qi, k, t) {
   if (t.nameHas && !k.def.name.includes(t.nameHas)) return false;
   if (t.nameAny && !t.nameAny.some(n => k.def.name.includes(n))) return false;
   if (t.family2 && !k.def.family.includes(t.family2)) return false;
-  if (t.noShinkai && k.def.keywords.includes('shinkai') && k.cores.some(c => c.soul)) return false;
-  if (t.shinkaiOn && !(k.def.keywords.includes('shinkai') && k.cores.some(c => c.soul))) return false;
+  if (t.noShinkai && isShin(k)) return false;
+  if (t.shinkaiOn && !isShin(k)) return false;
   if (t.lv != null && !(lvInfo(k) && lvInfo(k).lv === t.lv)) return false;
   if (t.exColor && !(k.def.symbols.ex && k.def.color === t.exColor)) return false;
   if (t.costMax != null && k.def.cost > t.costMax) return false;
   if (t.costMin != null && k.def.cost < t.costMin) return false;
   if (t.tapped != null && !!k.tapped !== !!t.tapped) return false;
-  if (t.notShinkai && k.def.keywords.includes('shinkai') && k.cores.some(c => c.soul)) return false;
+  if (t.notShinkai && isShin(k)) return false;
   return true;
 }
 function perCount(G, si, per, self) { return G.p[si].field.filter(x => x.def.type === 'spirit' && !(per.notSelf && self && x === self) && (!per.team || (x.def.team || []).includes(per.team)) && (!per.family || x.def.family.includes(per.family)) && (!per.kw || x.def.effects.some(e2 => e2.keyword === per.kw && effectActive(x, e2))) && (!per.hasEv || x.def.effects.some(e2 => e2.timing.kind === 'trigger' && e2.timing.event === per.hasEv && effectActive(x, e2)))).length; }
@@ -2009,7 +2011,7 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
         else if (a.verb === 'mustAttack') { G.mustAtk = { pi: pd.qi, iid: i, turn: G.turnNo }; rs.push(nm + 'は、可能なら最初にアタックしなければなりません'); }
         else if (a.verb === 'heavyTap') { const wt0 = !c.tapped, wh0 = !c.heavy; c.tapped = true; c.heavy = true; if (wh0) { tapEvt(G, pd.qi, c, G.effPi !== pd.qi ? 'opp' : 'self', wt0); if (G.effPi !== pd.qi) G.effHeavy = true; } rs.push(nm + 'を重疲労させました'); }
         else if (a.verb === 'mustBlock' && G.battle) { G.battle.must = c.iid; rs.push(nm + 'は、このバトル中、可能なら疲労状態でもブロックしなければなりません'); }
-        else if (a.verb === 'bpMod') { const am = a.perTapped ? a.amount * G.p[pi].field.filter(x => x.def.type === 'spirit' && x.tapped).length : (a.alt && c.def.name.includes(a.alt.nameHas) ? a.alt.amount : a.amount) + (a.perEx ? a.perEx * ((G.queue[0] && G.queue[0].ctx && G.queue[0].ctx.excludedEx) ? G.queue[0].ctx.excludedEx.length : 0) : 0); if (a.perTapped && !am) { rs.push(nm + ': 疲労状態のスピリットがいないため、BPは上がりません'); return; } (c.mods = c.mods || []).push({ a: am, d: a.dur || 'turn', s: pd.name }); rs.push(nm + 'をBP' + (am >= 0 ? '+' : '') + am + '(' + (a.dur === 'battle' ? 'このバトル中' : 'このターン中') + ')'); bpFlashHook(G, G.effPi, c, am); }
+        else if (a.verb === 'bpMod') { const am = a.perTapped ? a.amount * G.p[pi].field.filter(x => x.def.type === 'spirit' && x.tapped).length : (a.alt && c.def.name.includes(a.alt.nameHas) ? a.alt.amount : a.amount) + (a.perEx ? a.perEx * ((G.queue[0] && G.queue[0].ctx && G.queue[0].ctx.excludedEx) ? G.queue[0].ctx.excludedEx.length : 0) : 0); if (a.perTapped && !am) { rs.push(nm + ': 疲労状態のスピリットがいないため、BPは上がりません'); continue; } (c.mods = c.mods || []).push({ a: am, d: a.dur || 'turn', s: pd.name }); rs.push(nm + 'をBP' + (am >= 0 ? '+' : '') + am + '(' + (a.dur === 'battle' ? 'このバトル中' : 'このターン中') + ')'); bpFlashHook(G, G.effPi, c, am); }
         else if (a.verb === 'pullCores') { const S0 = G.p[pi].field.find(x => x.iid === (G.queue[0] && G.queue[0].src)); const mv = c.cores.slice(0, Math.max(0, c.cores.length - 1)); if (S0 && mv.length) { mv.forEach(x => moveCore(G, pi, x.id, { zone: 'card', iid: S0.iid })); G.evs.push({ t: 'cmove', p: pi, from: c.iid, to: S0.iid, n: mv.length }); if (G.queue[0]) G.queue[0].acted = true; rs.push(nm + 'のコア' + mv.length + '個を「' + S0.def.name + '」に置きました'); } else rs.push('移せるコアがありません'); }
         else if (a.verb === 'lvPlus1') { c.lvUpT = G.turnNo; refreshLv(G); rs.push(nm + 'を、このターン中、Lvを1つ上のものとして扱います'); }
         else if (a.verb === 'trashCoreTo') { const P2 = G.p[pi], take = P2.coreTrash.filter(x => !x.soul).slice(0, a.n || 1); take.forEach(x => moveCore(G, pi, x.id, { zone: 'card', iid: c.iid })); rs.push(take.length ? 'トラッシュのコア' + take.length + '個を' + nm + 'に置きました' : 'トラッシュに置けるコアがありません'); }
@@ -4025,10 +4027,10 @@ function cardHTML(k, own, zone) {
   return '<div class="card' + artCls(k) + '" ' + cardAttr(k, own, zone) + '>' + cardInner(k.def, '') + '</div>';
 }
 // 場のカード(縦長・疲労で横向き・下にコア表示)
-// レベルの色分け: Lv1=青 / Lv2=橙 / 真界放(ソウルコアでLv2)=紫
+// レベルの色分け: Lv1=青 / Lv2=橙 / 真界放(ソウルコア、またはLv2のコア数)=紫
 function lvKind(k) {
   const li = lvInfo(k); if (!li) return '';
-  if (li.lv >= 2 && k.def.keywords.includes('shinkai') && k.cores.some(c => c.soul) && k.cores.length < li.core) return 's';
+  if (li.lv >= 2 && isShin(k)) return 's';
   return li.lv >= 2 ? '2' : '1';
 }
 function fieldCardHTML(k, own) {
@@ -4904,7 +4906,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v33 (2026/11/13)';
+const APP_VER = 'v33.2 (2026/11/13)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
