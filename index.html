@@ -303,6 +303,8 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .stampfx.opp{left:50%;top:14%;margin-left:-36px}
 @keyframes stampin{0%{transform:scale(.2) rotate(-20deg);opacity:0}12%{transform:scale(1.25) rotate(8deg);opacity:1}25%{transform:scale(1) rotate(0)}80%{opacity:1}100%{transform:translateY(-30px) scale(1);opacity:0}}
 .zone.altz{outline:3px solid var(--gold);box-shadow:0 0 14px var(--gold);cursor:pointer}
+.warnl.okl{border-color:#6fe3a1;color:#bff5d4}
+.plv:disabled{opacity:.35}
 .plvs{display:flex;flex-wrap:wrap;gap:3px;margin:2px 0}.plv{font-size:10px;padding:2px 6px;border-radius:999px;border:1px solid #6a7499;background:#232840;color:var(--fg)}.plv.on{background:#4f7fe0;border-color:#cfe0ff;color:#fff;font-weight:800}
 .paywrap .bt button{padding:6px 12px}
 .ticker{font-size:12px;color:#ffe9a8;min-height:1.4em;background:#2a2410;border-radius:6px;padding:2px 6px}
@@ -1178,6 +1180,11 @@ function playCard(G, pi, a) {
   const fieldBefore = P.field.slice();   // コアの支払いで消滅するカードも「待機状態」として効果の計算に含める
   const exInfo = info.exCards.map(c => ({ id: c.def.id, name: c.def.name, family: c.def.family, team: c.def.team || [] }));
   info.exCards.forEach(c => { P.trash.splice(P.trash.indexOf(c), 1); P.removed.push(c); });
+  // 消滅防止: 支払いでコアが0になるカードに、リザーブの通常コアを1個載せる(支払いや置くコアに使わないコアだけ)
+  { const used = new Set(pay.concat(place)), fi = new Set(); (Array.isArray(a.fill) ? a.fill : []).slice(0, 10).forEach(f => {
+      if (!f || used.has(String(f.id)) || fi.has(String(f.id))) return; const tc = P.field.find(x => x.iid === String(f.iid)), cf = findCore(P, String(f.id));
+      if (!tc || !cf || cf.zone !== 'reserve' || cf.arr[cf.i].soul) return; fi.add(String(f.id));
+      if (moveCore(G, pi, String(f.id), { zone: 'card', iid: tc.iid })) lg(G, pi, '　「' + tc.def.name + '」はコアが0になるため、リザーブのコア1個を載せて消滅を防ぎました'); }); }
   pay.forEach(id => moveCore(G, pi, id, { zone: 'coreTrash' }));
   P.hand.splice(P.hand.indexOf(k), 1);
   if (d.type === 'magic') { P.trash.push(k); lg(G, pi, '「' + d.name + '」を使用'); }
@@ -4209,9 +4216,15 @@ function startPay(iid) {
   autoPay(); render();
 }
 function cancelPay() { pay = null; render(); }
+// 支払いで場のスピリットのコアが0になって消滅してしまう場合、リザーブに余っている通常コアを1個ずつ載せて、消滅を防ぐ
+function payFill() {
+  const vanish = V.you.field.filter(k => k.def.type === 'spirit' && k.cores.length && k.cores.every(c => pay.pay.has(c.id) || pay.place.has(c.id)));
+  const spare = V.you.reserve.filter(c => !c.soul && !pay.pay.has(c.id) && !pay.place.has(c.id));
+  return vanish.map((k, i) => ({ k, c: spare[i] || null }));
+}
 function confirmPay() {
   const st = payState(); if (!st || !st.payOk || !st.placeOk) return;
-  const a = { k: 'play', iid: pay.iid, pay: [...pay.pay], place: [...pay.place], ex: pay.ex.slice(), soulMagic: pay.soulMagic, mode: pay.mode === 'flash' ? 'flash' : 'main' };
+  const a = { k: 'play', iid: pay.iid, pay: [...pay.pay], place: [...pay.place], fill: payFill().filter(x => x.c).map(x => ({ iid: x.k.iid, id: x.c.id })), ex: pay.ex.slice(), soulMagic: pay.soulMagic, mode: pay.mode === 'flash' ? 'flash' : 'main' };
   pay = null;
   doAct(a);
 }
@@ -4233,10 +4246,10 @@ function payTap(loc, soulId) {
   render();
 }
 function plvBtns(st) {
-  const v = plvOf(st.d); if (!(st.d.levels || []).length || st.d.levels.length < 2) return '';
-  const act = plvActive(st), b = (m, label) => '<button class="plv' + (act === m ? ' on' : '') + '" data-plv="' + m + '">' + label + '</button>';
-  const hasSoul = V.you.reserve.some(c => c.soul) || V.you.field.some(k => k.cores.some(c => c.soul));
-  return '<div class="plvs">' + b('1', 'Lv1') + b('2', 'Lv2(通常コア' + v.l2 + ')') + (v.shin && hasSoul ? b('s', '真界放(ソウルコア)') : '') + '</div>';
+  if ((st.d.levels || []).length < 2) return '';
+  const v = plvOf(st.d), act = plvActive(st), b = (m, label) => '<button class="plv' + (act === m ? ' on' : '') + '" data-plv="' + m + '"' + (plvFeasible(st, m) ? '' : ' disabled') + '>' + label + '</button>';
+  const hasSoul = usableCores().some(c => c.soul);
+  return '<div class="plvs">' + b('1', 'Lv1') + b('2', 'Lv2') + (v.shin && hasSoul ? b('s', '真界放(ソウルコア)') : '') + '</div>';
 }
 function payHTML() {
   const st = payState(); if (!st) return '';
@@ -4266,8 +4279,9 @@ function payHTML() {
   }
   if (d.type === 'magic' && !V.battle && d.effects.some(e => e.timing.kind === 'main') && d.effects.some(e => e.timing.kind === 'flash')) a += '<div class="chips"><button class="chip' + (pay.mode !== 'flash' ? ' on' : '') + '" data-pmode="main">メイン効果を使う</button><button class="chip' + (pay.mode === 'flash' ? ' on' : '') + '" data-pmode="flash">フラッシュ効果を使う</button></div>';
   if (info.soulAvail) a += '<div class="chips"><button class="chip soulc' + (pay.soulMagic ? ' on' : '') + '" data-psoul="1">★ ソウルコア1個で使用</button><button class="chip' + (!pay.soulMagic ? ' on' : '') + '" data-psoul="0">通常コアで支払う</button></div>';
-  const vanish = V.you.field.filter(k => k.def.type === 'spirit' && k.cores.length && k.cores.every(c => pay.pay.has(c.id) || pay.place.has(c.id)));
-  if (vanish.length) a += '<div class="warnl">⚠ 「' + vanish.map(k => esc(k.def.name)).join('」「') + '」はコアが0になり、決定すると<b>消滅</b>します(破壊ではありません)</div>';
+  const vf = payFill(), vSave = vf.filter(x => x.c), vGone = vf.filter(x => !x.c).map(x => x.k);
+  if (vSave.length) a += '<div class="warnl okl">ℹ 「' + vSave.map(x => esc(x.k.def.name)).join('」「') + '」はコアが0になるため、<b>かわりにリザーブのコア1個を載せて消滅を防ぎます</b></div>';
+  if (vGone.length) a += '<div class="warnl">⚠ 「' + vGone.map(k => esc(k.def.name)).join('」「') + '」はコアが0になり、決定すると<b>消滅</b>します(破壊ではありません)。リザーブに余っているコアがないため、防げません</div>';
   a += '<div class="msg">' + msg + '</div></div>';
   const cores = allCores(V.you);
   const toks = set => [...set].map(id => { const c = cores.find(x => x.id === id); return '<span class="tok' + (c && c.soul ? ' soul' : '') + '" data-prm="' + id + '" title="タップで外す">' + (c && c.soul ? '★' : '●') + '</span>'; }).join('');
@@ -4307,19 +4321,35 @@ function plvActive(st) {
   if (v.l2 && pay.place.size >= v.l2) return '2';
   return '1';
 }
+// 手持ち(リザーブ+場)のコアの数: 通常コア N / ソウルコア S。レベルのボタンが押せるかの判定に使う
+const usableCores = () => [...V.you.reserve, ...V.you.field.flatMap(k => k.cores)];   // 支払い・配置に使えるコア(リザーブ+場)
+function plvFeasible(st, m) {
+  const v = plvOf(st.d), all = usableCores(), S = all.filter(c => c.soul).length, N = all.length - S, need = st.need;
+  if (m === 's') return v.shin && S >= 1 && N >= need;
+  if (m === '2') return v.l2 > 0 && N - (need - Math.min(S, need)) >= Math.max(st.minPlace, v.l2);
+  return N + S >= need + st.minPlace;
+}
 function setPlaceLv(m) {
   const st = payState(); if (!st || st.d.type === 'magic') return;
-  const v = plvOf(st.d), R = V.you.reserve, cores = allCores(V.you);
+  if (!plvFeasible(st, m)) { toast(m === 's' ? '真界放にするソウルコアか、支払うコアが足りません' : 'コアが足りないため、このレベルでは置けません'); return; }
+  const v = plvOf(st.d), R = V.you.reserve, all = usableCores(), isSoul = id => { const c = all.find(x => x.id === id); return !!(c && c.soul); };
+  const normsOut = () => R.filter(c => !c.soul && !pay.pay.has(c.id) && !pay.place.has(c.id)).concat(pickFieldCores(99, new Set([...pay.pay, ...pay.place]), false));
+  const soulOut = () => R.concat(all.filter(c => !R.includes(c))).find(c => c.soul && !pay.pay.has(c.id) && !pay.place.has(c.id));
   pay.place = new Set();
   if (m === 's') {
-    const sc = R.find(c => c.soul && !pay.pay.has(c.id)) || cores.find(c => c.soul && !pay.pay.has(c.id));
-    if (!sc) { toast('ソウルコアは支払いに使っているか、ありません'); render(); return; }
-    pay.place.add(sc.id);
+    // ソウルコアを置くので、支払いにソウルコアが入っていたら通常コアに入れ替える
+    const sp = [...pay.pay].find(isSoul);
+    if (sp) { pay.pay.delete(sp); const n = normsOut()[0]; if (n) pay.pay.add(n.id); }
+    const sc = soulOut(); if (sc) pay.place.add(sc.id);
   } else {
     const n = m === '2' ? Math.max(st.minPlace, v.l2) : st.minPlace;
-    R.filter(c => !c.soul && !pay.pay.has(c.id)).slice(0, n).forEach(c => pay.place.add(c.id));
-    if (pay.place.size < n) pickFieldCores(n - pay.place.size, new Set([...pay.pay, ...pay.place]), false).forEach(c => pay.place.add(c.id));
-    if (pay.place.size < n) { toast('通常コアが足りません(支払いを減らすか、ソウルコアを使ってください)'); }
+    const take = () => { const o = normsOut(); o.slice(0, n - pay.place.size).forEach(c => pay.place.add(c.id)); };
+    take();
+    if (m === '2' && pay.place.size < n && pay.pay.size > 0) {   // 通常コアが足りない: 支払いのコアをソウルコアに入れ替えて、通常コアを空ける
+      const sc = soulOut(), np = [...pay.pay].find(id => !isSoul(id));
+      if (sc && np) { pay.pay.delete(np); pay.pay.add(sc.id); take(); }
+    }
+    if (m === '1') while (pay.place.size < n) { const sc = soulOut(); if (!sc) break; pay.place.add(sc.id); }   // ソウルコアしか残っていないときは、ソウルコアを置く
   }
   pay.bucket = 'place'; render();
 }
@@ -5035,7 +5065,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v34 (2026/11/14)';
+const APP_VER = 'v34.0.1 (2026/11/14)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
