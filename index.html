@@ -227,8 +227,8 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 #mat{position:relative}
 #cbtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
 #cbtn[hidden]{display:none}
-#cbtn button{pointer-events:auto;font-size:clamp(18px,2.4vw,28px);font-weight:900;padding:12px 44px;border-radius:999px;border:3px solid #fff3a0;background:linear-gradient(#ffd34d,#e8a100);color:#2a1c00;box-shadow:0 0 0 4px #ffd34d55,0 10px 30px #000c;animation:bigpulse 1.2s ease-in-out infinite;letter-spacing:.2em}
-#cbtn button.sec{font-size:16px;letter-spacing:0;padding:8px 22px;background:#2a3350;color:#fff;border-color:#8fa0d6;animation:none}
+#cbtn button{pointer-events:auto;font-size:clamp(18px,2.4vw,28px);font-weight:900;line-height:1.15;padding:6px 44px;border-radius:999px;border:3px solid #fff3a0;background:linear-gradient(#ffd34d,#e8a100);color:#2a1c00;box-shadow:0 0 0 4px #ffd34d55,0 10px 30px #000c;animation:bigpulse 1.2s ease-in-out infinite;letter-spacing:.2em}
+#cbtn button.sec{font-size:16px;letter-spacing:0;line-height:1.15;padding:5px 22px;background:#2a3350;color:#fff;border-color:#8fa0d6;animation:none}
 #cbtn button:disabled{opacity:.45;animation:none}
 #cbtn .row2{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 #cbtn small{background:#000b;color:#ffe9a8;padding:2px 10px;border-radius:999px;font-size:12px}
@@ -293,6 +293,17 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .tok{width:27px;height:30px;background:var(--hex) center/100% 100% no-repeat;display:grid;place-items:center;font-size:0;color:transparent;cursor:pointer;filter:drop-shadow(0 1px 2px #0009)}
 .tok.soul{width:32px;height:32px;background-image:var(--pent)}
 .paywrap .bt{display:flex;flex-direction:column;gap:4px;justify-content:center}
+.stampb{font-size:16px;padding:2px 8px}
+#stampPal{position:fixed;left:50%;bottom:calc(var(--handh,120px) + 14px);transform:translateX(-50%);z-index:60;display:flex;gap:8px;background:#0b1020f0;border:2px solid #8fa0d6;border-radius:999px;padding:6px 12px;box-shadow:0 6px 24px #000c}
+#stampPal[hidden]{display:none}
+#stampPal button{font-size:30px;line-height:1;padding:4px 8px;background:none;border:0;border-radius:12px}
+#stampPal button:active{background:#33406e}
+.stampfx{position:fixed;z-index:70;font-size:72px;line-height:1;pointer-events:none;animation:stampin 2.6s ease-out both;filter:drop-shadow(0 4px 10px #000a)}
+.stampfx.mine{left:50%;bottom:26%;margin-left:-36px}
+.stampfx.opp{left:50%;top:14%;margin-left:-36px}
+@keyframes stampin{0%{transform:scale(.2) rotate(-20deg);opacity:0}12%{transform:scale(1.25) rotate(8deg);opacity:1}25%{transform:scale(1) rotate(0)}80%{opacity:1}100%{transform:translateY(-30px) scale(1);opacity:0}}
+.zone.altz{outline:3px solid var(--gold);box-shadow:0 0 14px var(--gold);cursor:pointer}
+.plvs{display:flex;flex-wrap:wrap;gap:3px;margin:2px 0}.plv{font-size:10px;padding:2px 6px;border-radius:999px;border:1px solid #6a7499;background:#232840;color:var(--fg)}.plv.on{background:#4f7fe0;border-color:#cfe0ff;color:#fff;font-weight:800}
 .paywrap .bt button{padding:6px 12px}
 .ticker{font-size:12px;color:#ffe9a8;min-height:1.4em;background:#2a2410;border-radius:6px;padding:2px 6px}
 /* ===== カード詳細シート ===== */
@@ -326,6 +337,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .box.b-bbs{border-top:5px solid #8be0b0}
 .bbslist{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .bbsi{background:#161d36;border:1px solid #2f3a66;border-radius:8px;padding:6px 10px;font-size:13px;line-height:1.4;word-break:break-all;white-space:pre-wrap}
+.bbspg{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;font-size:12px;color:var(--sub)}.bbspg button{padding:4px 12px}
 .bbsi b{color:#cfe0ff;font-size:12px;margin-right:8px}.bbsi small{color:var(--sub);font-size:10px}
 .box.b-free{border-top:5px solid #ffcf5a;background:linear-gradient(#33290f,var(--panel) 60px)}.box.b-free h2{color:#ffdf8a}
 button[hidden]{display:none!important}
@@ -406,7 +418,7 @@ body.shake #mat{animation:lzshake .7s linear both}
 }
 
 /* ===== スマホ縦画面: 3列のまま縮める。上部は現在のステップだけ、終了ボタンは盤面中央、その他は▼で開く ===== */
-.sidetog,#endbtn,.pv2{display:none}
+.sidetog,#endbtn,.pv2,.endtop{display:none}
 @media (max-width:899px){
   :root{--cwb:clamp(44px,min(12vw,6.6vh),84px)}
   .sin>.cores .cc{min-width:calc(var(--cw) * .34);height:calc(var(--cw) * .36);font-size:calc(var(--cw) * .14)}
@@ -454,6 +466,25 @@ body.shake #mat{animation:lzshake .7s linear both}
   #hand{margin-top:auto}
   #cbtn .row2{gap:6px}
   #prompt{font-size:11px;padding:3px 8px;gap:4px 8px}
+}
+
+
+/* ===== スマホ縦: フィールドはスピリット4枚×2段+ネクサス4枚×1段(12枚)まで重ならない。13枚以上は枠の中を上下にスクロール ===== */
+@media (max-width:899px) and (orientation:portrait){
+  .field.mb{container-type:inline-size;flex:1;min-width:0;min-height:0;height:calc((var(--cwb) * 1.4 + 8px) * 3 + 22px);overflow-x:clip;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;gap:0;justify-content:flex-start}
+  .field.mb .lane{--cw:min(var(--cwb), calc((100cqw - 16px) / 4.9));display:grid;grid-template-columns:repeat(4,var(--cw));grid-auto-rows:calc(var(--cw) * 1.4 + 8px);column-gap:calc(var(--cw) * .3);row-gap:0;justify-content:center;align-content:start;align-items:center;height:auto;flex:0 0 auto}
+  .field.mb .lane.sp{min-height:calc((var(--cw) * 1.4 + 8px) * 2)}
+  .field.mb .lane.nx{min-height:calc(var(--cw) * 1.4 + 8px)}
+  .half.opp .field.mb .lane{direction:rtl}
+  .field.mb .lane>*{direction:ltr}
+  #endbtn,#endbtn[hidden]{display:none!important}   /* 盤面中央のボタンは誤タップしやすいので、上のステップ一覧の右側に出す */
+  #side .vsteps .endtop{display:inline-block;margin-left:auto;font-size:11px;font-weight:800;padding:2px 10px;border-radius:999px;border:2px solid #cfe0ff;background:#4f7fe0;color:#fff;white-space:nowrap}
+  .lvk2 .lvb:not(.shin),.lvks .lvb:not(.shin){display:none}   /* Lv2の文字はコアと重なるので消す(色で区別) */
+  .paywrap{display:flex;flex-direction:column;overflow:hidden;gap:4px}
+  .paywrap>.pc:first-child{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}   /* 効果が長いときは、ここだけスクロール */
+  .paywrap>.pc:nth-child(2),.paywrap>.bt{flex:0 0 auto}
+  .paywrap .bt{flex-direction:row;justify-content:center}
+  .paywrap .bt button{padding:5px 14px}
 }
 
 /* ===== 開発者モード ===== */
@@ -945,7 +976,9 @@ function moveCard(G, pi, iid, to) {
 }
 
 /* --- 操作の受付(ホストが全員分を検証して実行) --- */
+const STAMPS = ['😃', '😭', '😤', '😅'];
 function act(G, pi, a) {
+  if (a && a.k === 'stamp') { if (STAMPS.includes(a.e)) G.stamp = { p: pi, e: a.e, n: ((G.stamp && G.stamp.n) | 0) + 1 }; return; }   // スタンプ: 盤面には影響しない
   act0(G, pi, a);
   if (G.mustAtk) { mustAtkHook(G); if (G.battle && G.queue.length) runQueue(G); }
 }
@@ -1585,6 +1618,11 @@ function execOpX(G, it, op) {
   }
   const P = G.p[it.pi];
   if (op.needActed && !it.acted && op.op !== 'act') { lg(G, it.pi, '　' + it.name + ': 前の処理が行われていないため、続きは行いません'); return; }
+  if (op.op === 'soulGuard') {   // 【ソウル覚醒】: リザーブ以外(コアトラッシュ/他のカードの上)にソウルコアがないときは発動できない
+    const Pq = G.p[it.pi];
+    if (!Pq.coreTrash.some(x => x.soul) && !Pq.field.some(x => x.iid !== it.src && x.cores.some(y => y.soul))) { lg(G, it.pi, '　' + it.name + ': リザーブ以外に置ける[ソウルコア]がないため、発動できません'); if (it.fx) it.fx.r.push('リザーブ以外に置ける[ソウルコア]がないため、発動できません'); it.ops = it.ops.slice(0, it.i + 1); return; }
+    return;
+  }
   if (op.op === 'nameOnce') {   // 「自身は同じカード名のこの効果をターンに1回しか使えない」
     G.nameUsed = G.nameUsed || {}; const key = it.pi + '|' + op.key + '|' + it.name;
     if (G.nameUsed[key] === G.turnNo) { lg(G, it.pi, '　' + it.name + ': 同じカード名のこの効果は、このターンすでに使っているため、続きは行いません'); if (it.fx) it.fx.r.push('同じカード名のこの効果は、このターン中すでに使っているため、何も起きません'); it.ops = it.ops.slice(0, it.i + 1); return; }
@@ -2652,11 +2690,12 @@ function symDynOf(G) {
 }
 function viewFor(G, i) {
   const me = G.p[i], op = G.p[1 - i];
-  const pub = P => ({ exIid: P.exIid || null, field: P.field, trash: P.trash, removed: P.removed, life: P.life, reserve: P.reserve, coreTrash: P.coreTrash, void: P.void, handN: P.hand.length, deckN: P.deck.length });
+  const pub = P => ({ exIid: P.exIid || null, myTurn: !!P.myTurn, symStat: P.symStat || {}, field: P.field, trash: P.trash, removed: P.removed, life: P.life, reserve: P.reserve, coreTrash: P.coreTrash, void: P.void, handN: P.hand.length, deckN: P.deck.length });
   return { names: (G.names || []).map(x => String(x || '').slice(0, 14)), pick: G.pick ? { pi: G.pick.pi } : null, mull: G.mull ? { pi: G.mull.order[G.mull.idx] } : null, me: i, turn: G.turn, turnNo: G.turnNo, step: G.step, pause: G.settings.pause, lifeLost: G.lifeLost, noAttack: G.noAttack, lifeManual: !!G.settings.lifeManual, battle: G.battle ? { pi: G.battle.pi, iid: G.battle.iid, phase: G.battle.phase, prio: G.battle.prio, blocker: G.battle.blocker, gone: G.battle.gone, bgone: G.battle.bgone, forced: clashForced(G) || !!mustBlocker(G) } : null,
-           pending: G.pending ? { pi: G.pending.pi, name: G.pending.name, n: G.pending.n, cands: G.pending.cands, qi: G.pending.qi, text: G.pending.text, kind: G.pending.kind || 'destroy', hand: !!G.pending.hand, exTemp: !!G.pending.exTemp, opt: !!G.pending.opt, yn: !!G.pending.yn, upto: !!G.pending.upto, why: G.pending.why || '', camo: G.pending.camo || null, place: G.pending.place || null, by: G.pending.by == null ? null : G.pending.by, x: G.pending.x ? (G.pending.kind === 'reveal' ? G.pending.x.hidden && G.pending.pi !== i ? { cards: [], takeN: 1, cands: [], phase: 'order', take: 'hand', rest: 'bottom', mode: '', auto: false, optional: false, restIds: [], desc: '', live: [], hidden: true } : { cards: G.pending.x.cards.map(c => ({ iid: c.iid, def: c.def })), hidden: !!G.pending.x.hidden, takeN: G.pending.x.takeN || 1, cands: G.pending.x.cands, phase: G.pending.x.phase, take: G.pending.x.take, rest: G.pending.x.rest, mode: G.pending.x.mode || '', auto: !!G.pending.x.auto, optional: G.pending.x.optional, restIds: G.pending.x.restIds, desc: G.pending.x.desc, live: G.pending.x.live || [] } : G.pending.x) : null, fam: G.pending.fam || '' } : null, undoPlay: G.undoPlay && G.undoPlay.pi === i && !G.pending && !G.battle ? G.undoPlay.name : null, canUndo: !!(G.undo && G.pending && !(G.pending.by != null && G.pending.by !== G.pending.pi)), evs: G.evs, winner: G.winner, loseWhy: G.loseWhy || '', usable: usableFor(G, i), trace: G.trace, fx: G.fx, seq: G.seq, notice: G.notice,
+           pending: G.pending ? { alt: G.pending.alt ? { base: G.pending.alt.base || '', label: G.pending.alt.label || '' } : null, altFree: !!(G.pending.alt && /リザーブ/.test(G.pending.alt.label || '') && G.pending.cands.length === 1), pi: G.pending.pi, name: G.pending.name, n: G.pending.n, cands: G.pending.cands, qi: G.pending.qi, text: G.pending.text, kind: G.pending.kind || 'destroy', hand: !!G.pending.hand, exTemp: !!G.pending.exTemp, opt: !!G.pending.opt, yn: !!G.pending.yn, upto: !!G.pending.upto, why: G.pending.why || '', camo: G.pending.camo || null, place: G.pending.place || null, by: G.pending.by == null ? null : G.pending.by, x: G.pending.x ? (G.pending.kind === 'reveal' ? G.pending.x.hidden && G.pending.pi !== i ? { cards: [], takeN: 1, cands: [], phase: 'order', take: 'hand', rest: 'bottom', mode: '', auto: false, optional: false, restIds: [], desc: '', live: [], hidden: true } : { cards: G.pending.x.cards.map(c => ({ iid: c.iid, def: c.def })), hidden: !!G.pending.x.hidden, takeN: G.pending.x.takeN || 1, cands: G.pending.x.cands, phase: G.pending.x.phase, take: G.pending.x.take, rest: G.pending.x.rest, mode: G.pending.x.mode || '', auto: !!G.pending.x.auto, optional: G.pending.x.optional, restIds: G.pending.x.restIds, desc: G.pending.x.desc, live: G.pending.x.live || [] } : G.pending.x) : null, fam: G.pending.fam || '' } : null, undoPlay: G.undoPlay && G.undoPlay.pi === i && !G.pending && !G.battle ? G.undoPlay.name : null, canUndo: !!(G.undo && G.pending && !(G.pending.by != null && G.pending.by !== G.pending.pi)), evs: G.evs, winner: G.winner, loseWhy: G.loseWhy || '', usable: usableFor(G, i), trace: G.trace, fx: G.fx, seq: G.seq, notice: G.notice,
            noAtk: G.p.flatMap(Q => Q.field.filter(k => k.def.type === 'spirit' && !canAttackNow(G, k)).map(k => k.iid)), symDyn: symDynOf(G),
            bps: Object.fromEntries(G.p.flatMap(Q => Q.field.map(k => [k.iid, curBP(G, k)]))), bpx: Object.fromEntries(G.p.flatMap(Q => Q.field.map(k => { const w = []; curBP(G, k, w); return [k.iid, w]; }))), test: !!G.settings.test, log: G.log.slice(-100), cast: G.cast ? { n: G.cast.n, p: G.cast.pi, def: G.cast.def } : null,
+           stamp: G.stamp ? { mine: G.stamp.p === i, e: G.stamp.e, n: G.stamp.n } : null,
            you: Object.assign(pub(me), { hand: me.hand, fl: me.fl }, G.settings.test ? { deck: me.deck } : {}), opp: pub(op) };
 }
 
@@ -3311,15 +3350,24 @@ freeRender(); setTimeout(() => { if (!$('lobby').hidden) freeStart(); }, 600);
 const BBS_DB = 'https://bs-project-1c372-default-rtdb.firebaseio.com';
 const BBS_REPO = 'katachi-bs/bs-practice';
 let bbsLast = 0;
+let bbsRows = [], bbsPage = 0;
+const BBS_PER = 10;
+function bbsShow() {
+  const box = $('bbsList'); if (!box) return;
+  const pages = Math.max(1, Math.ceil(bbsRows.length / BBS_PER)); bbsPage = Math.min(Math.max(0, bbsPage), pages - 1);
+  const rows = bbsRows.slice(bbsPage * BBS_PER, bbsPage * BBS_PER + BBS_PER);
+  box.innerHTML = (rows.map(x => '<div class="bbsi"><b>' + esc(String(x.name || '').slice(0, 12)) + '</b><small>' + (x.ts ? new Date(x.ts).toLocaleString('ja-JP') : '') + '</small><br>' + esc(String(x.text || '').slice(0, 400)) + '</div>').join('') || '<div class="note">まだ投稿はありません。</div>') +
+    (pages > 1 ? '<div class="bbspg"><button class="sub" data-bbspg="-1"' + (bbsPage === 0 ? ' disabled' : '') + '>◀ 新しい</button><span>' + (bbsPage + 1) + ' / ' + pages + ' ページ(全' + bbsRows.length + '件)</span><button class="sub" data-bbspg="1"' + (bbsPage >= pages - 1 ? ' disabled' : '') + '>古い ▶</button></div>' : '');
+}
 async function bbsLoad() {
   const box = $('bbsList'); if (!box) return;
   if (!BBS_DB) { box.innerHTML = ''; return; }
   try {
-    const r = await fetch(BBS_DB.replace(/\/$/, '') + '/reports.json?orderBy=%22$key%22&limitToLast=30'); const d = await r.json();
-    const rows = Object.values(d || {}).sort((a, b) => (b.ts || 0) - (a.ts || 0));
-    box.innerHTML = rows.map(x => '<div class="bbsi"><b>' + esc(String(x.name || '').slice(0, 12)) + '</b><small>' + (x.ts ? new Date(x.ts).toLocaleString('ja-JP') : '') + '</small><br>' + esc(String(x.text || '').slice(0, 400)) + '</div>').join('') || '<div class="note">まだ投稿はありません。</div>';
+    const r = await fetch(BBS_DB.replace(/\/$/, '') + '/reports.json?orderBy=%22$key%22&limitToLast=200'); const d = await r.json();
+    bbsRows = Object.values(d || {}).sort((a, b) => (b.ts || 0) - (a.ts || 0)); bbsPage = 0; bbsShow();
   } catch (e) { box.innerHTML = '<div class="note">掲示板を読み込めませんでした。</div>'; }
 }
+document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-bbspg]'); if (b) { bbsPage += +b.dataset.bbspg; bbsShow(); } });
 $('bbsPost').onclick = async () => {
   const name = ($('bbsName').value || '').trim().slice(0, 12) || ($('myName') && $('myName').value.trim().slice(0, 12)) || 'プレイヤー', text = ($('bbsText').value || '').trim().slice(0, 400), st = $('bbsStat');
   if (!text) { st.textContent = '内容を書いてください'; return; }
@@ -3332,6 +3380,18 @@ $('bbsPost').onclick = async () => {
   } catch (e) { st.textContent = '送信できませんでした。しばらくしてからもう一度お試しください'; }
 };
 setTimeout(bbsLoad, 800);
+/* サンプルデッキ: cards/サンプルデッキ/一覧.txt に書かれたファイル名の .txt(デッキ書き出しの文字)を読み込む。読めないときは cards-data.js に入っているものを使う */
+(async function loadSampleFolder() {
+  try {
+    const base = 'cards/' + encodeURIComponent('サンプルデッキ') + '/';
+    const r = await fetch(base + encodeURIComponent('一覧.txt'), { cache: 'no-cache' }); if (!r.ok) return;
+    const names = (await r.text()).replace(/^\uFEFF/, '').split(/\r?\n/).map(x => x.trim()).filter(x => x && x[0] !== '#');
+    const out = [];
+    for (const n of names) { try { const rr = await fetch(base + encodeURIComponent(n), { cache: 'no-cache' }); if (!rr.ok) continue; const o = JSON.parse((await rr.text()).replace(/^\uFEFF/, '').trim()); if (o && o.name && Array.isArray(o.cards)) out.push(o); } catch (e) { } }
+    if (!out.length) return;
+    window.SAMPLE_DECKS = out; bRefreshSelects();
+  } catch (e) { }
+})();
 
 $('cpuLv').onchange = () => { try { localStorage.setItem('bs-cpulv', $('cpuLv').value); } catch (e) { } };
 $('bCpu').onclick = () => {
@@ -3352,7 +3412,7 @@ $('bSolo').onclick = () => {
   viewer = focusP() !== null ? focusP() : G.turn; pushState();
 };
 
-function showGame() { freeStop(); free.joining = false; $('lobby').hidden = true; $('game').hidden = false; document.body.classList.add('ingame'); }
+function showGame() { seenStamp = null; freeStop(); free.joining = false; $('lobby').hidden = true; $('game').hidden = false; document.body.classList.add('ingame'); }
 let homeArm = 0;
 let resTimer = null, resShown = false, rematchMine = false, rematchOpp = false;
 function renderResult() {
@@ -4043,11 +4103,12 @@ function fieldCardHTML(k, own) {
   return '<div class="slot" data-slot="' + k.iid + '" data-own="' + (own ? 1 : 0) + '"><div class="sin' + (own ? '' : ' opp') + '">' + coresHTML(k.cores, 'card:' + k.iid, own) + '<div class="cardbox lvk' + kind + (k.asSp ? ' nxsp' : '') + (k.tapped ? ' tapped' : '') + (k.heavy ? ' heavy' : '') + (V.battle && V.battle.iid === k.iid ? ' atking' : '') + (V.battle && V.battle.blocker === k.iid ? ' blking' : '') + '"><div class="card' + artCls(k) + '" ' + cardAttr(k, own, 'field') + '>' + cardInner(d, low) + '</div></div></div></div>';
 }
 // 1人分の盤面。左列=ライフ/リザーブ、中央=フィールド、右列=デッキ/トラッシュ(相手側はCSSで上下左右を反転して対面にする)
+const mobP = () => window.matchMedia('(max-width:899px) and (orientation:portrait)').matches;
 function sideHTML(P, own) {
   const o = own ? 1 : 0, dz = own && sel.size && !pay ? ' drop' : '';
   const colA = '<div class="col ca">' +
     '<div class="zone"' + (own ? ' data-nodrop="life"' : '') + '><div class="zt">ライフ</div>' + lifeHTML(P.life, own) + '</div>' +
-    '<div class="zone' + dz + '"' + (own ? ' data-dest="reserve"' : '') + '><div class="zt">リザーブ</div>' + coresHTML(P.reserve, 'reserve', own) + '</div></div>';
+    '<div class="zone' + dz + (own && V.pending && V.pending.altFree && V.pending.pi === V.me ? ' altz' : '') + '"' + (own ? ' data-dest="reserve"' : '') + (own && V.pending && V.pending.altFree && V.pending.pi === V.me ? ' data-altz="1"' : '') + '><div class="zt">リザーブ' + (own && V.pending && V.pending.altFree && V.pending.pi === V.me ? '(ここをタップで置く)' : '') + '</div>' + coresHTML(P.reserve, 'reserve', own) + '</div></div>';
   const hold = millHold[own ? 'me' : 'opp'], TR = hold && Date.now() < hold.until ? P.trash.filter(k => !hold.ids.has(k.iid)) : P.trash;
   const top = TR.length ? TR[TR.length - 1] : null;
   const pile = top ? '<div class="pile"><div class="card tface' + artCls({ def: top.def }) + '" style="--cc:' + (COLOR_HEX[top.def.color] || '#6a7499') + (artOf(top.def.id) ? ';background-image:url(' + artOf(top.def.id) + ')' : '') + '">' + cardInner(top.def, '') + '</div><span class="pn">' + TR.length + '</span></div>' : '<div class="pile empty">なし</div>';
@@ -4062,7 +4123,8 @@ function sideHTML(P, own) {
   let K = 8; const S = sp.length, N = nx.length;
   while (K < S + N && !(Math.min(S, K) + Math.max(0, N - K) <= K && Math.max(0, S - K) + Math.min(N, K) <= K)) K++;
   let field;
-  if (S <= 8 && N <= 8) field = '<div class="field"><div class="lane sp" style="--n:' + S + '">' + sp.map(k => fieldCardHTML(k, own)).join('') + '</div><div class="lane nx" style="--n:' + N + '">' + nx.map(k => fieldCardHTML(k, own)).join('') + '</div></div>';
+  if (mobP()) field = '<div class="field mb"><div class="lane sp" style="--n:' + S + '">' + sp.map(k => fieldCardHTML(k, own)).join('') + '</div><div class="lane nx" style="--n:' + N + '">' + nx.map(k => fieldCardHTML(k, own)).join('') + '</div></div>';
+  else if (S <= 8 && N <= 8) field = '<div class="field"><div class="lane sp" style="--n:' + S + '">' + sp.map(k => fieldCardHTML(k, own)).join('') + '</div><div class="lane nx" style="--n:' + N + '">' + nx.map(k => fieldCardHTML(k, own)).join('') + '</div></div>';
   else {
     const mk = a => a.map(k => fieldCardHTML(k, own)).join(''), rgt = h => h ? '<span class="dnr"></span>' + h : '';
     field = '<div class="field"><div class="lane sp dn" style="--n:' + K + '">' + mk(sp.slice(0, K)) + rgt(mk(nx.slice(K))) + '</div><div class="lane nx dn" style="--n:' + K + '">' + mk(sp.slice(K)) + rgt(mk(nx.slice(0, K))) + '</div></div>';
@@ -4165,9 +4227,16 @@ function payTap(loc, soulId) {
     const cand = coresAt(loc).filter(c => !c.soul && !other.has(c.id)), inB = cand.filter(c => mine.has(c.id));
     if (inB.length < cand.length) { const nid = cand.find(c => !mine.has(c.id)).id; payRoom(st, b, nid); mine.add(nid); } else inB.forEach(c => mine.delete(c.id));
   }
+  if (b === 'pay' && soulId) fillPlace();
   const s2 = payState();
   if (s2 && b === 'pay' && s2.payOk && !s2.placeOk) pay.bucket = 'place';
   render();
+}
+function plvBtns(st) {
+  const v = plvOf(st.d); if (!(st.d.levels || []).length || st.d.levels.length < 2) return '';
+  const act = plvActive(st), b = (m, label) => '<button class="plv' + (act === m ? ' on' : '') + '" data-plv="' + m + '">' + label + '</button>';
+  const hasSoul = V.you.reserve.some(c => c.soul) || V.you.field.some(k => k.cores.some(c => c.soul));
+  return '<div class="plvs">' + b('1', 'Lv1') + b('2', 'Lv2(通常コア' + v.l2 + ')') + (v.shin && hasSoul ? b('s', '真界放(ソウルコア)') : '') + '</div>';
 }
 function payHTML() {
   const st = payState(); if (!st) return '';
@@ -4203,7 +4272,7 @@ function payHTML() {
   const cores = allCores(V.you);
   const toks = set => [...set].map(id => { const c = cores.find(x => x.id === id); return '<span class="tok' + (c && c.soul ? ' soul' : '') + '" data-prm="' + id + '" title="タップで外す">' + (c && c.soul ? '★' : '●') + '</span>'; }).join('');
   let z = '<div class="pc"><div class="pzs"><div class="pz' + (pay.bucket === 'pay' ? ' on' : '') + (payOk ? ' ok' : over ? ' bad' : '') + '" data-pzone="pay" data-ptab="pay"><span class="pzt">支払い(トラッシュへ) ' + nPay + '/' + need + '</span><div class="toks">' + toks(pay.pay) + '</div></div>';
-  if (d.type !== 'magic') z += '<div class="pz' + (pay.bucket === 'place' ? ' on' : '') + (placeOk ? ' ok' : '') + '" data-pzone="place" data-ptab="place"><span class="pzt">置くコア ' + nPlace + (minPlace ? '/' + minPlace + '以上' : '(任意)') + '</span><div class="toks">' + toks(pay.place) + '</div></div>';
+  if (d.type !== 'magic') z += '<div class="pz' + (pay.bucket === 'place' ? ' on' : '') + (placeOk ? ' ok' : '') + '" data-pzone="place" data-ptab="place"><span class="pzt">置くコア ' + nPlace + (minPlace ? '/' + minPlace + '以上' : '(任意)') + '</span>' + plvBtns(st) + '<div class="toks">' + toks(pay.place) + '</div></div>';
   z += '</div><div class="dim">リザーブ・場のコアを枠へドラッグ(タップでも可)。決定すると支払います</div></div>';
   const b = '<div class="bt"><button data-pok="1"' + (payOk && placeOk ? '' : ' disabled') + '>決定</button><button class="sub" data-pauto="1">自動で選ぶ</button><button class="sub" data-pcancel="1">やめる</button></div>';
   return '<div class="paywrap ' + cls + '" data-keepsel="1">' + a + z + b + '</div>';
@@ -4230,6 +4299,40 @@ function payAdd(b, loc, soulId) {
   other.delete(id); mine.add(id); pay.bucket = b; render();
 }
 // 「ソウルコアで支払う」のON/OFF(支払いの1個をソウルコアに替える/戻す)
+// 「置くコア」をレベルのボタンで選ぶ: 1=レベル1 / 2=レベル2(通常コア) / s=真界放(ソウルコア1個)。支払いに選んだコアは使わない
+function plvOf(d) { const L = d.levels || []; return { l1: L[0] ? L[0].core : 0, l2: L[1] ? L[1].core : 0, shin: (d.keywords || []).includes('shinkai') && L.length > 1 }; }
+function plvActive(st) {
+  const cores = allCores(V.you), soul = [...pay.place].some(id => { const c = cores.find(x => x.id === id); return c && c.soul; }), v = plvOf(st.d);
+  if (soul && v.shin) return 's';
+  if (v.l2 && pay.place.size >= v.l2) return '2';
+  return '1';
+}
+function setPlaceLv(m) {
+  const st = payState(); if (!st || st.d.type === 'magic') return;
+  const v = plvOf(st.d), R = V.you.reserve, cores = allCores(V.you);
+  pay.place = new Set();
+  if (m === 's') {
+    const sc = R.find(c => c.soul && !pay.pay.has(c.id)) || cores.find(c => c.soul && !pay.pay.has(c.id));
+    if (!sc) { toast('ソウルコアは支払いに使っているか、ありません'); render(); return; }
+    pay.place.add(sc.id);
+  } else {
+    const n = m === '2' ? Math.max(st.minPlace, v.l2) : st.minPlace;
+    R.filter(c => !c.soul && !pay.pay.has(c.id)).slice(0, n).forEach(c => pay.place.add(c.id));
+    if (pay.place.size < n) pickFieldCores(n - pay.place.size, new Set([...pay.pay, ...pay.place]), false).forEach(c => pay.place.add(c.id));
+    if (pay.place.size < n) { toast('通常コアが足りません(支払いを減らすか、ソウルコアを使ってください)'); }
+  }
+  pay.bucket = 'place'; render();
+}
+// ソウルコアを支払いに使ったあとも、置くコアが足りなくならないよう自動で用意する
+function fillPlace() {
+  const st = payState(); if (!st || st.d.type === 'magic') return;
+  [...pay.place].forEach(id => { if (pay.pay.has(id)) pay.place.delete(id); });
+  const need = st.minPlace - pay.place.size; if (need <= 0) return;
+  const used = () => new Set([...pay.pay, ...pay.place]);
+  V.you.reserve.filter(c => !c.soul && !used().has(c.id)).slice(0, need).forEach(c => pay.place.add(c.id));
+  if (pay.place.size < st.minPlace) pickFieldCores(st.minPlace - pay.place.size, used(), false).forEach(c => pay.place.add(c.id));
+  if (pay.place.size < st.minPlace) V.you.reserve.filter(c => c.soul && !used().has(c.id)).slice(0, st.minPlace - pay.place.size).forEach(c => pay.place.add(c.id));
+}
 function toggleSoulPay() {
   const st = payState(); if (!st || st.info.soul) return;
   const all = allCores(V.you), isSoul = id => { const c = all.find(x => x.id === id); return !!(c && c.soul); };
@@ -4244,6 +4347,7 @@ function toggleSoulPay() {
     if (st.need > 0 && pay.pay.size >= st.need) pay.pay.delete([...pay.pay].reverse()[0]);
     pay.pay.add(sc.id);
   }
+  fillPlace();
   render();
 }
 
@@ -4263,12 +4367,13 @@ function openByName(n) {
 function ctlHTML() {
   const my = V.turn === V.me, curS = animStep || V.step, idx = STEPS.indexOf(curS);
   const stepsHTML = '<div class="vsteps">' + STEPS.map((s, i) => '<div class="vs' + (i === idx ? ' on' : i < idx ? ' done' : '') + (V.noAttack && (s === 'attack' || s === 'main2') ? ' skip' : '') + '"><span class="n">' + STEP_NUM[s] + '</span>' + STEP_SHORT[s] + (V.noAttack && (s === 'attack' || s === 'main2') ? '(省略)' : '') + (i === idx ? '<span class="ar">◀</span>' : '') + '</div>').join('') +
-    '<div class="vs nxt">↓ ' + (my ? pn(1 - V.me) : 'あなた') + 'のターンへ</div></div>';
+    '<div class="vs nxt">↓ ' + (my ? pn(1 - V.me) : 'あなた') + 'のターンへ</div>' +
+    (my && !(V.battle || V.pending || V.mull || V.pick || V.winner != null) && !pay ? '<button class="endtop" data-next="1">' + STEP_SHORT[V.step] + '終了 ▶</button>' : '') + '</div>';
   const head = vsLine() + '<div class="turnbox"><b>' + V.turnNo + 'ターン目</b><span class="who">' + (my ? 'あなたの番' : pn(1 - V.me) + 'の番') + '</span></div>' + (pay ? stepsHTML.replace('class="vsteps"', 'class="vsteps pv2"') : '') + '<button class="sub sidetog" data-sidetog="1">' + (sideOpen ? '▲' : '▼') + '</button>';
   const warns = (V.noAttack ? '<div class="tag">先攻1ターン目: アタック不可</div>' : '') +
     '';
-  const menuBtns = '<button class="sub" data-menu="1">' + (menuOpen ? '▲ メニュー' : '⚙ メニュー') + '</button><button class="sub" data-log="1">📜 ログ' + (logOpen ? ' ▲' : '') + '</button>';
-  const menuBtns1 = '<button class="sub" data-menu="1">' + (menuOpen ? '▲メニュー' : 'メニュー') + '</button><button class="sub" data-log="1">ログ' + (logOpen ? '▲' : '') + '</button>';
+  const menuBtns = '<button class="sub" data-menu="1">' + (menuOpen ? '▲ メニュー' : '⚙ メニュー') + '</button><button class="sub" data-log="1">📜 ログ' + (logOpen ? ' ▲' : '') + '</button><button class="sub stampb" data-stampbtn="1" title="スタンプ">😃</button>';
+  const menuBtns1 = '<button class="sub" data-menu="1">' + (menuOpen ? '▲メニュー' : 'メニュー') + '</button><button class="sub" data-log="1">ログ' + (logOpen ? '▲' : '') + '</button><button class="sub stampb" data-stampbtn="1" title="スタンプ">😃</button>';
   const undoBtn = V.undoPlay ? '<button class="sub undo" data-undoplay="1">↩ 「' + esc(V.undoPlay) + '」を出す前に戻る</button>' : '';
   const menuRow = '<div class="row">' + menuBtns + '</div>' + undoBtn + (logOpen ? '<div class="inlog">' + V.log.slice().reverse().map(l => logLine(l)).join('') + '</div>' : '') +
     // ソロ・テスト用のボタンはメニューの中に隠しておく
@@ -4378,7 +4483,7 @@ function promptHTML() {
     const placeOk = !pd.place || (pickSel.size === 0 ? sel.size === 0 : sel.size >= pd.place.min);
     const placeBox = pd.place ? '<div class="camoh ' + (placeOk && pickSel.size ? 'ok' : '') + '"><b>コアを置く</b> 選んだネクサスに置くコアを、リザーブ/場のコアからタップで<b>' + pd.place.min + '個以上</b>選んでください(そのネクサスはスピリットとして扱います)  選択中 ' + sel.size + '個</div>' : '';
     const smT = pd.sumMax ? [...pickSel].reduce((sm, i) => { const k = V.opp.field.concat(V.you.field).find(x => x.iid === i); return sm + (k ? (pd.sumMax.k === 'cost' ? k.def.cost : (V.bps && V.bps[k.iid]) || 0) : 0); }, 0) : 0, smOk = !pd.sumMax || smT <= pd.sumMax.max;
-    const okSel = (pd.upto ? pickSel.size >= 1 : pickSel.size === n) && camoOk && placeOk && smOk;
+    const okSel = ((pd.upto ? pickSel.size >= 1 : pickSel.size === n) || !!pd.altFree) && camoOk && placeOk && smOk;
     return R('<b class="hl">' + (mv ? '「' + esc(pd.name) + '」: コアを置く' + (pd.fam ? '「' + esc(pd.fam) + '」の' : '') + 'スピリットを選んでください' + (pd.opt ? '(任意)' : '') : '「' + esc(pd.name) + '」の対象を' + (pd.upto ? n + '体まで' : n + '体') + '選んでください' + (pd.why ? '(' + esc(pd.why) + ')' : '') + (pd.opt && !pd.upto ? '(任意)' : '') + (pd.sumMax ? ' 合計' + (pd.sumMax.k === 'cost' ? 'コスト' : 'BP') + pd.sumMax.max + 'まで(今 ' + smT + (smOk ? '' : ' ✕多すぎます') + ')' : '')) + '</b><span>(' + pickSel.size + '/' + n + ')</span>', true,
       camoBox + placeBox + '<div class="row2"><button data-pchoose="1"' + (okSel ? '' : ' disabled') + '>' + (pd.alt ? esc(pd.alt.base || '決定') : '決定') + '</button>' + (pd.alt ? '<button data-pchoose="1" data-alt="1"' + (okSel ? '' : ' disabled') + '>' + esc(pd.alt.label) + '</button>' : '') + (pd.opt ? '<button class="sec" data-pnone="1">' + (pd.place ? 'スピリット化しない(次へ)' : '指定しない') + '</button>' : '') + (V.canUndo ? '<button class="sec" data-cancelcast="1">戻る</button>' : '') + '</div>');
   }
@@ -4416,6 +4521,14 @@ setInterval(() => {
   idleOn = true; btns.forEach(b => b.classList.add('idleglow'));
   const m = document.createElement('div'); m.id = 'idlemsg'; m.innerHTML = 'あなたのターンです<small>' + esc(STEP_JP[V.step] || '') + 'ステップ</small>'; document.body.appendChild(m);
 }, 1000);
+// スマホ: 支払いポップアップが自分のフィールドにかぶらないよう、高さを「自分のフィールドの手前まで」に収める(長い効果文はポップの中でスクロール)
+function fitPay() {
+  const pw = document.querySelector('.paywrap'); if (!pw) return;
+  if (!window.matchMedia('(max-width:899px),(max-height:559px)').matches) { pw.style.maxHeight = ''; return; }
+  const me = $('me'); if (!me) return;
+  const top = pw.getBoundingClientRect().top, lim = me.getBoundingClientRect().top - top - 6;
+  pw.style.maxHeight = Math.max(150, lim) + 'px';
+}
 function render() {
   if (!V) return;
   { const pd = V.pending, b0 = V.battle;   // カードを選ぶ場面(対象の指定・ブロック宣言)では、カード上のコアの判定をなくして、カードを選びやすくする
@@ -4470,6 +4583,8 @@ function render() {
       $('banner').hidden = false; clearTimeout(bannerTimer); bannerTimer = setTimeout(() => { $('banner').hidden = true; }, 4000);
     }
   }
+  fitPay();
+  if (V.stamp) { if (seenStamp === null) seenStamp = V.stamp.n; else if (V.stamp.n !== seenStamp) { seenStamp = V.stamp.n; showStamp(V.stamp.mine, V.stamp.e); } } else if (seenStamp === null) seenStamp = 0;
   const pc = pay ? payState() : null;
   $('game').style.setProperty('--paycol', pc ? (pc.over ? 'var(--bad)' : pc.payOk && pc.placeOk ? 'var(--ok)' : 'var(--warn)') : 'var(--warn)');
 }
@@ -4622,7 +4737,20 @@ function moveCoresGuarded(ids, to) {
   sheetActs = [];
   showSheet('<h3>本当にコアを動かしますか?</h3><div class="txt">「' + gone.map(k => esc(k.def.name)).join('」「') + '」のコアがすべて無くなり、<b>消滅</b>します。<br>(破壊ではなく消滅です。破壊時の効果は働きません)</div><div class="acts">' + sbtn('消滅させてよい', go) + sbtn('やめる', () => {}, 1) + '</div>');
 }
+let seenStamp = null, stampAt = 0;
+function stampPal(open) {
+  let el = $('stampPal');
+  if (!el) { el = document.createElement('div'); el.id = 'stampPal'; document.body.appendChild(el); }
+  el.hidden = !open; el.innerHTML = open ? STAMPS.map(e => '<button data-stamp="' + e + '">' + e + '</button>').join('') : '';
+}
+function showStamp(mine, e) {
+  const b = document.createElement('div'); b.className = 'stampfx ' + (mine ? 'mine' : 'opp'); b.textContent = e; document.body.appendChild(b); setTimeout(() => b.remove(), 2600);
+}
 function handleClick(t) {
+  if (t.closest('[data-stampbtn]')) { const el = $('stampPal'); stampPal(!(el && !el.hidden)); return; }
+  { const sb = t.closest('[data-stamp]'); if (sb) { if (Date.now() - stampAt < 1200) return; stampAt = Date.now(); stampPal(false); doAct({ k: 'stamp', e: sb.dataset.stamp }); return; } }
+  if (!t.closest('#stampPal') && $('stampPal') && !$('stampPal').hidden) stampPal(false);
+  if (V && V.pending && V.pending.altFree && V.pending.pi === V.me && t.closest('[data-altz]') && !t.closest('[data-pchoose]')) { pickSel.clear(); sel.clear(); doAct({ k: 'choose', iids: [V.pending.cands[0]], alt: true }); return; }
   const sa = t.closest('[data-sa]');
   if (sa) { const fn = sheetActs[+sa.dataset.sa]; hideSheet(); if (fn) fn(); return; }
   if (t.closest('[data-close]')) { hideSheet(); return; }
@@ -4638,6 +4766,7 @@ function handleClick(t) {
   if (t.closest('[data-pok]')) { confirmPay(); return; }
   if (t.closest('[data-pcancel]')) { cancelPay(); return; }
   if (t.closest('[data-pdetail]')) { const k = pay && ((V.you.hand.find(x => x.iid === pay.iid)) || V.you.trash.find(x => x.iid === pay.iid)); if (k) showSheet(detailHTML({ def: k.def, cores: [], iid: '' }) + '<div class="acts"><button class="sub" data-close="1">閉じる</button></div>'); return; }
+  const plv = t.closest('[data-plv]'); if (plv) { setPlaceLv(plv.dataset.plv); return; }
   if (t.closest('[data-pauto]')) { autoPay(); render(); return; }
   const tab = t.closest('[data-ptab]');
   if (tab && !t.closest('[data-prm]')) { pay.bucket = tab.dataset.ptab; render(); return; }
@@ -4724,7 +4853,7 @@ function handleClick(t) {
   if (t.closest('[data-pcolor]')) { doAct({ k: 'choose', iids: [t.closest('[data-pcolor]').dataset.pcolor] }); return; }
   { const py = t.closest('[data-pyes]'); if (py) { pickSel.clear(); sel.clear(); doAct({ k: 'choose', iids: [py.dataset.pyes] }); return; } }
   if (t.closest('[data-pnone]')) { pickSel.clear(); sel.clear(); doAct({ k: 'choose', iids: [] }); return; }
-  if (t.closest('[data-pchoose]')) { const ids = [...pickSel]; const pd0 = V.pending, py = pd0 && (pd0.camo || pd0.place) ? [...sel] : []; pickSel.clear(); sel.clear(); doAct({ k: 'choose', iids: ids, alt: !!t.closest('[data-pchoose]').dataset.alt, pay: py }); return; }
+  if (t.closest('[data-pchoose]')) { const ids = [...pickSel]; if (!ids.length && V.pending && V.pending.altFree) ids.push(V.pending.cands[0]); const pd0 = V.pending, py = pd0 && (pd0.camo || pd0.place) ? [...sel] : []; pickSel.clear(); sel.clear(); doAct({ k: 'choose', iids: ids, alt: !!t.closest('[data-pchoose]').dataset.alt, pay: py }); return; }
   const prm = t.closest('[data-prm]');
   if (prm && pay) { pay.pay.delete(prm.dataset.prm); pay.place.delete(prm.dataset.prm); render(); return; }
   if (t.closest('[data-lifem]')) { doAct({ k: 'setLifeManual', v: !V.lifeManual }); return; }
@@ -4906,7 +5035,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v33.2.1 (2026/11/13)';
+const APP_VER = 'v34 (2026/11/14)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
