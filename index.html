@@ -279,7 +279,9 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .pzs{display:flex;gap:8px}
 .exh{font-size:11px;color:var(--sub);margin-top:2px}
 .pfx{background:#0006;border:1px solid #fff3;border-radius:8px;padding:6px 8px;margin:4px 0;font-size:12px;line-height:1.5;text-align:left;position:relative}.pfx .pdet{float:right;margin:0 0 4px 8px;padding:3px 10px;font-size:11px}
-.exrow{display:flex;flex-wrap:wrap;gap:4px;max-height:calc(var(--cw) * 1.1);overflow:auto;padding:2px}
+.exwrap{display:flex;align-items:center;gap:8px;margin-top:2px}.exwrap .exh{flex:0 0 auto;max-width:38%;margin:0}
+.exrow{display:flex;flex-wrap:nowrap;gap:5px;overflow-x:auto;overflow-y:hidden;padding:5px 3px 4px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;flex:1 1 auto;min-width:0;scrollbar-width:thin}
+.exrow>.exc{flex:0 0 auto}
 .exc{width:calc(var(--cw) * .62);height:calc(var(--cw) * .86);flex:0 0 auto;border:2px solid var(--cc,#6a7499);border-radius:5px;background:#232840;padding:2px;font-size:9px;line-height:1.15;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;overflow:hidden;opacity:.7}
 .exc b{overflow:hidden;max-height:3.4em;word-break:break-all}.exc span{color:var(--sub)}.exc em{font-style:normal;color:var(--sub);font-size:8px}
 .exc.hasart{width:calc(var(--cw) * .9);height:calc(var(--cw) * 1.25);background-size:cover;background-position:center;padding:0}.exc.hasart b,.exc.hasart span,.exc.hasart em{display:none}
@@ -424,6 +426,7 @@ body.shake #mat{animation:lzshake .7s linear both}
 @media (max-width:899px){
   :root{--cwb:clamp(44px,min(12vw,6.6vh),84px)}
   .sin>.cores .cc{min-width:calc(var(--cw) * .34);height:calc(var(--cw) * .36);font-size:calc(var(--cw) * .14)}
+  .sin>.cores{flex-wrap:nowrap;gap:2px}.sin>.cores .core,.sin>.cores .souli{width:calc(var(--cw) * .36);height:calc(var(--cw) * .36);transform:none;flex:0 0 auto}   /* ソウルコアも通常コアと同じ大きさにして、横に並べる */
   .cc,.cscore,.core{position:relative}
   .cc::before,.core::before{content:'';position:absolute;inset:-7px}   /* 見た目より広く反応させる(指で押しやすく) */
   .col{width:calc(var(--cw) * 1.25)}
@@ -629,7 +632,7 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     <h2>対戦する</h2>
     <p class="note">同じ合言葉を入力した2人が自動でマッチングします。ランダムで選ばれた側が、先攻・後攻を選びます。</p>
     <input id="pass" placeholder="合言葉(4文字以上)" maxlength="30" autocomplete="off" style="margin:8px 0">
-    <div class="row"><button id="bMatch">対戦開始</button><label class="ck dev-only"><input type="checkbox" id="testModeNet">テストモード(デッキサーチを有効にする)</label></div>
+    <div class="row"><button id="bMatch">対戦開始</button></div>
     <div id="conn" style="margin-top:8px;font-size:13px;color:var(--sub)"></div>
   </div>
   <div class="box b-free">
@@ -693,8 +696,7 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
         <select id="bSet"><option value="">収録</option></select>
         <label class="ck" style="font-size:12px"><input type="checkbox" id="bEx" style="width:auto">EX</label>
       </div>
-      <div class="bpackrow"><span id="bPackInfo" class="note"></span>
-        <button id="bImport" class="sub">カードフォルダを読み込む</button><input type="file" id="bFolder" webkitdirectory multiple hidden></div>
+      <div class="bpackrow"><span id="bPackInfo" class="note"></span></div>
       <div id="bGrid" class="bgrid"></div>
     </div>
     <div class="bdeck" id="bDeckPane">
@@ -775,7 +777,7 @@ function markNodup(out) {
   lines.forEach((ln, i) => {
     if (!ln.includes('重複不可')) return;
     let body = nz(lines[i + 1]); if (!body) return;
-    out.effects.forEach(e => { if (e.timing.kind !== 'trigger' || e.timing.nodup) return; const et = nz(e.text); if (et && (et.startsWith(body) || body.startsWith(et))) e.timing.nodup = true; });
+    out.effects.forEach(e => { if (e.timing.kind === 'keyword' || e.timing.nodup) return; const et = nz(e.text); if (et && (et.startsWith(body) || body.startsWith(et))) e.timing.nodup = true; });
   });
   return out;
 }
@@ -791,7 +793,7 @@ function cleanDef(d) {
     cost: int(d.cost, 0, 30), reduction: int(d.reduction, 0, 10),
     symbols: { normal: int(sy.normal, 0, 5), ex: !!sy.ex },
     keywords: Array.isArray(d.keywords) ? d.keywords.slice(0, 10).map(x => str(x, 20)) : [],
-    soulMagic: !!d.soulMagic, noMain: !!d.noMain, vanilla: !!d.vanilla, auto: !!d.auto, partial: !!d.partial, levels: lv, text: str(d.text, 800),
+    soulMagic: !!d.soulMagic, noMain: !!d.noMain, vanilla: !!d.vanilla && !(Array.isArray(d.team) && d.team.length), auto: !!d.auto, partial: !!d.partial, levels: lv, text: str(d.text, 800),
     effects: Array.isArray(d.effects) ? d.effects.slice(0, 8).map(cleanEffect) : []
   });
 }
@@ -1184,7 +1186,7 @@ function playCard(G, pi, a) {
   { const used = new Set(pay.concat(place)), fi = new Set(); (Array.isArray(a.fill) ? a.fill : []).slice(0, 10).forEach(f => {
       if (!f || used.has(String(f.id)) || fi.has(String(f.id))) return; const tc = P.field.find(x => x.iid === String(f.iid)), cf = findCore(P, String(f.id));
       if (!tc || !cf || cf.zone !== 'reserve' || cf.arr[cf.i].soul) return; fi.add(String(f.id));
-      if (moveCore(G, pi, String(f.id), { zone: 'card', iid: tc.iid })) lg(G, pi, '　「' + tc.def.name + '」はコアが0になるため、リザーブのコア1個を載せて消滅を防ぎました'); }); }
+      const sm = tc.cores.some(c => c.soul && used.has(c.id)); if (moveCore(G, pi, String(f.id), { zone: 'card', iid: tc.iid })) lg(G, pi, '　' + (sm ? 'フィールドの「' + tc.def.name + '」からソウルコアを移動します。代わりにリザーブのコアを1個「' + tc.def.name + '」に置きました' : '「' + tc.def.name + '」はコアが0になるため、リザーブのコア1個を載せて消滅を防ぎました')); }); }
   pay.forEach(id => moveCore(G, pi, id, { zone: 'coreTrash' }));
   P.hand.splice(P.hand.indexOf(k), 1);
   if (d.type === 'magic') { P.trash.push(k); lg(G, pi, '「' + d.name + '」を使用'); }
@@ -1280,6 +1282,7 @@ function curBP(G, k, why) {
       return;
     }
     if (t.when === 'step') {
+      if (t.nodup && G.p[si].field.findIndex(x => x.def.name === c.def.name && x.def.effects.some(f => f.timing.nodup && f.text === e.text && effectActive(x, f))) < G.p[si].field.indexOf(c)) return;   // 〔重複不可〕
       if (!evalCond(G, si, e.cond)) return;
       if (t.step && G.step !== t.step) return;
       if (t.turn === 'you' && G.turn !== si) return;
@@ -1545,7 +1548,7 @@ function camoSetup(G, it, qi, cands, pd, byOpp) {
   }
   return out;
 }
-const hexed = (G, it, qi, c) => qi !== it.pi && ((!!G.battle && !!(it.ctx && it.ctx.event === 'use') && (G.hex || []).some(h => h.iid === c.iid && h.bn === G.battleNo)) || (!!(it.ctx && it.ctx.event === 'use') && c.def.effects.some(e => e.timing.kind === 'static' && effectActive(c, e) && e.ops.some(o => o.op === 'noMagicTarget'))) || (!!(it.ctx && it.ctx.event === 'use') && G.p[qi].field.some(X => X.def.effects.some(e => e.timing.kind === 'static' && effectActive(X, e) && e.ops.some(o => o.op === 'noMagicTargetT' && matchT(G, qi, qi, c, Object.assign({ who: 'you' }, o.target)))))));
+const hexed = (G, it, qi, c) => qi !== it.pi && ((!!G.battle && !!(it.ctx && it.ctx.event === 'use') && (G.hex || []).some(h => h.iid === c.iid && h.bn === G.battleNo)) || (!!(it.ctx && it.ctx.event === 'use') && c.def.effects.some(e => e.timing.kind === 'static' && effectActive(c, e) && (!e.timing.step || G.step === e.timing.step) && (!e.timing.turn || (e.timing.turn === 'you') === (G.turn === qi)) && (!e.cond || evalCond(G, qi, e.cond)) && e.ops.some(o => o.op === 'noMagicTarget'))) || (!!(it.ctx && it.ctx.event === 'use') && G.p[qi].field.some(X => X.def.effects.some(e => e.timing.kind === 'static' && effectActive(X, e) && e.ops.some(o => o.op === 'noMagicTargetT' && matchT(G, qi, qi, c, Object.assign({ who: 'you' }, o.target)))))));
 
 // ---- 拡張の効果部品(未対応のopは XH を返し、execOp本体で処理する) ----
 const XH = { x: 1 };
@@ -1631,8 +1634,8 @@ function execOpX(G, it, op) {
     return;
   }
   if (op.op === 'nameOnce') {   // 「自身は同じカード名のこの効果をターンに1回しか使えない」
-    G.nameUsed = G.nameUsed || {}; const key = it.pi + '|' + op.key + '|' + it.name;
-    if (G.nameUsed[key] === G.turnNo) { lg(G, it.pi, '　' + it.name + ': 同じカード名のこの効果は、このターンすでに使っているため、続きは行いません'); if (it.fx) it.fx.r.push('同じカード名のこの効果は、このターン中すでに使っているため、何も起きません'); it.ops = it.ops.slice(0, it.i + 1); return; }
+    G.nameUsed = G.nameUsed || {}; const key = it.pi + '|' + op.key + (op.shared ? '' : '|' + it.name);
+    if (G.nameUsed[key] === G.turnNo) { lg(G, it.pi, '　' + it.name + ': ' + (op.shared ? '【響走】は、このターンすでにどちらかが使っているため、続きは行いません' : '同じカード名のこの効果は、このターンすでに使っているため、続きは行いません')); if (it.fx) it.fx.r.push('同じカード名のこの効果は、このターン中すでに使っているため、何も起きません'); it.ops = it.ops.slice(0, it.i + 1); return; }
     G.nameUsed[key] = G.turnNo; return;
   }
   if (op.op === 'openAsk') { it.acted = false; return XH; }
@@ -2744,7 +2747,7 @@ function timingLabel(t) {
   if (t.when === 'attacking') return 'アタック中';
   if (t.when === 'attblk') return 'アタック/ブロック中';
   if (t.when === 'blocking') return 'ブロック中';
-  if (t.kind === 'static' && t.when === 'step' && t.step && STEP_JP[t.step]) return (t.turn === 'you' ? '自分の' : t.turn === 'opp' ? '相手の' : '') + STEP_JP[t.step] + 'ステップ';
+  if (t.kind === 'static' && t.when === 'step' && t.step && STEP_JP[t.step]) return (t.turn === 'you' ? '自分の' : t.turn === 'opp' ? '相手の' : 'お互いの') + STEP_JP[t.step] + 'ステップ';
   if (t.kind === 'static') return '';
   if (t.kind === 'trigger') return EVENT_JP[t.event] || '';
   if (t.kind === 'flash') return 'フラッシュ';
@@ -3037,14 +3040,6 @@ $('bSave').onclick = () => bSave();
 $('bUse').onclick = () => { if (!$('bName').value.trim()) $('bName').value = '無題のデッキ'; if (!deckTotal()) { toast('カードが入っていません'); return; } if (bSave(true)) { lobbyApply(B.name); closeBuilder(); say('デッキ「' + B.name + '」を使います'); } };
 ['bQ', 'bColor', 'bType', 'bCost', 'bSet'].forEach(id => { $(id).oninput = () => { B.q = $('bQ').value; B.color = $('bColor').value; B.type = $('bType').value; B.cost = $('bCost').value; B.set = $('bSet').value; bRender(); }; });
 $('bEx').onchange = () => { B.ex = $('bEx').checked; bRender(); };
-$('bImport').onclick = () => $('bFolder').click();
-$('bFolder').onchange = async () => {
-  const f = [...$('bFolder').files]; if (!f.length) return;
-  toast('読み込み中…'); const r = await importFolder(f); $('bFolder').value = '';
-  if (r.err) { toast(r.err); return; }
-  bRefreshSelects(); bRender();
-  toast('読み込みました: ' + r.names.join('・') + '(カード' + r.n + '枚・画像' + r.img + '枚)' + (r.errs.length ? ' ※読めないファイル: ' + r.errs.join(',') : ''));
-};
 $('bExport').onclick = () => { const t = JSON.stringify({ name: $('bName').value.trim() || '無題', cards: [...B.deck] }); showSheet('<h3>デッキを書き出す</h3><div class="note">下の文字をコピーして保存すれば、別の端末でも「取り込む」で復元できます。</div><textarea readonly style="height:120px" onfocus="this.select()">' + esc(t) + '</textarea><div class="acts"><button class="sub" data-close="1">閉じる</button></div>'); };
 $('bImportJson').onclick = () => { showSheet('<h3>デッキを取り込む</h3><div class="note">書き出した文字を貼り付けてください。</div><textarea id="bImpText" style="height:120px"></textarea><div class="acts"><button id="bImpOk">取り込む</button><button class="sub" data-close="1">閉じる</button></div>'); $('bImpOk').onclick = () => { try { const o = JSON.parse($('bImpText').value); if (!o || !Array.isArray(o.cards)) throw 0; B.deck = new Map(); o.cards.forEach(([id, n]) => { if (cardById(String(id)) && n > 0) B.deck.set(String(id), Math.min(3, +n | 0)); }); B.name = String(o.name || '無題'); $('bName').value = B.name; hideSheet(); bRender(); toast('取り込みました'); } catch (e) { toast('形式が正しくありません'); } }; };
 document.querySelectorAll('[data-btab]').forEach(b => { b.onclick = () => { $('builder').dataset.tab = b.dataset.btab; document.querySelectorAll('[data-btab]').forEach(x => x.classList.toggle('on', x === b)); }; });
@@ -3208,6 +3203,8 @@ document.addEventListener('visibilitychange', () => { if (document.hidden || !in
 let cpu = false, matchTest = false, guestName = '';
 const getName = () => { const v = ($('myName').value || '').trim().slice(0, 12); return v || 'プレイヤー'; };
 try { $('myName').value = localStorage.getItem('bs-name') || ''; } catch (e) { }
+try { const bn = localStorage.getItem('bs-bbsname'); if (bn) $('bbsName').value = bn; } catch (e) { }
+$('bbsName').oninput = () => { try { localStorage.setItem('bs-bbsname', $('bbsName').value.trim().slice(0, 12)); } catch (e) { } };
 $('myName').oninput = () => { try { localStorage.setItem('bs-name', $('myName').value.trim().slice(0, 12)); } catch (e) { } };
 $('bMatch').onclick = async () => {
   const d = getDeck(); if (!d) return;
@@ -3473,7 +3470,7 @@ function resetToHome(msg) {
   say(msg || ''); free.mine = null; freeButtons(); free.joining = false; setTimeout(freeStart, 1200);
 }
 function startGame() {
-  G = newGame(myDefs, guestDefs, { first: $('first').value, test: DEV && !!($('testModeNet') && $('testModeNet').checked), mulligan: $('mullOn').checked });
+  G = newGame(myDefs, guestDefs, { first: $('first').value, test: false, mulligan: $('mullOn').checked });
   G.names = [getName(), guestName || 'ゲスト'];
   pushState();
 }
@@ -4270,7 +4267,7 @@ function payHTML() {
   if (d.keywords.includes('inheritance') && !pay.soulMagic) {
     const ex = V.you.trash.filter(k => (k.def.symbols.ex && k.def.color === d.color) || (V.you.exIid === k.iid && k.def.color === d.color));
     if (ex.length) {
-      a += '<div class="exh">継召: 除外するEXシンボルのカードを選択 (' + pay.ex.length + '/' + d.reduction + ')</div><div class="exrow">' + ex.map(k => { const art = artOf(String(k.def.id)); return '<div class="exc' + (art ? ' hasart' : '') + (pay.ex.includes(k.iid) ? ' on' : '') + '" data-pex="' + k.iid + '" style="--cc:' + (COLOR_HEX[k.def.color] || '#6a7499') + (art ? ';background-image:url(' + art + ')' : '') + '"><b>' + esc(k.def.name) + '</b><span>' + esc((k.def.family || []).join('・')) + '</span><em>' + esc(k.def.id) + '</em></div>'; }).join('') + '</div>';
+      a += '<div class="exwrap"><div class="exh">継召: 除外するEXシンボルのカードを選択 (' + pay.ex.length + '/' + d.reduction + ')' + (ex.length > 3 ? '<br>←→ 横にスクロール' : '') + '</div><div class="exrow">' + ex.map(k => { const art = artOf(String(k.def.id)); return '<div class="exc' + (art ? ' hasart' : '') + (pay.ex.includes(k.iid) ? ' on' : '') + '" data-pex="' + k.iid + '" style="--cc:' + (COLOR_HEX[k.def.color] || '#6a7499') + (art ? ';background-image:url(' + art + ')' : '') + '"><b>' + esc(k.def.name) + '</b><span>' + esc((k.def.family || []).join('・')) + '</span><em>' + esc(k.def.id) + '</em></div>'; }).join('') + '</div></div>';
     } else a += '<div class="dim">継召: 除外できるEXシンボルなし</div>';
   }
   if (!info.soul && need > 0 && (V.you.reserve.some(c => c.soul) || V.you.field.some(k => k.cores.some(c => c.soul)))) {
@@ -4280,8 +4277,8 @@ function payHTML() {
   if (d.type === 'magic' && !V.battle && d.effects.some(e => e.timing.kind === 'main') && d.effects.some(e => e.timing.kind === 'flash')) a += '<div class="chips"><button class="chip' + (pay.mode !== 'flash' ? ' on' : '') + '" data-pmode="main">メイン効果を使う</button><button class="chip' + (pay.mode === 'flash' ? ' on' : '') + '" data-pmode="flash">フラッシュ効果を使う</button></div>';
   if (info.soulAvail) a += '<div class="chips"><button class="chip soulc' + (pay.soulMagic ? ' on' : '') + '" data-psoul="1">★ ソウルコア1個で使用</button><button class="chip' + (!pay.soulMagic ? ' on' : '') + '" data-psoul="0">通常コアで支払う</button></div>';
   const vf = payFill(), vSave = vf.filter(x => x.c), vGone = vf.filter(x => !x.c).map(x => x.k);
-  if (vSave.length) a += '<div class="warnl okl">ℹ 「' + vSave.map(x => esc(x.k.def.name)).join('」「') + '」はコアが0になるため、<b>かわりにリザーブのコア1個を載せて消滅を防ぎます</b></div>';
-  if (vGone.length) a += '<div class="warnl">⚠ 「' + vGone.map(k => esc(k.def.name)).join('」「') + '」はコアが0になり、決定すると<b>消滅</b>します(破壊ではありません)。リザーブに余っているコアがないため、防げません</div>';
+  vSave.forEach(x => { const sm = x.k.cores.some(c => c.soul && (pay.pay.has(c.id) || pay.place.has(c.id))), n = esc(x.k.def.name); a += '<div class="warnl okl">ℹ ' + (sm ? 'フィールドの「' + n + '」からソウルコアを移動します。<b>代わりにリザーブのコアを1個「' + n + '」に置き</b>、消滅を防ぎます' : '「' + n + '」はコアが0になるため、<b>かわりにリザーブのコア1個を載せて消滅を防ぎます</b>') + '</div>'; });
+  vGone.forEach(k => { const sm = k.cores.some(c => c.soul && (pay.pay.has(c.id) || pay.place.has(c.id))); a += '<div class="warnl">⚠ ' + (sm ? 'フィールドの「' + esc(k.def.name) + '」からソウルコアを移動すると、' : '「' + esc(k.def.name) + '」は') + 'コアが0になり、決定すると<b>消滅</b>します(破壊ではありません)。リザーブに余っているコアがないため、防げません</div>'; });
   a += '<div class="msg">' + msg + '</div></div>';
   const cores = allCores(V.you);
   const toks = set => [...set].map(id => { const c = cores.find(x => x.id === id); return '<span class="tok' + (c && c.soul ? ' soul' : '') + '" data-prm="' + id + '" title="タップで外す">' + (c && c.soul ? '★' : '●') + '</span>'; }).join('');
@@ -4430,36 +4427,37 @@ const rich = t => String(t).replace(/\[青\]/g, SYMB).replace(/青シンボル/g
 const COLOR_JP = { red: '赤', blue: '青', green: '緑', yellow: '黄', purple: '紫', white: '白' };
 // シンボル表記: EXも1個として数え、EXを持つ場合は<EX>を添える(例: 赤<EX> / 赤×2<EX>)
 function symLabel(d) { const n = d.symbols.normal + (d.symbols.ex ? 1 : 0); return n ? ' / シンボル: ' + (d.color === 'red' ? SYMI : d.color === 'purple' ? SYMP : d.color === 'green' ? SYMG : d.color === 'white' ? SYMW : d.color === 'yellow' ? SYMY : d.color === 'blue' ? SYMB : (COLOR_JP[d.color] || esc(d.color))) + (n > 1 ? '×' + n : '') + (d.symbols.ex ? '&lt;EX&gt;' : '') : ''; }
-const effHead = e => {
-  const t = e.timing, lim = t.limit === 'turn' ? '〔ターン1回〕' : t.limit === 'battle' ? '〔バトル1回〕' : '';
+const effHead = (e, d) => {
+  const t = e.timing, l0 = t.limit === 'turn' ? 'ターン1回' : t.limit === 'battle' ? 'バトル1回' : '', lim = t.nodup || l0 ? '〔' + [t.nodup ? '重複不可' : '', l0].filter(Boolean).join('・') + '〕' : '';
   let main;
   if (t.kind === 'keyword' && KW_JP[e.keyword] === '') main = '';
-  else if (t.kind === 'keyword') main = e.keyword === 'camo' ? '【迷彩：' + ((e.ops && e.ops[0] && e.ops[0].n) || 1) + '】' : '《' + (KW_JP[e.keyword] || e.keyword) + '》';
-  else if (t.label) main = t.label;
+  else if (t.kind === 'keyword') main = e.keyword === 'soulmagic' && d && d.color ? '《ソウルマジック:[' + (COLOR_JP[d.color] || '赤') + ']》' : e.keyword === 'camo' ? '【迷彩：' + ((e.ops && e.ops[0] && e.ops[0].n) || 1) + '】' : '《' + (KW_JP[e.keyword] || e.keyword) + '》';
+  else if (t.label) main = t.nodup && !t.label.includes('重複不可') ? t.label + lim : t.label;
   else { const tl = timingLabel(t); main = (tl ? '『' + tl + '』' : '') + (t.kind === 'trigger' || t.kind === 'static' ? lim : ''); }
   return [lvLabel(e.levels), e.shinkai ? '《真界放》' : '', e.keyword && KW_JP[e.keyword] !== '' && t.kind !== 'keyword' && t.kind !== 'text' && t.kind !== 'ability' ? '【' + (KW_JP[e.keyword] || e.keyword) + '】' : '', main].filter(Boolean).join(' ');
 };
 // 効果の一覧表示: 本文が空の「ブロック時」などは、直前の同じ効果(アタック時)とまとめて「アタック/ブロック時」と表示する
 let pdropK = '', pdropT = 0;
 function pdropOn(pd) { const nk = pd && pd.x && pd.x.newIds && pd.x.newIds.length ? pd.name + pd.x.newIds.join() : ''; if (nk !== pdropK) { pdropK = nk; pdropT = Date.now(); } return !!nk && Date.now() - pdropT < 1100; }
+const effBody = (e, head) => { const m = /^〔[^〕]*〕\n/.exec(e.text || ''); return m && head.includes(m[0].trim()) ? e.text.slice(m[0].length) : (e.text || ''); };
 function effShow(d) {
   const out = [];
   d.effects.forEach((e, ei) => {
     const prev = out[out.length - 1];
     if (!e.text && prev && JSON.stringify(prev.e.ops) === JSON.stringify(e.ops) && JSON.stringify(prev.e.levels) === JSON.stringify(e.levels)) {
       const pe = prev.e.timing.event, ne = e.timing.event;
-      if ((pe === 'attack' && ne === 'block') || (pe === 'allyAttack' && ne === 'allyBlock')) prev.head = effHead(prev.e).replace('アタック', 'アタック/ブロック');
+      if ((pe === 'attack' && ne === 'block') || (pe === 'allyAttack' && ne === 'allyBlock')) prev.head = effHead(prev.e, d).replace('アタック', 'アタック/ブロック');
       return;
     }
     if (!e.text && e.timing.kind !== 'keyword' && prev) return;   // 本文のない補助的な効果は表示しない
-    out.push({ e, ei, head: effHead(e) });
+    out.push({ e, ei, head: effHead(e, d) });
   });
   return out;
 }
 function effectsPlain(d) {
   if (hasNoEffect(d)) return '';
   if (!d.effects.length) return '<div class="txt">' + esc(d.text || '').replace(/\n/g, '<br>') + '</div>';
-  return '<div class="txt">' + effShow(d).map(x => '<div style="margin-bottom:5px"><b>' + rich(esc(x.head)) + '</b><br>' + rich(esc(x.e.text).replace(/\n/g, '<br>')) + '</div>').join('') + '</div>';
+  return '<div class="txt">' + effShow(d).map(x => '<div style="margin-bottom:5px"><b>' + rich(esc(x.head)) + '</b><br>' + rich(esc(effBody(x.e, x.head)).replace(/\n/g, '<br>')) + '</div>').join('') + '</div>';
 }
 const glowOf = iid => !pay && !!((V.usable && ((V.usable.abil || []).some(x => x.startsWith(iid + ':')) || V.usable.hand.includes(iid) || V.usable.block.includes(iid) || V.usable.attack.includes(iid))) || (V.pending && V.pending.pi === V.me && V.pending.cands.includes(iid)));
 const fieldK = iid => V.you.field.find(k => k.iid === iid) || V.opp.field.find(k => k.iid === iid);
@@ -4649,7 +4647,7 @@ function detailText(k) {
   const d = k.def;
   return '<h3>' + esc(d.name) + ' <small>' + esc(d.id) + '</small></h3>' + (d.reading ? '<div class="meta">' + esc(d.reading) + '</div>' : '') +
     '<div class="meta">' + TYPE_JP[d.type] + ' / コスト' + d.cost + '(' + d.reduction + ')' + symLabel(d) + (d.soulMagic ? ' / ソウルマジック' : '') + '</div>' + (d.auto ? '<div class="meta" style="color:#e8b04a">※効果は未実装です(テキスト表示のみ)</div>' : d.partial ? '<div class="meta" style="color:#e8b04a">※一部の効果は未実装です(灰色の「未実装」と書かれた効果は動きません)</div>' : '') +
-    (d.family.length ? '<div class="meta">系統: ' + d.family.map(esc).join('・') + '</div>' : '') +
+    (d.family.length ? '<div class="meta">系統: ' + d.family.map(esc).join('・') + '</div>' : '') + (d.team && d.team.length ? '<div class="meta">チーム: ' + d.team.map(esc).join('・') + '</div>' : '') +
     (d.keywords.filter(x => x !== 'shinkai').length ? '<div class="meta">キーワード: ' + d.keywords.filter(x => x !== 'shinkai').map(x => rich(esc(x === 'soulmagic' ? 'ソウルマジック:[' + (COLOR_JP[d.color] || '赤') + ']' : (KW_JP[x] || x)))).join('・') + '</div>' : '') +
     (d.levels.length ? '<div class="meta">' + d.levels.map((l, i, a) => 'Lv' + l.lv + ': コア' + l.core + (l.bp ? ' / BP' + l.bp : '') + (d.keywords.includes('shinkai') && i === a.length - 1 && a.length > 1 ? ' &lt;真界放&gt;' : '')).join('　') + '</div>' : '') +
     (() => { const li = lvInfo(k), now = V && V.bps ? V.bps[k.iid] : null; return li && now != null && now !== li.bp ? '<div class="meta bpnote">現在のBP: <b>' + now + '</b>(素のBP ' + li.bp + (now > li.bp ? ' +' : ' ') + (now - li.bp) + ' / 効果による)' + ((V.bpx && V.bpx[k.iid] || []).map(w => '<br>　' + esc(w.l) + ': ' + (w.a > 0 ? '+' : '') + w.a).join('')) + '</div>' : ''; })() +
@@ -4663,7 +4661,7 @@ function effectsHTML(k) {
     const e = xx.e, act = !dim || effectActive(k, e), real = effectActive(k, e);
     const ei = xx.ei, ab = e.timing.kind === 'ability';
     const can = ab && V && V.usable && V.usable.abil && V.usable.abil.includes(k.iid + ':' + ei);
-    return '<div style="margin-bottom:6px' + (act ? '' : ';opacity:.45') + '"><b>' + rich(esc(xx.head)) + '</b>' + (act ? '' : ' <small>(現在のレベルでは無効)</small>') + '<br>' + rich(esc(e.text).replace(/\n/g, '<br>')) + (ab && real && dim ? '<div style="margin-top:4px"><button ' + (can ? '' : 'disabled ') + 'data-abil="' + esc(k.iid) + ':' + ei + '">【起動】' + (e.timing.step === 'main' ? 'メイン' : 'フラッシュ') + 'で使う' + (e.cost && e.cost.pay ? '(コア' + e.cost.pay + '個)' : '') + '</button>' + (can ? '' : ' <small>(今は使えません)</small>') + '</div>' : '') + '</div>';
+    return '<div style="margin-bottom:6px' + (act ? '' : ';opacity:.45') + '"><b>' + rich(esc(xx.head)) + '</b>' + (act ? '' : ' <small>(現在のレベルでは無効)</small>') + '<br>' + rich(esc(effBody(e, xx.head)).replace(/\n/g, '<br>')) + (ab && real && dim ? '<div style="margin-top:4px"><button ' + (can ? '' : 'disabled ') + 'data-abil="' + esc(k.iid) + ':' + ei + '">【起動】' + (e.timing.step === 'main' ? 'メイン' : 'フラッシュ') + 'で使う' + (e.cost && e.cost.pay ? '(コア' + e.cost.pay + '個)' : '') + '</button>' + (can ? '' : ' <small>(今は使えません)</small>') + '</div>' : '') + '</div>';
   }).join('') + '</div>';
 }
 function payPreview(k) {
@@ -5065,7 +5063,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v34.0.1 (2026/11/14)';
+const APP_VER = 'v34.1.0 (2026/11/16)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
