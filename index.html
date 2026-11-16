@@ -251,7 +251,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 #cbtn small{background:#000b;color:#ffe9a8;padding:2px 10px;border-radius:999px;font-size:12px}
 @keyframes bigpulse{50%{box-shadow:0 0 0 12px #ffd34d44,0 10px 30px #000c}}
 /* 効果の発動表示(画面中央) */
-#fx{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:45;pointer-events:none;width:min(560px,92vw)}
+#fx{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:99999;pointer-events:none;width:min(560px,92vw)}
 .fxc{pointer-events:auto;cursor:pointer}
 .fxc.pend{opacity:.96;padding:10px 16px}.fxc.pend .fxt{font-size:16px}
 #fx.compact .fxc{padding:5px 10px;border-width:2px}#fx.compact .fxn{font-size:12px}#fx.compact .fxt{font-size:11px!important;line-height:1.25}
@@ -539,7 +539,7 @@ body.bc .zone .cores[data-zloc="reserve"] .core{flex:0 0 auto;width:34px;height:
 body.bc .rvc{width:calc(var(--cw) * .33);height:calc(var(--cw) * .33);flex:0 0 auto;display:block}.rvc svg{width:100%;height:100%;display:block;pointer-events:none}
 body.bc #cutin,body.bc #gate{display:none !important}
 body.bc .zone .lifegrid{flex:1;width:100%;box-sizing:border-box;justify-content:center;align-content:center}
-body.bc .zt,body.bc .deck span,body.bc .zsub>span,body.bc .lk.rm{display:none !important}
+body.bc .zt,body.bc .deck span,body.bc .zsub>span:not(.cores),body.bc .lk.rm{display:none !important}
 body.bc .pile.empty{border-color:transparent;color:transparent}
 body.bc #me:not(.tp){outline:2px solid #6ea8ff55;outline-offset:-2px}
 body.bc #opp:not(.tp){outline:2px solid #ff6e7f55;outline-offset:-2px}
@@ -584,9 +584,9 @@ body.bc .handrow{--cw:var(--hcw,100px) !important}
 body.bc .half .col{--cw:calc(var(--zb) * .74) !important}
 body.bc .lane{--cw:var(--cwb) !important;height:auto !important;min-height:calc(var(--cwb) * 1.4 + 8px) !important;flex:0 0 auto}
 /* 上の帯(録画に写る) */
-#bctop{position:fixed;left:0;right:0;top:0;height:50px;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:linear-gradient(#0d1530,#0a1022);border-bottom:2px solid #2c3d73;font-weight:900;color:#eef2ff}
+#bctop{position:fixed;left:0;right:0;top:0;height:50px;z-index:40;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;white-space:nowrap;padding:0 18px;background:linear-gradient(#0d1530,#0a1022);border-bottom:2px solid #2c3d73;font-weight:900;color:#eef2ff}
 #bctop[hidden]{display:none}
-#bctop .n{font-size:26px;max-width:32vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}#bctop .m{font-size:20px;color:#ffd24a}#bctop .m b{font-size:24px}
+#bctop .n{font-size:26px;min-width:0;display:flex;align-items:center;gap:10px}#bctop .n s{text-decoration:none;overflow:hidden;text-overflow:ellipsis;min-width:0}#bctop .nr{justify-content:flex-end}#bctop .m{text-align:center;padding:0 10px}#bctop .flb{font-style:normal;font-size:14px;background:#ffd24a;color:#1a1200;border-radius:999px;padding:2px 10px;flex:0 0 auto;animation:flbp .9s ease-in-out infinite alternate}@keyframes flbp{to{box-shadow:0 0 14px 3px #ffd24acc}}#bctop .m{font-size:20px;color:#ffd24a}#bctop .m b{font-size:24px}
 #bcfoot{position:fixed;left:0;right:0;bottom:2px;text-align:center;font-size:11px;color:#8d9bc9;z-index:40;pointer-events:none}
 #bcfoot[hidden]{display:none}
 /* マウスを上に持っていくと出るメニュー */
@@ -621,6 +621,34 @@ body.bc #bcbar{right:8px;display:flex;flex-wrap:wrap;gap:6px;max-width:330px;bac
 .spec #prompt{font-size:12px}
 /* 効果が出たら、反対側の盤面にカードを大きく見せる */
 #specfx{position:fixed;z-index:70;display:flex;align-items:center;justify-content:center;gap:14px;pointer-events:none;padding:4px;box-sizing:border-box;background:radial-gradient(ellipse at center,#0b1020e6 0%,#0b1020b3 62%,#0b102000 100%)}
+body.bc #specfx{background:none}
+html,body{overscroll-behavior:none}
+body.standalone.ingame{padding-bottom:max(14px,env(safe-area-inset-bottom,0px))}
+#homeguard{position:fixed;left:0;right:0;bottom:0;height:max(12px,env(safe-area-inset-bottom,0px));z-index:99998;touch-action:none;display:none}
+body.standalone #homeguard{display:block}
+body.bc .corepop{font-size:11px}
+/* 配信モードの演出 */
+@keyframes bcsum{0%{opacity:0;transform:scale(1.9);filter:brightness(2.2) drop-shadow(0 0 26px #ffd24a)}55%{opacity:1;transform:scale(.93);filter:brightness(1.4) drop-shadow(0 0 18px #ffd24a)}100%{opacity:1;transform:none;filter:none}}
+body.bc .slot.summonin{animation:bcsum .85s cubic-bezier(.2,.8,.3,1) both}
+@keyframes bcdraw{0%{opacity:0;transform:translateY(-110px) scale(.6);filter:brightness(2)}55%{opacity:1;transform:translateY(8px) scale(1.06);filter:brightness(1.5) drop-shadow(0 0 14px #7fd0ff)}100%{opacity:1;transform:none;filter:none}}
+body.bc .drawin{animation:bcdraw 1s ease-out both !important}
+body.bc .cores.pop{animation:none !important}
+body.bc .ring{display:none !important}
+body.bc .cardbox .card.tapin{animation-duration:.4s !important}
+#bcend{position:fixed;inset:0;z-index:90;pointer-events:auto;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#000a,#000d);color:#fff;text-align:center;font-weight:900;overflow:hidden}
+#bcend .w{font-size:min(14vw,110px);line-height:1.1;background:linear-gradient(180deg,#fff6c2,#ffc83a 55%,#ff7a1a);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 22px #ffb300);animation:bcendw 1.3s cubic-bezier(.2,1.4,.3,1) both}
+#bcend .s{font-size:min(5vw,34px);margin-top:8px;color:#ffe9a8;animation:bcendw 1.3s .35s both}
+#bcend .h{font-size:13px;margin-top:22px;opacity:.7;font-weight:700}
+#bcend .cf{position:absolute;top:-20px;width:12px;height:18px;border-radius:2px;animation:bcfall linear infinite}
+#bcend .ex{position:absolute;width:10px;height:10px;border-radius:50%;animation:bcex 1.6s ease-out infinite}
+@keyframes lzspark{0%{transform:translate(0,0) scale(1.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.1);opacity:0}}
+.lz b{position:absolute;left:0;top:0;width:12px;height:12px;border-radius:50%;box-shadow:0 0 14px currentColor;animation:lzspark 1.5s cubic-bezier(.1,.7,.3,1) both}
+.lz i:nth-child(4){animation-delay:.75s;border-color:#ff9a3c}.lz i:nth-child(5){animation-delay:1s;border-color:#ffd34d}
+@keyframes bcendw{0%{opacity:0;transform:scale(.2) rotate(-8deg)}100%{opacity:1;transform:none}}
+@keyframes bcfall{to{transform:translateY(115vh) rotate(720deg)}}
+@keyframes bcex{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+body.bc #result{display:none !important}
+
 #specfx[hidden]{display:none}
 #specfx .sfc{border-radius:10px;overflow:hidden;flex:0 0 auto;background:#1c2030;box-shadow:0 0 0 3px var(--tint),0 0 34px 8px var(--tint),0 12px 30px #000c;display:grid;place-items:center}
 #specfx .sfc img{width:100%;height:100%;object-fit:cover;display:block}
@@ -668,6 +696,11 @@ body.rp #hand{position:static !important}
 .rpi{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin:6px 0;background:#12141c}
 .rpi .rpt{display:flex;flex-direction:column;gap:2px;min-width:0}
 .rpi .rpt .dim{font-size:12px;color:var(--sub)}
+.rptabs{display:flex;gap:6px;margin:6px 0}.rptabs button{background:#12141c;border:1px solid var(--line);color:var(--sub)}.rptabs button.on{background:#2a3358;color:#fff;border-color:#6a7bd0}
+.rpstar{background:none;border:0;padding:0 6px 0 0;font-size:20px;line-height:1;color:#8a8fa5;cursor:pointer}.rpstar.on{color:#ffd24a;text-shadow:0 0 8px #ffd24a88}
+.rpn{font-size:13px;color:#cfd6ff;cursor:text;padding:1px 4px;border-radius:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rpn:hover{background:#ffffff14}.rpn.empty{color:#6c7290;font-size:12px}
+.rpni{font-size:13px;padding:2px 6px;width:min(360px,100%);box-sizing:border-box}
+.box>h2+.row{margin-top:10px}
 #replay .box{max-width:720px;margin:0 auto}
 /* フリー対戦: 対戦中の部屋 */
 .frm.playing{border-color:#8fa0d6;background:#171d34}
@@ -3729,7 +3762,7 @@ function specReset() {
   if (RP) { clearTimeout(RP.timer); RP = null; }
   ['spec', 'rp', 'fw'].forEach(c => document.body.classList.remove(c));
   const cb = $('chatbox'); if (cb) cb.hidden = true; const rb = $('rpbar'); if (rb) rb.hidden = true;
-  const sf = $('specfx'); if (sf) sf.hidden = true; specFxQ.length = 0; specFxBusy = false;
+  const sf = $('specfx'); if (sf) sf.hidden = true; specFxQ.length = 0; specFxBusy = false; specFieldSeen = null;
   const rl = $('replay'); if (rl) rl.hidden = true;
 }
 function specBody() {
@@ -3883,17 +3916,20 @@ function specResultHTML() {
 }
 
 /* ---------- 効果が出たら、反対側の盤面にカードを大きく見せる ---------- */
-const specFxQ = []; let specFxBusy = false, specCastSeen = 0, specFxSeq = null;
+let specFieldSeen = null; const specFxQ = []; let specFxBusy = false, specCastSeen = 0, specFxSeq = null;
 const defOfId = id => { const c = CARD_LIST.find(x => String(x.raw.id) === String(id)); return c ? c.def : null; };
 function specFxCollect() {
-  if (!V || !V.spec || V.seq === specFxSeq) return; const first = specFxSeq === null; specFxSeq = V.seq; if (first) { specCastSeen = V.cast ? V.cast.n : 0; return; }
+  if (!V || !V.spec || V.seq === specFxSeq) return; const first = specFxSeq === null; specFxSeq = V.seq; if (first) { specCastSeen = V.cast ? V.cast.n : 0; specFieldSeen = new Set(); [V.you, V.opp].forEach(P => (P.field || []).forEach(k => specFieldSeen.add(k.iid))); return; }
   const items = [];
   const add = (p, cid, name, label, text, def) => { const key = cid || name; const ex = items.find(x => x.key === key && x.p === p); if (ex) { if (text && !ex.text) ex.text = text; if (label === '効果') ex.label = ex.label === '効果' ? '効果' : ex.label + '・効果'; return; } items.push({ key, p, cid, name, label, text, def }); };
   if (V.cast && V.cast.n !== specCastSeen) { specCastSeen = V.cast.n; add(V.cast.p, V.cast.def && V.cast.def.id, V.cast.def && V.cast.def.name, V.cast.def ? (V.cast.def.type === 'magic' ? '使用' : V.cast.def.type === 'nexus' ? '配置' : '召喚') : '', '', V.cast.def); }
-  (V.fx || []).forEach(f => { if (f && f.n && !f.fail) add(f.p, f.cid, f.n, '効果', f.t || '', null); });
+  const noneR = f => f.fail || (f.r && f.r.length && f.r.every(x => /何も起きません|いないため|ありません|行いません/.test(x)));
+  { const cur = new Set(); [V.you, V.opp].forEach((P, pi) => (P.field || []).forEach(k => { cur.add(k.iid); if (specFieldSeen && !specFieldSeen.has(k.iid) && k.def) add(pi === 0 ? V.me : 1 - V.me, k.def.id, k.def.name, k.def.type === 'nexus' ? '配置' : '召喚', '', k.def); })); specFieldSeen = cur; }
+  (V.fx || []).forEach(f => { if (f && f.n && !noneR(f)) add(f.p, f.cid, f.n, '効果', f.t || '', null); });
   items.forEach(it => specFxQ.push(it)); specFxNext();
 }
 function specFxNext() {
+  if (fxOff) { specFxQ.length = 0; return; }
   if (specFxBusy || !specFxQ.length) return;
   const it = specFxQ.shift(), box = $('specfx'); if (!box || !V) { return; }
   const def = it.def || (it.cid && defOfId(it.cid)) || (it.name && (CARD_LIST.find(c => c.def.name === it.name) || {}).def); if (!def) { specFxNext(); return; }
@@ -3904,7 +3940,7 @@ function specFxNext() {
   const txt = (it.text || '').replace(/\n/g, ' ');
   box.innerHTML = '<div class="sfc" style="height:' + h + 'px;width:' + w + 'px">' + (art ? '<img src="' + art + '" alt="">' : '<div class="artph2">' + esc(def.name) + '</div>') + '</div><div class="sfm"><div class="sfl">' + absName(it.p) + 'の' + esc(it.label) + '</div><div class="sfn">' + esc(def.name) + '</div>' + (txt ? '<div class="sft">' + rich(esc(txt.length > 140 ? txt.slice(0, 140) + '…' : txt)) + '</div>' : '') + '</div>';
   box.hidden = false; box.classList.remove('go'); void box.offsetWidth; box.classList.add('go');
-  const dur = RP ? 2000 / Math.max(1, Math.min(RP.speed, 4)) : 2300;
+  const dur = (RP ? 2400 / Math.max(1, Math.min(RP.speed, 6)) : 2300) * (BC.on ? .75 : 1);
   setTimeout(() => { box.hidden = true; specFxBusy = false; specFxNext(); }, dur);
 }
 
@@ -3924,17 +3960,18 @@ function openSpecStamps() {
 /* ---------- リプレイ: 保存 ---------- */
 function rpLoad() { try { const a = JSON.parse(localStorage.getItem(RPKEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
 function rpSaveAll(a) {
-  for (;;) { try { localStorage.setItem(RPKEY, JSON.stringify(a)); return true; } catch (e) { if (a.length <= 1) return false; a.pop(); } }
+  for (;;) { try { localStorage.setItem(RPKEY, JSON.stringify(a)); return true; } catch (e) { if (a.length <= 1) return false; let k = a.length - 1; while (k > 0 && a[k].fav) k--; a.splice(k, 1); } }
 }
 function rpMake(G0) {
   const r = RECDB[G0.rid]; if (!r) return null;
-  return { v: 1, ver: APP_VER, ts: Date.now(), names: (G0.names || []).slice(0, 2), winner: G0.winner == null ? null : G0.winner, why: G0.loseWhy || '', seed: r.seed, s: r.s, acts: r.acts.slice(), defs: packDefs([r.defs[0].map(d => ({ def: d })), r.defs[1].map(d => ({ def: d }))]) };
+  return { v: 1, ver: APP_VER, turns: G0.turnNo, ts: Date.now(), names: (G0.names || []).slice(0, 2), winner: G0.winner == null ? null : G0.winner, why: G0.loseWhy || '', seed: r.seed, s: r.s, acts: r.acts.slice(), defs: packDefs([r.defs[0].map(d => ({ def: d })), r.defs[1].map(d => ({ def: d }))]) };
 }
 function rpAdd(e) {
   if (!e || !Array.isArray(e.acts) || e.acts.length < 8 || !e.defs) return false;
   const a = rpLoad(), key = e.seed + ':' + e.acts.length;
   if (a.some(x => x.seed + ':' + x.acts.length === key)) return false;
-  a.unshift(e); a.length = Math.min(a.length, RPMAX); return rpSaveAll(a);
+  a.unshift(e); let nf = a.filter(x => !x.fav).length; while (nf > RPMAX) { let k = a.length - 1; while (k >= 0 && a[k].fav) k--; if (k < 0) break; a.splice(k, 1); nf--; }
+  return rpSaveAll(a);
 }
 function finishRec() {
   if (!G || !G.rid || G.winner == null || recDone.has(G.rid)) return; recDone.add(G.rid);
@@ -3970,9 +4007,15 @@ async function rpDecode(t) {
 }
 const rpTitle = e => (e.names && e.names[0] || 'P1') + ' vs ' + (e.names && e.names[1] || 'P2');
 const rpDate = e => { try { const d = new Date(e.ts); return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); } catch (x) { return ''; } };
+let rpTab = 'all';
+const rpKey = e => e.seed + ':' + e.acts.length;
+function rpPatch(e, patch) { const a = rpLoad(), k = rpKey(e), x = a.find(y => rpKey(y) === k); if (!x) return; Object.assign(x, patch); Object.assign(e, patch); rpSaveAll(a); }
 function rpList() {
   const a = rpLoad(), box = $('rpList'); if (!box) return;
-  box.innerHTML = a.length ? a.map((e, i) => '<div class="rpi"><div class="rpt"><b>' + esc(rpTitle(e)) + '</b><span class="dim">' + esc(rpDate(e)) + ' ・ ' + e.acts.length + '手' + (e.winner != null ? ' ・ 勝者: ' + esc((e.names || [])[e.winner] || '') : ' ・ 途中まで') + '</span></div><div class="row"><button data-rpplay="' + i + '">▶ 見る</button><button class="sub" data-rpexp="' + i + '">書き出し</button><button class="sub" data-rpdel="' + i + '">削除</button></div></div>').join('') : '<p class="note">まだリプレイがありません。対戦(またはCPU戦・観戦)が終わると、直近' + RPMAX + '件がこの端末に自動で保存されます。</p>';
+  const nfav = a.filter(e => e.fav).length;
+  const tabs = '<div class="rptabs"><button class="' + (rpTab === 'all' ? 'on' : '') + '" data-rptab="all">すべて(' + a.length + ')</button><button class="' + (rpTab === 'fav' ? 'on' : '') + '" data-rptab="fav">★ お気に入り(' + nfav + ')</button></div>';
+  const rows = a.map((e, i) => ({ e, i })).filter(x => rpTab === 'all' || x.e.fav);
+  box.innerHTML = tabs + (rows.length ? rows.map(({ e, i }) => '<div class="rpi"><div class="rpt"><b><button class="rpstar' + (e.fav ? ' on' : '') + '" data-rpfav="' + i + '" title="お気に入り">' + (e.fav ? '★' : '☆') + '</button>' + esc(rpTitle(e)) + '</b><span class="rpn' + (e.note ? '' : ' empty') + '" data-rpn="' + i + '" title="ダブルクリックで編集">' + (e.note ? esc(e.note) : 'ダブルクリックで説明を追加') + '</span><span class="dim">' + esc(rpDate(e)) + ' ・ ' + (e.turns ? e.turns + 'ターン' : 'ターン数 不明(一度見ると表示)') + (e.winner != null ? ' ・ 勝者: ' + esc((e.names || [])[e.winner] || '') : ' ・ 途中まで') + '</span></div><div class="row"><button data-rpplay="' + i + '">▶ 見る</button><button class="sub" data-rpexp="' + i + '">書き出し</button><button class="sub" data-rpdel="' + i + '">削除</button></div></div>').join('') : '<p class="note">まだリプレイがありません。対戦(またはCPU戦・観戦)が終わると、直近' + RPMAX + '件がこの端末に自動で保存されます。★をつけると、件数に関係なく残ります。</p>');
 }
 function rpOpenList() { $('lobby').hidden = true; $('replay').hidden = false; rpList(); window.scrollTo(0, 0); }
 function rpCloseList() { $('replay').hidden = true; $('lobby').hidden = false; }
@@ -3991,7 +4034,7 @@ function rpImportDialog() {
 function rpStep() { const x = RP.rec.acts[RP.i]; act(RP.G, x[0], cl(x[1])); RP.i++; }
 function rpShow(anim) {
   const v = viewSpec(RP.G); if (!anim) { v.fx = []; v.evs = []; v.trace = []; v.cast = null; }
-  if (!anim) { specFxQ.length = 0; const sf = $('specfx'); if (sf) sf.hidden = true; specFxBusy = false; specCastSeen = RP.G.cast ? RP.G.cast.n : 0; }
+  if (!anim) { specFieldSeen = null; specFxSeq = null; specFxQ.length = 0; const sf = $('specfx'); if (sf) sf.hidden = true; specFxBusy = false; specCastSeen = RP.G.cast ? RP.G.cast.n : 0; }
   setSpecV(v); specBody(); const sl = $('rpSlider'); if (sl && document.activeElement !== sl) sl.value = RP.i;
 }
 function rpGoto(n, anim) {
@@ -4009,6 +4052,7 @@ function rpStart(e) {
     try {
       const G0 = replayBuild(rec, 0), cps = new Map(), turnAt = [G0.turnNo]; cps.set(0, cpSave(G0));
       for (let i = 0; i < rec.acts.length; i++) { const x = rec.acts[i]; act(G0, x[0], cl(x[1])); turnAt[i + 1] = G0.turnNo; if ((i + 1) % 25 === 0) cps.set(i + 1, cpSave(G0)); }
+      if (!e.turns) { try { rpPatch(e, { turns: turnAt[turnAt.length - 1] }); } catch (x) { } }
       RP = { entry: e, rec, G: null, i: 0, n: rec.acts.length, cps, turnAt, playing: false, dir: 1, speed: 1, timer: null };
       VP = 0; orient = 'auto'; sideOpen = false; menuOpen = false; logOpen = false; isHost = false; solo = false; cpu = false; G = null;
       $('replay').hidden = true; $('lobby').hidden = true; $('game').hidden = false; document.body.classList.add('ingame');
@@ -4018,11 +4062,13 @@ function rpStart(e) {
     } catch (x) { RP = null; toast('リプレイを再生できませんでした: ' + (x && x.message || x)); $('replay').hidden = false; }
   }, 30);
 }
+let fxOff = false;
+const fxScale = () => RP ? Math.max(1, RP.speed) : 1;
 function rpDelay() {
   const sp = RP.speed, G0 = RP.G;
   if (RP.dir < 0) return 450 / sp;
-  if (G0.fx && G0.fx.length || (G0.evs || []).some(e => e.t === 'attack' || e.t === 'life')) return 2300 / sp;
-  return (G0.evs && G0.evs.length || G0.trace && G0.trace.length) ? 1000 / sp : 130 / sp;
+  if (G0.fx && G0.fx.length || (G0.evs || []).some(e => e.t === 'attack' || e.t === 'life')) return (fxOff ? 1800 : 3600) / sp;
+  return (G0.evs && G0.evs.length || G0.trace && G0.trace.length) ? 1700 / sp : 220 / sp;
 }
 function rpTick() {
   if (!RP || !RP.playing) return;
@@ -4045,8 +4091,8 @@ function rpTurnJump(d) {
 }
 function rpBarHTML() {
   const sp = RP.speed, curT = RP.turnAt[RP.i];
-  return '<div class="rpr"><button data-rp="start" title="最初へ">⏮</button><button data-rp="tprev" title="前のターン">⏪T</button><button data-rp="rev" class="' + (RP.playing && RP.dir < 0 ? 'on' : '') + '" title="巻き戻し再生">◀◀</button><button data-rp="back" title="一手戻る">◀|</button><button data-rp="play" class="pp' + (RP.playing && RP.dir > 0 ? ' on' : '') + '" title="再生/一時停止">' + (RP.playing && RP.dir > 0 ? '⏸' : '▶') + '</button><button data-rp="fwd" title="一手進む">|▶</button><button data-rp="speed" title="早送り(再生速度)">⏩ ×' + sp + '</button><button data-rp="tnext" title="次のターン">T⏩</button><button data-rp="end" title="最後へ">⏭</button></div>' +
-    '<div class="rps"><input type="range" id="rpSlider" min="0" max="' + RP.n + '" value="' + RP.i + '"><span class="rpl">' + RP.i + '/' + RP.n + '手 ・ ' + curT + 'ターン目</span></div>';
+  return '<div class="rpr"><button data-rp="start" title="最初へ">⏮</button><button data-rp="tprev" title="前のターン">⏪T</button><button data-rp="rev" class="' + (RP.playing && RP.dir < 0 ? 'on' : '') + '" title="巻き戻し再生">◀◀</button><button data-rp="back" title="一手戻る">◀|</button><button data-rp="play" class="pp' + (RP.playing && RP.dir > 0 ? ' on' : '') + '" title="再生/一時停止">' + (RP.playing && RP.dir > 0 ? '⏸' : '▶') + '</button><button data-rp="fwd" title="一手進む">|▶</button><button data-rp="speed" title="早送り(再生速度)">⏩ ×' + sp + '</button><button data-rp="fxoff" class="' + (fxOff ? 'on' : '') + '" title="効果のポップなどを出さない">詳細' + (fxOff ? '非表示中' : '表示') + '</button><button data-rp="tnext" title="次のターン">T⏩</button><button data-rp="end" title="最後へ">⏭</button></div>' +
+    '<div class="rps"><input type="range" id="rpSlider" min="0" max="' + RP.n + '" value="' + RP.i + '"><span class="rpl">' + curT + ' / ' + RP.turnAt[RP.n] + ' ターン目</span></div>';
 }
 function rpClick(t) {
   const b = t.closest('[data-rp]'); if (!b || !RP) return false; const k = b.dataset.rp;
@@ -4057,11 +4103,12 @@ function rpClick(t) {
   else if (k === 'play') rpPlay(1);
   else if (k === 'rev') rpPlay(-1);
   else if (k === 'speed') { RP.speed = RP.speed >= 8 ? 1 : RP.speed * 2; }
+  else if (k === 'fxoff') { fxOff = !fxOff; if (fxOff) { const f = $('fx'); if (f) f.hidden = true; fxQ = []; } }
   else if (k === 'tprev') rpTurnJump(-1);
   else if (k === 'tnext') rpTurnJump(1);
   specBody(); return true;
 }
-document.addEventListener('input', e => { if (e.target && e.target.id === 'rpSlider' && RP) { rpPause(); const v = +e.target.value; if (RP._raf) cancelAnimationFrame(RP._raf); RP._raf = requestAnimationFrame(() => { rpGoto(v, false); const l = document.querySelector('.rpl'); if (l) l.textContent = RP.i + '/' + RP.n + '手 ・ ' + RP.turnAt[RP.i] + 'ターン目'; }); } });
+document.addEventListener('input', e => { if (e.target && e.target.id === 'rpSlider' && RP) { rpPause(); const v = +e.target.value; if (RP._raf) cancelAnimationFrame(RP._raf); RP._raf = requestAnimationFrame(() => { rpGoto(v, false); const l = document.querySelector('.rpl'); if (l) l.textContent = RP.turnAt[RP.i] + ' / ' + RP.turnAt[RP.n] + ' ターン目'; }); } });
 
 /* ===== 配信モード(v35.2) ===== 今の盤面のまま左VS右に並べる(録画向け)。上にカーソルを持っていくとメニューが出る */
 var BC = { on: false, manual: false, q: [], hot: null };
@@ -4095,8 +4142,12 @@ function bcFit() {
   const cw = (BC.plan && BC.plan.cw) || baseV * 0.7; st.style.setProperty('--cwb', cw + 'px'); st.style.setProperty('--cw', cw + 'px');
 }
 function bcTop() {
-  const t = $('bctop'); if (!t || !V) return; const cur = animStep || V.step;
-  t.innerHTML = '<span class="n nb">' + absName(V.me) + '</span><span class="m ' + (V.turn === V.me ? 'mb' : 'mr') + '"><b>' + V.turnNo + 'ターン</b>　' + (BC_STEP[cur] || '') + '</span><span class="n nr">' + absName(1 - V.me) + '</span>';
+  const t = $('bctop'); if (!t || !V) return; const cur = animStep || V.step, b = V.battle;
+  const started = V.turnNo != null && V.turnNo > 0 && BC_STEP[cur];
+  const fl = b && (b.phase === 'flash1' || b.phase === 'flash2') ? b.prio : null;
+  const badge = p => fl === p ? '<i class="flb">⚡フラッシュ</i>' : '';
+  const mid = started ? '<b>' + V.turnNo + 'ターン</b>　' + BC_STEP[cur] : '<b>対戦準備中</b>';
+  t.innerHTML = '<span class="n nb">' + badge(V.me) + '<s>' + esc(absName(V.me)) + '</s></span><span class="m ' + (started && V.turn === V.me ? 'mb' : started ? 'mr' : '') + '">' + mid + '</span><span class="n nr"><s>' + esc(absName(1 - V.me)) + '</s>' + badge(1 - V.me) + '</span>';
 }
 function bcOn() {
   if (!(SPEC || RP) || !V) { toast('観戦・リプレイの画面から使えます'); return; }
@@ -4104,7 +4155,7 @@ function bcOn() {
   { const r = $('rpbar'); if (r && r.parentNode !== document.body) { BC.rpHome = { p: r.parentNode, n: r.nextSibling }; document.body.appendChild(r); } }
   $('bctop').hidden = false; $('bcfoot').hidden = false; $('bcbar').style.display = 'flex'; bcBar(); bcTop(); specBody(); render(); bcShow();
 }
-function bcOff() { { const r = $('rpbar'); if (r && BC.rpHome) { BC.rpHome.p.insertBefore(r, BC.rpHome.n); BC.rpHome = null; } } BC.on = false; BC.q = []; { const s = $('stage'); if (s) { s.style.removeProperty('--cwb'); s.style.removeProperty('--cw'); } } ['hand', 'oppHand'].forEach(id => { const e = $(id); if (e) e.style.removeProperty('--hcw'); }); document.body.classList.remove('bc', 'bchot', 'nohand'); $('bctop').hidden = true; $('bcfoot').hidden = true; $('bcbar').style.display = 'none'; specBody(); if (V) render(); }
+function bcOff() { { const be = $('bcend'); if (be) be.remove(); } { const r = $('rpbar'); if (r && BC.rpHome) { BC.rpHome.p.insertBefore(r, BC.rpHome.n); BC.rpHome = null; } } BC.on = false; BC.q = []; { const s = $('stage'); if (s) { s.style.removeProperty('--cwb'); s.style.removeProperty('--cw'); } } ['hand', 'oppHand'].forEach(id => { const e = $(id); if (e) e.style.removeProperty('--hcw'); }); document.body.classList.remove('bc', 'bchot', 'nohand'); $('bctop').hidden = true; $('bcfoot').hidden = true; $('bcbar').style.display = 'none'; specBody(); if (V) render(); }
 function bcShow() { document.body.classList.add('bchot'); clearTimeout(BC.hot); BC.hot = setTimeout(() => { if (!document.querySelector('#side:hover,#rpbar:hover,#bcbar:hover,.sheet:hover')) document.body.classList.remove('bchot'); else BC.hot = setTimeout(bcShow, 1200); }, 1800); }
 function bcNext() {
   if (RP) { rpPause(); if (RP.i < RP.n) rpGoto(RP.i + 1, true); bcBar(); return; }
@@ -4115,13 +4166,14 @@ function bcBar() {
   const b = $('bcbar'); if (!b) return; const nq = BC.q.length, nh = document.body.classList.contains('nohand');
   const on = (k, t, f) => '<button class="' + (f ? 'on' : '') + '" data-bc="' + k + '">' + t + '</button>';
   b.innerHTML = (RP ? '' : on('manual', '手動送り ' + (BC.manual ? 'ON' : 'OFF'), BC.manual)) + '<button data-bc="next" title="Space / →">次へ ▶' + (nq ? ' (' + nq + ')' : '') + '</button>' + (nq > 1 ? '<button data-bc="latest">最新へ</button>' : '') +
-    on('hands', '手札を隠す', nh) + '<button data-bc="full">全画面</button><button data-bc="off" title="Esc">配信モード終了</button>' +
+    on('hands', '手札を隠す', nh) + on('fxoff', fxOff ? '詳細: 非表示' : '詳細: 表示', fxOff) + '<button data-bc="full">全画面</button><button data-bc="off" title="Esc">配信モード終了</button>' +
     '<div class="bcb-h">このメニューは、画面の上にマウスを持っていくと出ます。録画では出ません。Space/→で次へ</div>';
 }
 function bcClick(t) {
   const b = t.closest('#bcbar [data-bc]'); if (!b) return false; const k = b.dataset.bc;
   if (k === 'next') bcNext(); else if (k === 'latest') bcLatest();
   else if (k === 'manual') { BC.manual = !BC.manual; if (!BC.manual) bcLatest(); bcBar(); }
+  else if (k === 'fxoff') { fxOff = !fxOff; if (fxOff) { const f = $('fx'); if (f) f.hidden = true; fxQ = []; } bcBar(); }
   else if (k === 'hands') { document.body.classList.toggle('nohand'); bcBar(); }
   else if (k === 'full') { try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { } }
   else if (k === 'off') bcOff();
@@ -4160,11 +4212,23 @@ function specClick(t) {
 let specStAt = 0, specNoResult = false;
 
 /* ---------- ロビー側のボタン ---------- */
+let rpLastN = null;
+function rpEditNote(sp) {
+  const e = rpLoad()[+sp.dataset.rpn]; if (!e) return;
+  const inp = document.createElement('input'); inp.type = 'text'; inp.className = 'rpni'; inp.maxLength = 60; inp.value = e.note || ''; inp.placeholder = '一行メモ';
+  sp.replaceWith(inp); inp.focus(); inp.select(); let done = false;
+  const fin = save => { if (done) return; done = true; if (save) rpPatch(e, { note: inp.value.trim().slice(0, 60) }); rpList(); };
+  inp.onkeydown = ev => { if (ev.key === 'Enter') fin(true); else if (ev.key === 'Escape') fin(false); };
+  inp.onblur = () => fin(true);
+}
 $('bReplay').onclick = rpOpenList; $('bRpImport').onclick = rpImportDialog; $('rpBack').onclick = rpCloseList; $('rpImp').onclick = rpImportDialog;
 $('replay').addEventListener('click', e => {
   const t = e.target; let b;
   if ((b = t.closest('[data-rpplay]'))) { const x = rpLoad()[+b.dataset.rpplay]; if (x) rpStart(x); }
   else if ((b = t.closest('[data-rpexp]'))) rpExport(+b.dataset.rpexp);
+  else if ((b = t.closest('[data-rptab]'))) { rpTab = b.dataset.rptab; rpList(); }
+  else if ((b = t.closest('[data-rpfav]'))) { const e = rpLoad()[+b.dataset.rpfav]; if (e) { rpPatch(e, { fav: !e.fav }); rpList(); } }
+  else if ((b = t.closest('[data-rpn]'))) { const now = Date.now(), i = b.dataset.rpn; if (rpLastN && rpLastN.i === i && now - rpLastN.t < 450) { rpLastN = null; rpEditNote(b); } else rpLastN = { i, t: now }; }
   else if ((b = t.closest('[data-rpdel]'))) { const a = rpLoad(); a.splice(+b.dataset.rpdel, 1); rpSaveAll(a); rpList(); }
 });
 $('rpFile').onchange = e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return; const r = new FileReader(); r.onload = () => rpImportText(String(r.result || '')); r.readAsText(f); };
@@ -4242,8 +4306,20 @@ let homeArm = 0;
 let resTimer = null, resShown = false, rematchMine = false, rematchOpp = false;
 function renderResult() {
   const rs = $('result');
-  if (!V || V.winner == null) { clearTimeout(resTimer); resTimer = null; resShown = false; specNoResult = false; rs.hidden = true; return; }
+  if (!V || V.winner == null) { clearTimeout(resTimer); resTimer = null; resShown = false; specNoResult = false; rs.hidden = true; { const be = $('bcend'); if (be) be.remove(); } return; }
   if (!resShown) { if (!resTimer) resTimer = setTimeout(() => { resTimer = null; resShown = true; renderResult(); }, 2600); return; }
+  if (V.spec && BC.on) {
+    rs.hidden = true; let be = $('bcend');
+    if (specNoResult) { if (be) be.remove(); return; }
+    if (be) return;
+    be = document.createElement('div'); be.id = 'bcend'; const wn = absName(V.winner);
+    const cols = ['#ffd24a', '#ff5a6e', '#4f8dff', '#6fe3a1', '#fff', '#ff9a3c']; let cf = '';
+    for (let i = 0; i < 46; i++) cf += '<i class="cf" style="left:' + (Math.random() * 100) + '%;background:' + cols[i % 6] + ';animation-duration:' + (2.4 + Math.random() * 2.6) + 's;animation-delay:' + (-Math.random() * 4) + 's"></i>';
+    for (let i = 0; i < 14; i++) { const a = Math.random() * 6.28, d = 90 + Math.random() * 160; cf += '<i class="ex" style="left:' + (15 + Math.random() * 70) + '%;top:' + (20 + Math.random() * 60) + '%;background:' + cols[i % 6] + ';box-shadow:0 0 12px ' + cols[i % 6] + ';--dx:' + Math.cos(a) * d + 'px;--dy:' + Math.sin(a) * d + 'px;animation-delay:' + (Math.random() * 1.6) + 's"></i>'; }
+    be.innerHTML = cf + '<div><div class="w">' + esc(wn) + '</div><div class="s">の勝ち' + (V.loseWhy === 'deck' ? '(デッキ切れ)' : '') + '</div><div class="h">クリックで盤面を見る</div></div>';
+    be.onclick = () => { specNoResult = true; be.remove(); };
+    document.body.appendChild(be); return;
+  }
   if (V.spec) { if (specNoResult) { rs.hidden = true; return; } rs.innerHTML = specResultHTML(); rs.hidden = false; return; }
   const win = V.winner === V.me, dk = V.loseWhy === 'deck';
   const why = dk ? (win ? '相手がデッキ切れでドローできず' : 'あなたがデッキ切れでドローできず') : '';
@@ -4316,6 +4392,7 @@ function zoneRect(root, loc) {
 }
 // 動きの比較用に、プレイヤーごと(席の番号ごと)の前回の状態を覚えておく(ソロで視点が変わっても比べられる)
 let snap = null;
+function bcFxWait() { if (!BC.on || !V || !V.spec) return 0; const n = (V.fx || []).filter(f => f && f.n && !f.fail && !(f.r && f.r.length && f.r.every(x => /何も起きません|いないため|ありません|行いません/.test(x)))).length; return n ? n * 1750 + 250 : 0; }
 function snapOf(v) {
   const pl = []; pl[v.me] = v.you; pl[1 - v.me] = v.opp;
   const tapped = {}, cn = {}; pl.forEach(P => P.field.forEach(k => { tapped[k.iid] = k.tapped; cn[k.iid] = (k.cores || []).length; }));
@@ -4340,7 +4417,7 @@ function setV(v) {
   const newSeq = V.seq !== lastSeq, tr = V.trace || [];
   if (newSeq && (V.evs || []).some(e => e.t === 'gate')) { gateUntil = Date.now() + 2000; $('gate').hidden = false; setTimeout(() => { $('gate').hidden = true; }, 2000); }
   if (newSeq && lastSeq !== null) {
-    const ct = (V.evs || []).filter(e => (e.t === 'turn' && (e.p === V.me || V.spec)) || e.t === 'attack')[0];
+    const ct = (V.evs || []).filter(e => (e.t === 'turn' && !RP && (e.p === V.me || V.spec)) || e.t === 'attack')[0];
     if (ct) {
       const el = $('cutin'), art = ct.t === 'attack' && ct.id ? artOf(String(ct.id)) : '';
       el.className = (ct.t === 'attack' || V.spec ? ct.p : V.me) === V.me ? '' : 'opp';
@@ -4398,7 +4475,7 @@ function setV(v) {
       if ((V.fx && V.fx.length) || (V.evs || []).some(e => e.t === 'coreAdd' || e.t === 'coreIn' || e.t === 'cmove')) Object.keys(snap.cn || {}).forEach(id => { if (oldS.cn && id in oldS.cn && snap.cn[id] > oldS.cn[id]) anim.coreUp.set(id, { at: now + cuW + 300, n: snap.cn[id] - oldS.cn[id], pop: !covered.has(id) }); }); }
     anim.until = now + 4500;
     // 破壊(ガラスが割れてトラッシュへ)・消滅(ふわっと消えて粒子がトラッシュへ)
-    const fxWait = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0);
+    const fxWait = Math.max(V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0), bcFxWait());
     const eAt = fxWait;
     (V.evs || []).filter(ev => ev.t === 'destroy' || ev.t === 'vanish').forEach((ev, i) => { evQ.push({ ev, rc: prr.cards[ev.iid], key: ev.p === V.me ? 'me' : 'opp', at: now + eAt + i * 250 }); holdTrash(ev.p === V.me ? 'me' : 'opp', [ev.iid], eAt + i * 250 + 1400, true); });   // 位置が取れなくても、アニメが終わるまではトラッシュに見せない
     // ライフで受けた: ライフのコアが弾けて、リザーブへ
@@ -4418,7 +4495,7 @@ function setV(v) {
   if (oldMe === V.me) {
     const nw = grabRects().cards, now2 = Date.now();
     const evs = (V.evs || []).filter(e => e.t === 'destroy' || e.t === 'vanish'), hasFx = V.fx && V.fx.length;
-    const wait = evs.length ? (evs.some(e => e.t === 'destroy') ? 1200 : 650) + (hasFx ? (V.fx.some(f => f.quick) ? 3300 : 1300) : 0) : 0;
+    const wait = evs.length ? (evs.some(e => e.t === 'destroy') ? 1200 : 650) + Math.max(hasFx ? (V.fx.some(f => f.quick) ? 3300 : 1300) : 0, bcFxWait()) : 0;
     Object.keys(nw).forEach(id => {
       const o = prr.cards[id], n = nw[id]; if (!o) return;
       const dx = o.cx - n.cx, dy = o.cy - n.cy;
@@ -4435,9 +4512,9 @@ function setV(v) {
       if (ev.t === 'plusDmg') { const r = grabRects().cards[ev.iid]; if (r) popText('減るコア+' + ev.n + '!', r.cx, r.cy - 40); }
       if (ev.t === 'lifeZero') {
         const z = zoneRect(ev.p === V.me ? '#me' : '#opp', 'life') || { x: innerWidth / 2, y: innerHeight / 2 };
-        const d = document.createElement('div'); d.className = 'lz'; d.style.left = z.x + 'px'; d.style.top = z.y + 'px'; d.innerHTML = '<i></i><i></i><i></i>'; document.body.appendChild(d);
+        const d = document.createElement('div'); d.className = 'lz'; d.style.left = z.x + 'px'; d.style.top = z.y + 'px'; d.innerHTML = '<i></i><i></i><i></i><i></i><i></i>' + Array.from({ length: 28 }, (_, j) => { const a = j / 28 * 6.283, r = 140 + (j % 4) * 70; return '<b style="--dx:' + Math.cos(a) * r + 'px;--dy:' + Math.sin(a) * r + 'px;background:' + ['#ffd24a', '#ff5a6e', '#fff', '#ff9a3c'][j % 4] + '"></b>'; }).join(''); document.body.appendChild(d);
         const f = document.createElement('div'); f.id = 'lzflash'; document.body.appendChild(f);
-        document.body.classList.add('shake'); setTimeout(() => { d.remove(); f.remove(); document.body.classList.remove('shake'); }, 1700);
+        document.body.classList.add('shake'); setTimeout(() => { d.remove(); f.remove(); document.body.classList.remove('shake'); }, 2600);
       }
       if (ev.t === 'mill') millAnim(ev);
       if (ev.t === 'recover') recoverAnim(ev);
@@ -4690,6 +4767,7 @@ function skipFx() { clearTimeout(fxTimer); nextFx(); }
 let fxDismissKey = '';
 function showPendingFx() {
   const box = $('fx'), pd = V && V.pending;
+  if (BC.on || ((SPEC || RP) && fxOff)) { box.hidden = true; box.dataset.k = ''; return; }
   if (pd && Date.now() < gateUntil) { box.hidden = true; box.dataset.k = ''; return; }
   if (!pd || pd.kind === 'reveal' || pd.kind === 'costDiscard' || pd.kind === 'handPick') { fxDismissKey = ''; box.hidden = true; box.dataset.k = ''; box.style.top = ''; box.style.bottom = ''; box.classList.remove('compact'); return; }
   const k = 'p' + pd.name + pd.pi + pd.n + (pd.pi === V.me ? 1 : 0) + pd.cands.join();
@@ -4718,13 +4796,15 @@ function playFx(list) { list.forEach(e => fxQ.push(e)); if (!fxBusy) nextFx(); }
 function nextFx() {
   const e = fxQ.shift(), box = $('fx');
   if (!e) { fxBusy = false; box.dataset.k = ''; showPendingFx(); if (V && V.battle) render(); return; }
+  if ((SPEC || RP) && fxOff) { box.hidden = true; fxTimer = setTimeout(nextFx, 0); return; }
   fxBusy = true; box.dataset.k = '';
   box.style.top = ''; box.classList.remove('compact');
   box.innerHTML = '<div class="fxc' + (e.fail ? ' fail' : '') + '"><div class="fxn">' + (e.head ? esc(e.head) : pn(e.p) + 'の「' + esc(e.n) + '」の効果' + (e.fail ? '' : ' が発動')) + '</div>' +
     (e.t ? '<div class="fxt">' + esc(e.t).replace(/\n/g, '<br>') + '</div>' : '') + '<div class="fxr">' + e.r.map(esc).join('<br>') + '</div></div>';
   box.hidden = false;
   const none = e.fail || (e.r.length && e.r.every(x => /何も起きません|いないため|ありません|行いません/.test(x)));
-  fxTimer = setTimeout(nextFx, none ? 1300 : e.quick ? 3200 : 2600 + Math.min(3000, 35 * ((e.t || '').length + e.r.join('').length)));
+  if (BC.on && none) { box.hidden = true; fxTimer = setTimeout(nextFx, 0); return; }
+  fxTimer = setTimeout(nextFx, (none ? 1300 : e.quick ? 3200 : (BC.on ? 3800 : 2600) + Math.min(3000, 35 * ((e.t || '').length + e.r.join('').length))) / fxScale());
 }
 function playTrace(tr) {
   clearTimeout(animTimer); let i = 0;
@@ -4883,6 +4963,7 @@ function setResHold(key, base, arr, extra) {
   const last = Math.max(...arr); resHold[key] = { base, arr, extra, last, end: last + 400 };
   arr.concat([last + 5]).forEach(t => setTimeout(() => {
     const el = document.querySelector((key === 'me' ? '#me' : '#opp') + ' .cores[data-zloc="reserve"] .cc:not(.tg)');
+    if (BC.on && V && !pay) { try { render(); } catch (e) { } return; }
     if (el && !pay && V) { const sp = el.classList.contains('sel') ? null : holdVal(key, V[key === 'me' ? 'you' : 'opp'].reserve.filter(c => !c.soul).length); if (sp !== null) el.textContent = String(sp); }
   }, Math.max(0, t - Date.now())));
 }
@@ -5382,7 +5463,7 @@ function idleHide() { idleOn = false; const m = document.getElementById('idlemsg
 function idleReset() { idleLast = Date.now(); if (idleOn) idleHide(); }
 ['mousemove', 'pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(ev => document.addEventListener(ev, idleReset, { passive: true }));
 setInterval(() => {
-  if (idleOn || !V || Date.now() - idleLast < IDLE_MS || Date.now() < gateUntil) return;
+  if (idleOn || !V || SPEC || RP || Date.now() - idleLast < IDLE_MS || Date.now() < gateUntil) return;
   if (V.winner != null || V.turn !== V.me || V.pending || V.battle || V.mull || V.pick || pay || animStep || document.hidden) return;
   if (!['main', 'main2', 'attack', 'end'].includes(V.step)) return;
   const btns = [...document.querySelectorAll('[data-next]:not([disabled])')]; if (!btns.length) return;
@@ -5918,7 +5999,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v35.0.0 (2026/11/16)';
+const APP_VER = 'v35.0.1 (2026/11/16)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
@@ -5945,6 +6026,7 @@ try { if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) w
 (function () {
   try {
     const btn = document.getElementById('pwaBtn'), box = document.getElementById('pwaBox'), now = document.getElementById('pwaNow'); if (!btn || !box) return;
+    try { if ((window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true) { document.body.classList.add('standalone'); const g = document.createElement('div'); g.id = 'homeguard'; document.body.appendChild(g); } } catch (e) { }
     const standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
     if (standalone) return;   // すでにアプリとして開いているときは出さない
     btn.hidden = false;
