@@ -568,6 +568,13 @@ body.bc .field{min-height:0 !important}
 body.bc #side:not(.keep){z-index:60}
 body.bc #prompt{display:none !important}
 .lifemid{display:none}
+body:not(.bc) .lifemid{display:flex;flex:0 0 auto;justify-content:center;align-items:center;padding:1px 0;line-height:1}
+body:not(.bc) .lifemid>div{display:flex;align-items:baseline;gap:4px;color:#fff}
+body:not(.bc) .lifemid small{font-size:10px;font-weight:900;letter-spacing:.14em;color:#ff9db5}
+body:not(.bc) .lifemid small::after{content:' ●'}
+body:not(.bc) .lifemid b{font-size:20px;font-weight:900;text-shadow:0 0 8px #ff4f7a99}
+body:not(.bc) .lifegrid{--lc:calc(var(--cw) * .27);gap:2px}
+.half.opp .lifemid{transform:rotate(180deg)}
 body.bc .lifemid{display:block;position:relative;flex:0 0 calc(var(--zb) * 1.25)}
 body.bc .lifemid>div{position:absolute;left:50%;top:50%;width:calc(var(--zb) * 1.3);height:calc(var(--zb) * .96);transform:translate(-50%,-50%) rotate(-90deg);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;color:#ff9db5}
 body.bc .lifemid>div{color:#fff !important}
@@ -631,6 +638,7 @@ body.bc #bcbar{right:8px;display:flex;flex-wrap:wrap;gap:6px;max-width:330px;bac
 /* 効果が出たら、反対側の盤面にカードを大きく見せる */
 #specfx{position:fixed;z-index:70;display:flex;align-items:center;justify-content:center;gap:14px;pointer-events:none;padding:4px;box-sizing:border-box;background:radial-gradient(ellipse at center,#0b1020e6 0%,#0b1020b3 62%,#0b102000 100%)}
 body.bc #specfx{background:none}
+#specfx.ent{background:none}#specfx.ent.go .sfc{animation-duration:1.2s}
 body.bc #specfx.go .sfc{animation-duration:1.5s}
 body.bc .sin>.cores{transition:transform .35s ease;transform-origin:50% calc(var(--cw) * .2)}
 body.bc .sin.tp>.cores{transform:rotate(90deg)}body.bc .sin.tp.hv>.cores{transform:rotate(180deg)}
@@ -4030,7 +4038,7 @@ function specFxEnter(id) {
   if (!k || !k.def) return;
   const sk = V.turnNo + ':' + V.step; if (specFxRecent.sk !== sk) { for (const q in specFxRecent) delete specFxRecent[q]; specFxRecent.sk = sk; }
   const key = k.def.name; if (specFxRecent[key + ':' + p]) return; specFxRecent[key + ':' + p] = 1;
-  specFxQ.unshift({ key, p, cid: k.def.id, name: k.def.name, label: k.def.type === 'nexus' ? '配置' : '召喚', text: '', def: k.def });
+  specFxQ.unshift({ key, p, cid: k.def.id, name: k.def.name, label: k.def.type === 'nexus' ? '配置' : '召喚', text: '', def: k.def, enter: true });
   if (specFxBusy) { clearTimeout(specFxT); specFxBusy = false; } specFxNext();
 }
 function specFxNext() {
@@ -4040,11 +4048,11 @@ function specFxNext() {
   const def = it.def || (it.cid && defOfId(it.cid)) || (it.name && (CARD_LIST.find(c => c.def.name === it.name) || {}).def); if (!def) { specFxNext(); return; }
   specFxBusy = true;
   const isMg = def.type === 'magic' && BC.on, onBottom = it.p === V.me, target = $(isMg ? (onBottom ? 'me' : 'opp') : (onBottom ? 'opp' : 'me')), r = target ? target.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight };
-  let h = Math.max(120, BC.on ? r.height * .96 : Math.min(r.height * .94, 360)), w = h * .69; if (BC.on && w > r.width * .92) { w = r.width * .92; h = w / .69; } const _u = 0, art = artOf(String(def.id));
+  let h = Math.max(120, r.height * .96), w = h * .69; if (w > r.width * .92) { w = r.width * .92; h = w / .69; } const _u = 0, art = artOf(String(def.id));
   box.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;--tint:' + (COLOR_HEX[def.color] || '#6a7499');
   const txt = (it.text || '').replace(/\n/g, ' ');
-  box.innerHTML = '<div class="sfc" style="height:' + h + 'px;width:' + w + 'px">' + (art ? '<img src="' + art + '" alt="">' : '<div class="artph2">' + esc(def.name) + '</div>') + '</div>' + (BC.on ? '' : '<div class="sfm"><div class="sfl">' + absName(it.p) + 'の' + esc(it.label) + '</div><div class="sfn">' + esc(def.name) + '</div>' + (txt ? '<div class="sft">' + rich(esc(txt.length > 140 ? txt.slice(0, 140) + '…' : txt)) + '</div>' : '') + '</div>');
-  box.classList.toggle('mg', isMg);
+  box.innerHTML = '<div class="sfc" style="height:' + h + 'px;width:' + w + 'px">' + (art ? '<img src="' + art + '" alt="">' : '<div class="artph2">' + esc(def.name) + '</div>') + '</div>' + (BC.on || it.enter ? '' : '<div class="sfm"><div class="sfl">' + absName(it.p) + 'の' + esc(it.label) + '</div><div class="sfn">' + esc(def.name) + '</div>' + (txt ? '<div class="sft">' + rich(esc(txt.length > 140 ? txt.slice(0, 140) + '…' : txt)) + '</div>' : '') + '</div>');
+  box.classList.toggle('mg', isMg); box.classList.toggle('ent', !!it.enter && !V.spec);
   box.hidden = false; box.classList.remove('go'); void box.offsetWidth; box.classList.add('go');
   if (isMg) {   // マジック: 自分のフィールドの真ん中に置き、1.5秒ほどしたらトラッシュへ
     const sc = box.querySelector('.sfc'), key = onBottom ? 'me' : 'opp', sp = Math.max(1, RP ? Math.min(RP.speed, 6) : 1);
@@ -4054,7 +4062,7 @@ function specFxNext() {
     }
     clearTimeout(specFxT); specFxT = setTimeout(() => { box.hidden = true; box.classList.remove('mg'); specFxBusy = false; specFxNext(); }, 2200 / sp); return;
   }
-  const dur = (RP ? 2400 / Math.max(1, Math.min(RP.speed, 6)) : 2300) * (BC.on ? .65 : 1);
+  const dur = (RP ? 2400 / Math.max(1, Math.min(RP.speed, 6)) : 2300) * (BC.on ? .65 : 1) * (it.enter && !V.spec ? .55 : 1);
   clearTimeout(specFxT); specFxT = setTimeout(() => { box.hidden = true; specFxBusy = false; specFxNext(); }, dur);
 }
 
@@ -4535,7 +4543,8 @@ function setV(v) {
     Object.values(prr.cards).forEach(r => { r.cx = 2 * mx - r.cx; r.cy = 2 * my - r.cy; });
     Object.values(prr.life).forEach(r => { r.x = 2 * mx - r.x; r.y = 2 * my - r.y; });
   }
-  const newSeq = V.seq !== lastSeq, tr = V.trace || [];
+  const fieldNew = !!(oldS && Object.keys(snap.tapped).some(id => !(id in oldS.tapped)));   // 効果のない召喚はseqが進まないので、盤面に新しいカードが増えたかでも判定する
+  const newSeq = V.seq !== lastSeq || fieldNew, tr = V.trace || [];
   if (newSeq && (V.evs || []).some(e => e.t === 'gate')) { gateUntil = Date.now() + 2000; $('gate').hidden = false; setTimeout(() => { $('gate').hidden = true; }, 2000); }
   if (newSeq && lastSeq !== null) {
     const ct = (V.evs || []).filter(e => (e.t === 'turn' && !RP && (e.p === V.me || V.spec)) || e.t === 'attack')[0];
@@ -4571,7 +4580,7 @@ function setV(v) {
       if (n.hand && o.hand && (mine || V.spec)) (mine ? V.you : V.opp).hand.forEach(k => { if (!o.hand.has(k.iid)) anim.drawn.set(k.iid, dAt); });
       if (!mine && !V.spec && n.handN > o.handN) { anim.oppN = n.handN - o.handN; anim.oppAt = dAt; }
       const moved = [...o.ct].filter(id => n.resIds.has(id)).length;
-      { const grow = n.ct.size - o.ct.size, pay = Math.max(0, o.resN - n.resN), held = V.fx && V.fx.length ? Math.max(0, grow - pay) : 0;   // 効果でトラッシュにコアが増えるときは、召喚の少しあとに「増えた」演出つきで反映する
+      { const grow = n.ct.size - o.ct.size, pay = Math.max(0, o.resN - n.resN), held = (V.fx && V.fx.length) || Object.keys(snap.tapped).some(id => !(id in oldS.tapped)) ? Math.max(0, grow - pay) : 0;   // 効果でトラッシュにコアが増えるときは、召喚の少しあとに「増えた」演出つきで反映する
         if (held > 0 && !ctHold[key]) { const until = now + (BC.on ? 1700 : 1300); ctHold[key] = { until, n: held }; setTimeout(() => { try { if (!V) return; render(); const z = zoneRect(key === 'me' ? '#me' : '#opp', 'coreTrash'); if (z) { coreFly({ cx: z.x, cy: z.y - 220 }, { cx: z.x, cy: z.y }, held); popText('トラッシュ+' + held, z.x, z.y - 34); } } catch (e) { } }, Math.max(0, until - Date.now()) + 20); } }
       const lostN = [...o.life].filter(id => !n.life.has(id)).length;
       if (n.resN > o.resN) {
@@ -4592,7 +4601,7 @@ function setV(v) {
     (V.evs || []).forEach(ev => { if (ev.t === 'coreAdd' && ev.soul) { const dl = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0); soulHold[ev.iid] = now + dl + 1100; setTimeout(() => { if (typeof render === 'function' && V) render(); }, dl + 1150); } });   // ソウルコアが飛んで乗るまでは、カードの上に出さない
     Object.keys(snap.tapped).forEach(id => { if (oldS.tapped[id] && !snap.tapped[id]) anim.untap.set(id, soulHold[id] > now ? soulHold[id] + 450 : rAt); });
     Object.keys(snap.tapped).forEach(id => { if (id in oldS.tapped && !oldS.tapped[id] && snap.tapped[id]) anim.tap.set(id, now); });
-    Object.keys(snap.tapped).forEach(id => { if (!(id in oldS.tapped)) { anim.summon.set(id, Date.now()); if (V.spec) { try { specFxEnter(id); } catch (e) { } } } });
+    Object.keys(snap.tapped).forEach(id => { if (!(id in oldS.tapped)) { anim.summon.set(id, Date.now()); try { specFxEnter(id); } catch (e) { } } });
     if (BC.on || V.spec || true) {   // 場の上のコアの移動: 減ったカード→増えたカードへ飛ばす(個別の動きの指示がないとき)
       const evT = (V.evs || []).map(e => e.t);
       if (!evT.some(t => t === 'cmove' || t === 'coreAdd' || t === 'coreOut' || t === 'coreIn' || t === 'destroy' || t === 'vanish')) {
@@ -6167,7 +6176,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v35.0.4 (2026/11/17)';
+const APP_VER = 'v35.0.5 (2026/11/17)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
