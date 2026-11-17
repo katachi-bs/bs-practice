@@ -6544,7 +6544,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v35.0.31 (2026/11/18)';
+const APP_VER = 'v35.0.32 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
@@ -7054,7 +7054,9 @@ $('admGo').onclick = () => {
 $('admPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('admGo').click(); if (e.key === 'Escape') admGateClose(); });
 {
   const t = document.querySelector('.hrow h1'), ck = [];
-  t.style.userSelect = 'none'; t.style.webkitUserSelect = 'none';
+  const hr = t.parentNode; [t, hr].forEach(x => { x.style.userSelect = 'none'; x.style.webkitUserSelect = 'none'; });
+  hr.addEventListener('mousedown', e => { if (e.detail > 1) e.preventDefault(); });
+  hr.addEventListener('selectstart', e => e.preventDefault());
   t.addEventListener('click', () => {
     if (!admPC()) return;
     const now = Date.now(); ck.push(now); if (ck.length > 6) ck.shift();
