@@ -38,7 +38,7 @@ body.adm:not(.ingame){background:#14307a}
 #hedit .hepxb{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
 #hedit video{flex:1 1 160px;min-width:0;max-height:340px;background:#000;border-radius:6px}
 #hedit canvas.hecv{flex:none;border-radius:6px;background:#1a2244;cursor:pointer}
-#hedit.nopool .hepool{display:none}#hedit .hepool{transition:none}#hedit .hepooltab{position:absolute;left:0;top:50%;z-index:20;width:20px;height:64px;padding:0;border-radius:0 8px 8px 0}#hedit.nopool .hepooltab{left:0}#hedit .hebody{position:relative}#hedit .hemain{overflow:hidden}#hedit #heSets{flex:1 1 0;min-height:200px;display:flex;gap:12px;align-items:flex-start;overflow:auto;padding-bottom:4px}#hedit .heset{flex:none;background:#0c1330;border:1px solid #2a3a73;border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:5px}#hedit .heset[hidden]{display:none}#hedit .hesh,#hedit .hesr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;max-width:100%}#hedit .hesh input[type=range]{width:70px}#hedit .hesb{display:flex;gap:6px;align-items:flex-start}#hedit .herv{position:relative;overflow:hidden;background:#000;border-radius:4px;flex:none}#hedit .herv video{position:absolute;left:50%;top:50%;max-height:none;border-radius:0;background:#000}#hedit .herv .rvl{position:absolute;left:4px;top:4px;font-size:10px;color:#889;pointer-events:none}#hedit canvas.hecv{touch-action:none}#hedit .heghost{position:fixed;z-index:400;width:56px;height:78px;border-radius:5px;background:#e4e8f2 center/cover no-repeat;border:2px solid #ffd36e;pointer-events:none;opacity:.9;transform:translate(-50%,-50%)}#hedit .hetl{height:210px;overflow-y:auto;min-height:0;flex:none}#hedit .hetile{touch-action:none}
+#hedit.nopool .hepool{display:none}#hedit .hepool{transition:none}#hedit .hepooltab{position:absolute;left:0;top:50%;z-index:20;width:20px;height:64px;padding:0;border-radius:0 8px 8px 0}#hedit.nopool .hepooltab{left:0}#hedit .hebody{position:relative}#hedit .hemain{overflow:hidden}#hedit #heSets.rot{flex-direction:column}#hedit #heSets{flex:1 1 0;min-height:200px;display:flex;gap:12px;align-items:flex-start;overflow:auto;padding-bottom:4px}#hedit .heset{flex:none;background:#0c1330;border:1px solid #2a3a73;border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:5px}#hedit .heset[hidden]{display:none}#hedit .hesh,#hedit .hesr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;max-width:100%}#hedit .hesh input[type=range]{width:70px}#hedit .hesb{display:flex;gap:6px;align-items:flex-start}#hedit .herv{position:relative;overflow:hidden;background:#000;border-radius:4px;flex:none}#hedit .herv video{position:absolute;left:50%;top:50%;max-height:none;border-radius:0;background:#000}#hedit .herv .rvl{position:absolute;left:4px;top:4px;font-size:10px;color:#889;pointer-events:none}#hedit canvas.hecv{touch-action:none}#hedit .heghost{position:fixed;z-index:400;width:56px;height:78px;border-radius:5px;background:#e4e8f2 center/cover no-repeat;border:2px solid #ffd36e;pointer-events:none;opacity:.9;transform:translate(-50%,-50%)}#hedit .hetl{height:210px;overflow-y:auto;min-height:0;flex:none}#hedit .hetile{touch-action:none}
 #hedit .hepxh select{width:auto}#hedit .hepx.wide{flex:2.2 1 620px}#hedit canvas#heCvC{touch-action:none}#hedit .heghost{position:fixed;z-index:400;width:56px;height:78px;border-radius:5px;background:#e4e8f2 center/cover no-repeat;border:2px solid #ffd36e;pointer-events:none;opacity:.9;transform:translate(-50%,-50%)}
 #hedit .hemk.chg{background:#2c4f9c;border:1px solid #7fa8ff}
 #hedit .hetr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -1226,11 +1226,12 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     </aside>
     <section class="hemain">
       <div class="hetr" id="heSet"><b>出力の設定</b><label>全体の幅 <input type="number" id="heW" value="1920" style="width:70px"></label><label>高さ <input type="number" id="heH" value="1080" style="width:70px"></label><label>手札の列の幅 <input type="number" id="heCol" value="360" style="width:70px"></label><label>盤面の下の余白(字幕用) <input type="number" id="heSub" value="180" style="width:70px"></label><label>上の余白 <input type="number" id="heTop" value="24" style="width:60px"></label><label>コマ数/秒 <select id="heFps"><option>30</option><option>60</option><option>24</option></select></label><label>カードの向き <select id="heRot"><option value="auto">横(中央向き)</option><option value="rev">横(逆向き)</option><option value="none">縦</option></select></label></div>
+      <div class="hetr" id="heView"><b>表示</b><label><input type="checkbox" id="heShA" checked> 手札A</label><label><input type="checkbox" id="heShC" checked> 盤面</label><label><input type="checkbox" id="heShB" checked> 手札B</label><label title="盤面を非表示にしているとき、手札を横長にして大きく表示します"><input type="checkbox" id="heRot90"> 手札を90度回転(盤面を隠したとき)</label></div>
       <select id="heBO" hidden><option value="A">A</option><option value="B">B</option></select>
       <div id="heSets">
-        <div class="heset" id="heSetA"><div class="hesh"><b>手札A</b><label>表示<input type="checkbox" id="heShA" checked></label><label>大きさ<input type="range" id="heSzA" min="40" max="300" value="100"></label><label>枚数 <input type="number" id="heNA" value="1" min="1" max="30" style="width:46px"></label><button id="heAddA">手札増加</button><button id="heDelA">手札減少</button></div><div class="hesb"><div class="herv" id="heRvA"><video id="heVidA" muted playsinline></video><span class="rvl">参考動画</span></div><canvas id="heCvA" class="hecv"></canvas></div><div class="hesr"><label class="hebtn">参考動画を選ぶ<input type="file" id="heVA" accept="video/*" hidden></label><span id="heVAn" class="note"></span><label>ずれ(秒)<input type="number" id="heOffA" value="0" step="0.001" style="width:70px"></label></div></div>
-        <div class="heset" id="heSetC"><div class="hesh"><b>盤面</b><label>表示<input type="checkbox" id="heShC" checked></label><label>大きさ<input type="range" id="heSzC" min="40" max="300" value="100"></label><span class="note" style="color:#9fb4ff">右クリックで操作を選びます</span></div><div class="hesb"><div class="herv" id="heRvC"><video id="heVidC" muted playsinline></video><span class="rvl">参考動画</span></div><canvas id="heCvC" class="hecv"></canvas></div><div class="hesr"><label class="hebtn">参考動画を選ぶ<input type="file" id="heVC" accept="video/*" hidden></label><span id="heVCn" class="note"></span><label>ずれ(秒)<input type="number" id="heOffC" value="0" step="0.001" style="width:70px"></label></div></div>
-        <div class="heset" id="heSetB"><div class="hesh"><b>手札B</b><label>表示<input type="checkbox" id="heShB" checked></label><label>大きさ<input type="range" id="heSzB" min="40" max="300" value="100"></label><label>枚数 <input type="number" id="heNB" value="1" min="1" max="30" style="width:46px"></label><button id="heAddB">手札増加</button><button id="heDelB">手札減少</button></div><div class="hesb"><canvas id="heCvB" class="hecv"></canvas><div class="herv" id="heRvB"><video id="heVidB" muted playsinline></video><span class="rvl">参考動画</span></div></div><div class="hesr"><label class="hebtn">参考動画を選ぶ<input type="file" id="heVB" accept="video/*" hidden></label><span id="heVBn" class="note"></span><label>ずれ(秒)<input type="number" id="heOffB" value="0" step="0.001" style="width:70px"></label></div></div>
+        <div class="heset" id="heSetA"><div class="hesh"><b>手札A</b><label>大きさ<input type="range" id="heSzA" min="40" max="300" value="100"></label><label>枚数 <input type="number" id="heNA" value="1" min="1" max="30" style="width:46px"></label><button id="heAddA">手札増加</button><button id="heDelA">手札減少</button></div><div class="hesb"><div class="herv" id="heRvA"><video id="heVidA" muted playsinline></video><span class="rvl">参考動画</span></div><canvas id="heCvA" class="hecv"></canvas></div><div class="hesr"><label class="hebtn">参考動画を選ぶ<input type="file" id="heVA" accept="video/*" hidden></label><span id="heVAn" class="note"></span><label>ずれ(秒)<input type="number" id="heOffA" value="0" step="0.001" style="width:70px"></label></div></div>
+        <div class="heset" id="heSetC"><div class="hesh"><b>盤面</b><label>大きさ<input type="range" id="heSzC" min="40" max="300" value="100"></label><span class="note" style="color:#9fb4ff">右クリックで操作を選びます</span></div><div class="hesb"><div class="herv" id="heRvC"><video id="heVidC" muted playsinline></video><span class="rvl">参考動画</span></div><canvas id="heCvC" class="hecv"></canvas></div><div class="hesr"><label class="hebtn">参考動画を選ぶ<input type="file" id="heVC" accept="video/*" hidden></label><span id="heVCn" class="note"></span><label>ずれ(秒)<input type="number" id="heOffC" value="0" step="0.001" style="width:70px"></label></div></div>
+        <div class="heset" id="heSetB"><div class="hesh"><b>手札B</b><label>大きさ<input type="range" id="heSzB" min="40" max="300" value="100"></label><label>枚数 <input type="number" id="heNB" value="1" min="1" max="30" style="width:46px"></label><button id="heAddB">手札増加</button><button id="heDelB">手札減少</button></div><div class="hesb"><canvas id="heCvB" class="hecv"></canvas><div class="herv" id="heRvB"><video id="heVidB" muted playsinline></video><span class="rvl">参考動画</span></div></div><div class="hesr"><label class="hebtn">参考動画を選ぶ<input type="file" id="heVB" accept="video/*" hidden></label><span id="heVBn" class="note"></span><label>ずれ(秒)<input type="number" id="heOffB" value="0" step="0.001" style="width:70px"></label></div></div>
       </div>
       <div class="hetr"><button id="heTo0">⏮</button><button id="hePrev">◀ コマ戻し</button><button id="hePlay">▶ 再生</button><button id="heNext">コマ送り ▶</button><span id="heTime" style="min-width:150px;font-variant-numeric:tabular-nums"></span><label>時刻(秒) <input type="number" id="heTnum" step="0.001" min="0" style="width:90px"></label><label>選んだ印の時刻 <input type="number" id="heMt" step="0.001" min="0" style="width:90px" disabled></label><input type="range" id="heSeek" min="0" max="1000" value="0"><label>拡大 <input type="range" id="heZoom" min="20" max="900" value="60"></label></div>
       <div class="hetl"><div class="hetll"><div>時刻</div><div>A ＋入る</div><div>A －出る</div><div>B ＋入る</div><div>B －出る</div><div>盤面 ＋置く</div><div>盤面 変化</div></div><div class="hets" id="heTs"><div class="hetin" id="heTin"></div></div></div>
@@ -3626,7 +3627,7 @@ $('lobbyDeck').onchange = () => { if ($('lobbyDeck').value) lobbyApply($('lobbyD
 /* デッキ画像: デッキ名と、カード(右下に枚数)だけのシンプルな画像を作る。スマホは共有シートから「画像を保存」で写真に入る */
 async function deckImageBlob() {
   const name = ($('bName').value || '').trim() || '無題のデッキ';
-  const list = [...B.deck].map(([id, n]) => ({ c: cardById(id), id, n })).filter(x => x.c).sort((a, b) => (a.c.def.cost - b.c.def.cost) || String(a.id).localeCompare(String(b.id)));
+  const list = [...B.deck].map(([id, n]) => ({ c: cardById(id), id, n })).filter(x => x.c);
   const total = list.reduce((a, x) => a + x.n, 0);
   const CW = 200, CH = 290, G = 14, PAD = 36, COLS = Math.min(8, Math.max(4, Math.ceil(Math.sqrt(list.length * 1.4)))), ROWS = Math.max(1, Math.ceil(list.length / COLS)), HEAD = 96;
   const W = PAD * 2 + COLS * CW + (COLS - 1) * G, H = HEAD + PAD + ROWS * CH + (ROWS - 1) * G + PAD;
@@ -6457,10 +6458,10 @@ function targetAt(x, y, d) {
   for (const el of document.elementsFromPoint(x, y)) {
     if (!el.closest) continue;
     if (d.kind === 'paycore') { const z = el.closest('[data-pzone]'); if (z) return { type: 'pz', b: z.dataset.pzone, el: z }; continue; }
-    if (d.kind === 'placecore') { const c = el.closest('#me [data-card]'); if (c && V.pending && V.pending.cands.includes(c.dataset.card)) return { type: 'pnx', iid: c.dataset.card, el: c }; const s2 = el.closest('#me [data-slot]'); if (s2 && V.pending && V.pending.cands.includes(s2.dataset.slot)) return { type: 'pnx', iid: s2.dataset.slot, el: s2 }; continue; }
+    if (d.kind === 'placecore') { const c = el.closest('#me [data-card]'); if (c && V.pending && V.pending.cands.includes(c.dataset.card)) return { type: 'pnx', iid: c.dataset.card, el: c }; const s2 = el.closest('#me [data-slot]'); if (s2 && V.pending && V.pending.cands.includes(s2.dataset.slot)) return { type: 'pnx', iid: s2.dataset.slot, el: s2.querySelector('.card') || s2 }; continue; }
     if (d.kind === 'core') {
       const z = el.closest('#me [data-dest]'); if (z) return { type: 'zone', zone: z.dataset.dest, el: z };
-      const s = el.closest('#me [data-slot]'); if (s) return { type: 'card', iid: s.dataset.slot, el: s };
+      const s = el.closest('#me [data-slot]'); if (s) return { type: 'card', iid: s.dataset.slot, el: s.querySelector('.card') || s };
       const nd = el.closest('#me [data-nodrop]'); if (nd) return { type: 'nodrop', el: nd };
     } else {
       const tr = el.closest('#me .trash'); if (tr) return { type: 'trash', el: tr };
@@ -6530,7 +6531,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v35.0.28 (2026/11/18)';
+const APP_VER = 'v35.0.30 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
@@ -6601,6 +6602,7 @@ const HE = { fps: 30, dur: 10, t: 0, playing: false, zoom: 60, nid: 1, nc: 1, se
   hands: { A: { ev: [], deck: '' }, B: { ev: [], deck: '' } }, custom: {}, lay: { w: 1920, h: 1080, col: 360, sub: 180, top: 24, fps: 30, rot: 'auto' }, pk: new Set() };
 HE.board = { ev: [] }; HE.bsel = null; HE.bdrag = null;
 HE.off = { A: 0, B: 0, C: 0 };
+const heVr = k => k !== 'C' && $('heShC').checked === false && $('heRot90').checked;
 const heVT = (s, t) => Math.max(0, t - (HE.off[s] || 0));
 const HEK = ['life', 'res', 'trash', 'deck'], HEKN = { life: 'ライフ', res: 'リザーブ', trash: 'トラッシュ', deck: 'デッキ' }, HEKD = { life: 5, res: 4, trash: 0, deck: 40 };
 const heRotFor = side => { const r = HE.lay.rot; return r === 'none' ? 0 : r === 'auto' ? (side === 'A' ? 90 : -90) : (side === 'A' ? -90 : 90); };
@@ -6737,29 +6739,38 @@ function heBoardRender(ctx, t, x0, bw, bh, hits) {
 function heFit() {
   const box = $('heSets'), L = HE.lay; if (!box.clientHeight) return;
   const ks = ['A', 'C', 'B'].filter(k => !$('heSet' + k).hidden); if (!ks.length) return;
+  const rot = ks.some(heVr);
+  $('heRot90').disabled = $('heShC').checked; box.classList.toggle('rot', rot);
+  const vd = k => { const v = $('heVid' + k); return [v.videoWidth || 16, v.videoHeight || 9]; };
+  if (rot) {
+    const n = ks.length, hBase = (box.clientHeight - 14 * (n - 1) - 76 * n) / n;
+    ks.forEach(k => {
+      const [vw, vh] = vd(k), rv = $('heRv' + k), v = $('heVid' + k), cv = $('heCv' + k), asp = L.h / L.col, rA = vw / vh;
+      const hc = Math.max(60, Math.min((box.clientWidth - 40) / (asp + rA), hBase)), w = Math.round(hc * asp), h = Math.round(hc), rw = Math.round(hc * rA);
+      cv.style.width = w + 'px'; cv.style.height = h + 'px'; rv.style.width = rw + 'px'; rv.style.height = h + 'px';
+      v.style.width = rw + 'px'; v.style.height = h + 'px'; v.style.transform = 'translate(-50%,-50%)'; $('heSet' + k).style.width = (w + rw + 20) + 'px';
+      $('heSet' + k).querySelector('.hesb').style.flexDirection = k === 'B' ? 'row-reverse' : 'row';
+    });
+    return;
+  }
   const sc = {}, rr = {}, cr = {};
-  ks.forEach(k => {
-    sc[k] = (+$('heSz' + k).value || 100) / 100; const v = $('heVid' + k), vw = v.videoWidth || 16, vh = v.videoHeight || 9;
-    cr[k] = (k === 'C' ? Math.max(200, L.w - 2 * L.col) : L.col) / L.h; rr[k] = k === 'C' ? 0.55 * vw / vh : vh / vw;
-  });
+  ks.forEach(k => { sc[k] = (+$('heSz' + k).value || 100) / 100; const [vw, vh] = vd(k); cr[k] = (k === 'C' ? Math.max(200, L.w - 2 * L.col) : L.col) / L.h; rr[k] = k === 'C' ? 0.55 * vw / vh : vh / vw; });
   const sum = ks.reduce((a, k) => a + sc[k] * (cr[k] + rr[k]), 0), maxSc = Math.max(...ks.map(k => sc[k]));
   const wBase = (box.clientWidth - 22 * ks.length - 12 * (ks.length - 1)) / sum, hBase = (box.clientHeight - 175) / maxSc, base = Math.max(90, Math.min(wBase, hBase));
   ks.forEach(k => {
-    const h = Math.round(base * sc[k]), cv = $('heCv' + k), w = Math.round(h * cr[k]), rw = Math.round(h * rr[k]);
+    const h = Math.round(base * sc[k]), cv = $('heCv' + k), w = Math.round(h * cr[k]), rw = Math.round(h * rr[k]), [vw] = vd(k);
     cv.style.height = h + 'px'; cv.style.width = w + 'px';
     const rv = $('heRv' + k), v = $('heVid' + k);
-    $('heSet' + k).style.width = (rw + w + 20) + 'px';
+    $('heSet' + k).style.width = (rw + w + 20) + 'px'; $('heSet' + k).querySelector('.hesb').style.flexDirection = '';
     if (k === 'C') { const rh = Math.round(h * 0.55); rv.style.width = rw + 'px'; rv.style.height = rh + 'px'; v.style.width = rw + 'px'; v.style.height = rh + 'px'; v.style.transform = 'translate(-50%,-50%)'; }
-    else { rv.style.width = rw + 'px'; rv.style.height = h + 'px'; }
-    if (k === 'C') { }
-    else { v.style.width = h + 'px'; v.style.height = rw + 'px'; v.style.transform = 'translate(-50%,-50%) rotate(' + (heRotFor(k) >= 0 ? 90 : -90) + 'deg)'; }
+    else { rv.style.width = rw + 'px'; rv.style.height = h + 'px'; v.style.width = h + 'px'; v.style.height = rw + 'px'; v.style.transform = 'translate(-50%,-50%) rotate(' + (heRotFor(k) >= 0 ? 90 : -90) + 'deg)'; }
   });
 }
 function heDraw() {
   const L = HE.lay, bw = Math.max(200, L.w - 2 * L.col), bh = Math.max(100, L.h - L.sub), ed = !HE.playing;
   ['A', 'B', 'C'].forEach(k => {
-    const cv = $('heCv' + k), cw = k === 'C' ? bw : L.col; if (cv.width !== cw || cv.height !== L.h) { cv.width = cw; cv.height = L.h; heFit(); }
-    const ctx = cv.getContext('2d'); ctx.clearRect(0, 0, cw, L.h); ctx.fillStyle = k === 'C' ? '#0c1330' : '#121c44'; ctx.fillRect(0, 0, cw, L.h);
+    const cv = $('heCv' + k), cw = k === 'C' ? bw : L.col, vr = heVr(k), W2 = vr ? L.h : cw, H2 = vr ? cw : L.h; if (cv.width !== W2 || cv.height !== H2) { cv.width = W2; cv.height = H2; heFit(); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W2, H2); if (vr) ctx.setTransform(0, -1, 1, 0, 0, L.col); ctx.fillStyle = k === 'C' ? '#0c1330' : '#121c44'; ctx.fillRect(0, 0, cw, L.h);
     if (ed) {
       ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.font = Math.round(L.h * 0.022) + 'px sans-serif'; ctx.textAlign = 'center';
       if (k === 'C') { ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.setLineDash([14, 10]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bw / 2, 0); ctx.lineTo(bw / 2, bh); ctx.moveTo(0, bh); ctx.lineTo(bw, bh); ctx.stroke(); ctx.restore(); ctx.fillStyle = 'rgba(255,255,255,.07)'; ctx.fillRect(0, bh, bw, L.h - bh); ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.fillText('字幕の余白', bw / 2, bh + (L.h - bh) / 2); }
@@ -6769,6 +6780,7 @@ function heDraw() {
   heRender($('heCvA').getContext('2d'), 'A', HE.t, 0, L.col, L.h, 0, L.top, ed ? HE.hits.A : null);
   heRender($('heCvB').getContext('2d'), 'B', HE.t, 0, L.col, L.h, 0, L.top, ed ? HE.hits.B : null);
   heBoardRender($('heCvC').getContext('2d'), HE.t, 0, bw, bh, ed ? HE.bhits : null);
+  ['A', 'B'].forEach(k => $('heCv' + k).getContext('2d').setTransform(1, 0, 0, 1, 0, 0));
   $('heTime').textContent = heFmt(HE.t) + ' / ' + heFmt(HE.dur) + heTurnTxt(HE.t); if (document.activeElement !== $('heTnum')) $('heTnum').value = HE.t.toFixed(3);
   $('heSeek').value = Math.round(HE.t / HE.dur * 1000);
   const ph = $('heTin').querySelector('.heph'); if (ph) ph.style.left = (HE.t * HE.zoom) + 'px';
@@ -6868,7 +6880,8 @@ function heMenu(x, y, items) { HE.menu = items; hePop(x, y, items.map((it, i) =>
 function hePop(x, y, html) { const p = $('hePop'); p.innerHTML = html; p.hidden = false; p.style.left = Math.min(x, innerWidth - 230) + 'px'; p.style.top = Math.min(y, innerHeight - 150) + 'px'; }
 const heReg = ev => { for (const k of ['A', 'C', 'B']) { if ($('heSet' + k).hidden) continue; const r = $('heCv' + k).getBoundingClientRect(); if (ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom) return k; } return null; };
 function heHit(side, ev) {
-  const cv = $('heCv' + side), r = cv.getBoundingClientRect(), x = (ev.clientX - r.left) * cv.width / r.width, y = (ev.clientY - r.top) * cv.height / r.height;
+  const cv = $('heCv' + side), r = cv.getBoundingClientRect(), rx = (ev.clientX - r.left) * cv.width / r.width, ry = (ev.clientY - r.top) * cv.height / r.height;
+  let x = rx, y = ry; if (heVr(side)) { x = HE.lay.col - ry; y = rx; }
   return { x, y, hit: HE.hits[side].find(h => x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h) };
 }
 ['A', 'B'].forEach(s => {
@@ -7065,7 +7078,8 @@ $('heNext').onclick = () => { hePause(); heSeek(HE.t + 1 / HE.fps); };
 $('hePlay').onclick = hePlay;
 $('heSeek').oninput = () => { heSeek($('heSeek').value / 1000 * HE.dur); };
 $('heZoom').oninput = () => { HE.zoom = +$('heZoom').value; heTL(); };
-['A', 'B', 'C'].forEach(k => { $('heSh' + k).onchange = () => { $('heSet' + k).hidden = !$('heSh' + k).checked; heFit(); }; $('heSz' + k).oninput = heFit; });
+['A', 'B', 'C'].forEach(k => { $('heSh' + k).onchange = () => { $('heSet' + k).hidden = !$('heSh' + k).checked; heFit(); heDraw(); }; $('heSz' + k).oninput = heFit; });
+$('heRot90').onchange = () => { heFit(); heDraw(); };
 ['A', 'B', 'C'].forEach(k => { $('heOff' + k).oninput = () => { HE.off[k] = +$('heOff' + k).value || 0; heSeek(HE.t); }; });
 $('hePoolT').onclick = () => { const o = $('hedit').classList.toggle('nopool'); $('hePoolT').textContent = o ? 'カード一覧 ▶' : 'カード一覧 ◀'; heFit(); };
 $('heTnum').oninput = () => { const v = parseFloat($('heTnum').value); if (isFinite(v)) { hePause(); heSeek(Math.max(0, v)); } };
