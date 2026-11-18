@@ -2799,7 +2799,8 @@ function coreSelAct(G, pi, ids) {
   if (coreOutNext(G) === 'wait') return;
   G.queue[0].i++; runQueue(G);
 }
-const atkCap1 = (G, k) => k.def.cost <= 3 && k.atkT === G.turnNo && G.p.some((Q, si) => Q.field.some(X => X.def.effects.some(e => e.keyword === 'atkCap1' && effectActive(X, e) && evalCond(G, si, e.cond))));
+const atkCap1 = (G, k) => k.def.cost <= 3 && G.cap1T === G.turnNo &&   // コスト3以下(トークンも含む)のスピリットすべてで、そのターンに合計1回
+   G.p.some((Q, si) => Q.field.some(X => X.def.effects.some(e => e.keyword === 'atkCap1' && effectActive(X, e) && evalCond(G, si, e.cond))));
 const oppNoAtk = (G, k) => { if (atkCap1(G, k)) return true; const qi = ownerOf(G, k); return qi >= 0 && G.p[1 - qi].field.some(K => K.def.effects.some(e => e.timing.kind === 'static' && e.timing.when === 'step' && e.timing.step === 'attack' && e.timing.turn === 'opp' && G.turn === qi && effectActive(K, e) && e.ops.some(o => o.op === 'noAtkCore' && k.cores.length <= (o.coreMax | 0)))); };
 // 「お互いのアタックステップ: BPが○以下ならアタック/ブロックできない」
 const abLocked = (G, k) => G.step === 'attack' && k.def.effects.some(e => e.timing.kind === 'static' && e.timing.when === 'always' && effectActive(k, e) && e.ops.some(o => o.op === 'noAB' && curBP(G, k) <= (o.bpMax | 0)));
@@ -2817,7 +2818,7 @@ function startAttack(G, pi, k) {
     if (!c) { lg(G, pi, '「' + k.def.name + '」: アタックに必要な1コストを支払えないためアタックできません'); return; }
     moveCore(G, pi, c.id, { zone: 'coreTrash' }); lg(G, pi, '「' + k.def.name + '」のアタックのため、1コストを支払いました(リザーブ→トラッシュ)');
   }
-  k.tapped = true; k.atkT = G.turnNo; tapEvt(G, pi, k, 'game', true);
+  k.tapped = true; k.atkT = G.turnNo; if (k.def.cost <= 3) G.cap1T = G.turnNo; tapEvt(G, pi, k, 'game', true);
   G.battleNo = (G.battleNo || 0) + 1;
   G.battle = { pi, iid: k.iid, phase: 'trigger', prio: pi, passes: 0, blocker: null, gone: false, bgone: false };
   lg(G, pi, '「' + k.def.name + '」でアタック!'); G.evs.push({ t: 'attack', p: pi, name: k.def.name, id: k.def.id });
@@ -5738,22 +5739,36 @@ function artSm(id) {
   keepArt(u);
   return u;
 }
+let _thBusy = 0; const _thWait = [];
+function _thDone() { _thBusy = Math.max(0, _thBusy - 1); const f = _thWait.shift(); if (f) f(); }
+function _thRun(f) { if (_thBusy >= 2) { _thWait.push(() => { _thBusy++; f(); }); return; } _thBusy++; f(); }
+const _cvFree = c => { try { c.width = 0; c.height = 0; } catch (e) { } };
+// 端末のメモリが足りないと、真っ黒な画像ができることがある。真っ黒なときは使わない(元の画像を使う)
+function _cvBlack(c) {
+  try { const t = document.createElement('canvas'); t.width = 8; t.height = 8; const x = t.getContext('2d'); x.drawImage(c, 0, 0, 8, 8); const d = x.getImageData(0, 0, 8, 8).data; let sum = 0; for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2]; _cvFree(t); return sum < 64 * 3 * 4; } catch (e) { return false; }
+}
 function mkThumb(u) {
   const rec = { url: '' }; _thumb.set(u, rec);
-  try {
-    const im = new Image(); im.decoding = 'async';
-    im.onload = () => {
-      try {
-        let w = im.naturalWidth, h = im.naturalHeight; if (!w || w <= 440) { return; }
-        const tw = 420, th = Math.round(h * tw / w);
-        let src = im, cw = w, ch = h;
-        while (cw / 2 > tw) { const nw = Math.round(cw / 2), nh = Math.round(ch / 2), c = document.createElement('canvas'); c.width = nw; c.height = nh; const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, nw, nh); src = c; cw = nw; ch = nh; }
-        const c = document.createElement('canvas'); c.width = tw; c.height = th; const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, tw, th);
-        c.toBlob(b => { if (!b) return; const bu = URL.createObjectURL(b), t2 = new Image(); t2.decoding = 'async'; t2.onload = () => { rec.url = bu; keepArt(bu); }; t2.src = bu; }, 'image/jpeg', .9);
-      } catch (e) { }
-    };
-    im.src = u;
-  } catch (e) { }
+  let fin = false; const done = () => { if (fin) return; fin = true; _thDone(); };
+  _thRun(() => {
+    try {
+      const im = new Image(); im.decoding = 'async';
+      im.onerror = done;
+      im.onload = () => {
+        try {
+          let w = im.naturalWidth, h = im.naturalHeight; if (!w || w <= 440) { done(); return; }
+          const tw = 420, th = Math.round(h * tw / w);
+          let src = im, cw = w, ch = h;
+          while (cw / 2 > tw) { const nw = Math.round(cw / 2), nh = Math.round(ch / 2), c = document.createElement('canvas'); c.width = nw; c.height = nh; const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, nw, nh); if (src !== im) _cvFree(src); src = c; cw = nw; ch = nh; }
+          const c = document.createElement('canvas'); c.width = tw; c.height = th; const x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, tw, th);
+          if (src !== im) _cvFree(src);
+          if (_cvBlack(c)) { _cvFree(c); done(); return; }
+          c.toBlob(b => { _cvFree(c); done(); if (!b) return; const bu = URL.createObjectURL(b), t2 = new Image(); t2.decoding = 'async'; t2.onload = () => { rec.url = bu; keepArt(bu); }; t2.src = bu; }, 'image/jpeg', .9);
+        } catch (e) { done(); }
+      };
+      im.src = u;
+    } catch (e) { done(); }
+  });
 }
 const artOf0 = id => { id = TOKEN_ART[id] || id; const v = VARIANTS.find(x => x.id === id); if (ART_EMBED[id]) return artBlob(id, ART_EMBED[id]); if (ART_URL[id]) return ART_URL[id]; return v ? (ART_EMBED[v.of] ? artBlob(v.of, ART_EMBED[v.of]) : (ART_URL[v.of] || '')) : ''; };
 const artCls = k => artQ(k.def.id) ? ' hasart' : '';
@@ -6296,8 +6311,21 @@ function setH(el, html) {
   const t = document.createElement('template'); t.innerHTML = html; morphKids(el, t.content);
 }
 function render() { render0(); if (BC.on) { bcTop(); bcFit(); applyHandFlip(); } }
+/* 対戦の画像を先に読み込んでおく(使うときに読み込みが間に合わず、黒く見えるのを防ぐ)。ソーディッシュを出すカードがあるときは、その画像も用意する */
+let _preG = null, _preQ = [], _preT = 0;
+function preloadGameArt() {
+  try {
+    const ids = new Set(), addD = d => { if (!d || !d.id) return; ids.add(String(d.id)); if ((d.effects || []).some(e => (e.ops || []).some(o => o && o.op === 'token'))) Object.keys(TOKEN_STATS).forEach(n => ids.add('TOKEN-' + n)); };
+    if (G && G.p) G.p.forEach(P => Object.values(P).forEach(v => { if (Array.isArray(v)) v.forEach(k => k && k.def && addD(k.def)); }));
+    (myDefs || []).forEach(d => addD(d && d.def ? d.def : d));
+    _preQ = _preQ.concat([...ids]);
+    const tick = () => { _preT = 0; const n = _preQ.splice(0, 4); n.forEach(id => { try { artSm(id); } catch (e) { } }); if (_preQ.length) _preT = setTimeout(tick, 80); };
+    if (!_preT) _preT = setTimeout(tick, 0);
+  } catch (e) { }
+}
 function render0() {
   if (!V) return;
+  if (G && G !== _preG) { _preG = G; preloadGameArt(); }
   { const pd = V.pending, b0 = V.battle;   // カードを選ぶ場面(対象の指定・ブロック宣言)では、カード上のコアの判定をなくして、カードを選びやすくする
     const selCard = !!(pd && pd.pi === V.me && pd.cands && pd.cands.length && !['coreSel', 'colorPick', 'order', 'reveal'].includes(pd.kind) && !pd.camo && !pd.place) || !!(b0 && b0.phase === 'block' && b0.prio === V.me);
     document.body.classList.toggle('selcard', selCard && !pay); }
@@ -6825,7 +6853,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v36.4.0 (2026/11/18)';
+const APP_VER = 'v36.5.0 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
