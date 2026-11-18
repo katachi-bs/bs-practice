@@ -1,0 +1,36 @@
+{
+ "css": [
+  ".pwax{background:none;border:0;color:inherit;font-size:18px;cursor:pointer;padding:4px 8px}",
+  ".cc.own,.core.own{cursor:grab}",
+  "#mullbox .mt{font-size:14px;text-align:center}#mullbox .mt span{color:var(--sub);font-size:12px}",
+  "body.bc .lifemid small{font-size:calc(var(--zb) * .2);letter-spacing:.2em;font-weight:900}",
+  ".bc .bi{position:absolute;left:3px;bottom:3px;background:#000b;color:#fff;border-radius:50%;width:1.9em;height:1.9em;display:grid;place-items:center;font-size:11px;border:1px solid #fff6}"
+ ],
+ "engine": [
+  "/* --- コスト支払い(召喚・配置・使用) --- */",
+  "/* --- ネクサスをスピリットとして扱う(効果は発揮しないバニラ: Lv1 5000 / Lv2 7000)。期間が過ぎる/場を離れる/消えると、元のネクサスに戻る --- */",
+  "function execOp(G, it, op) {",
+  "function ampHook(G, before) {",
+  "// コアをカードからリザーブへ(相手が選ぶ場合は、ソウルコアが乗っていれば選択を待つ)",
+  "// 疲労した時の誘発: 相手の効果で疲労/重疲労した時(050)、自分のスピリットが疲労した時(X16)",
+  "/* --- CPU(相手プレイヤーとして、人と同じ操作を自動で出す) --- */",
+  "// 効果が今のレベルで有効か(場に出ているスピリットはコアの数で決まるレベルを見る)"
+ ],
+ "ui": [
+  "function bRender() {",
+  "let _idMap = null, _idMapFor = null; const _defOk = new WeakMap();",
+  "function freeShuffle() {",
+  "function specFxEnter(id) {",
+  "function bcTop() {",
+  "function whyText(t, x, y) {   // 破壊された理由を、カードのそばに少し長めに出す",
+  "// 効果の発動を、画面中央に文章で見せる(1件ずつ約2秒)",
+  "const ART_URL = {};",
+  "// 支払いポップ上のコア(★/●)をドラッグして、別の枠へ移す・枠の中のコアと入れ替える",
+  "/* --- 操作がしばらく無いとき: 終了ボタンを光らせ、画面中央に「あなたのターンです」を出す(カーソルを動かす/触ると消える) --- */",
+  "function moveCoresGuarded(ids, to) {",
+  "$('devEnd').onclick = () => setDev(false);",
+  "function heMenuShow(ev, it) { hePopOpen(ev.clientX, ev.clientY, it); }",
+  "$('heTs').addEventListener('contextmenu', e => {",
+  "HE.hs = 0.57; heLayLoad();"
+ ]
+}

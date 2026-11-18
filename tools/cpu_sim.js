@@ -2,7 +2,9 @@
 const fs=require('fs'),vm=require('vm');
 const path=require('path'),ROOT=path.join(__dirname,'..'),HP=process.env.HTML||[path.join(ROOT,'bs-practice.html'),path.join(ROOT,'index.html')].find(f=>fs.existsSync(f));
 const html=fs.readFileSync(HP,'utf8');
-const eng=html.match(/<script id="engine">([\s\S]*?)<\/script>/)[1];
+const HDIR=path.dirname(HP);   // 分割版(index.html + js/engine-*.js)にも、1つにまとまった版にも対応
+const eng=(html.match(/<script id="engine">([\s\S]*?)<\/script>/)||[])[1]||[...html.matchAll(/<script src="(js\/engine-[^"]+)"><\/script>/g)].map(m=>fs.readFileSync(path.join(HDIR,m[1]),'utf8')).join('');
+if(!eng)throw new Error('エンジンのコードが見つかりません');
 const ctx={console,Math,JSON,Date,setTimeout,clearTimeout,window:{}};vm.createContext(ctx);
 vm.runInContext(eng,ctx);const GODJS=path.join(__dirname,'god.js'),HAS_T=fs.existsSync(GODJS);
 if(HAS_T)vm.runInContext(fs.readFileSync(GODJS,'utf8'),ctx);   // 追加の学習用モジュール(あれば読み込む)
