@@ -1077,6 +1077,30 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
 <script src="cards/art-extra-1.js" onerror="void 0"></script><script src="cards/art-extra-2.js" onerror="void 0"></script>
 </head>
 <body>
+<style id="oldSiteCss">
+#oldSite{position:fixed;inset:0;z-index:99999;background:rgba(5,8,20,.94);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#oldSite[hidden]{display:none}
+#oldSite .box{max-width:560px;width:100%;background:#16213f;border:2px solid #ffb74d;border-radius:14px;padding:22px 20px;color:#eef2ff;box-shadow:0 10px 40px #000a}
+#oldSite h2{margin:0 0 10px;font-size:22px;color:#ffcc80}
+#oldSite p,#oldSite li{font-size:15px;line-height:1.7;margin:6px 0}
+#oldSite ul{padding-left:20px;margin:8px 0}
+#oldSite .url{display:block;word-break:break-all;background:#0b1226;border:1px solid #3a4a7a;border-radius:8px;padding:10px;margin:10px 0;color:#9fd0ff;font-weight:700;text-decoration:none}
+#oldSite .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#oldSite button,#oldSite a.go{flex:1;min-width:140px;padding:12px;border-radius:10px;border:0;font-size:15px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none}
+#oldSite a.go{background:#ffb74d;color:#1a1200}
+#oldSite button{background:#2b3a66;color:#eef2ff}
+</style>
+<div id="oldSite" hidden><div class="box" role="dialog" aria-modal="true">
+<h2>⚠ 新しいURLに引っ越しました</h2>
+<p>セキュリティ対策や今後の機能追加のため、新しいサーバーに移動しました。今後は下のURLをお使いください(ブックマーク・ホーム画面のアプリも入れ直してください)。</p>
+<a class="url" id="oldSiteUrl" href="#"></a>
+<ul>
+<li>構築したデッキや、保存したリプレイが必要な場合は、<b>この旧サイトで書き出して</b>、新URLで取り込んでください(デッキ=「書き出し」、リプレイ=「書き出し」)。引っ越しは自動では行われません。</li>
+<li>この旧サイトは<b>予告なく終了</b>します。</li>
+</ul>
+<div class="row"><a class="go" id="oldSiteGo" href="#">新しいURLを開く</a><button id="oldSiteCp">URLをコピー</button><button id="oldSiteX">閉じて続ける</button></div>
+</div></div>
+
 <main>
 <div class="hrow"><h1>BATTLE SPIRITS PRACTICE <span class="admtag adm-only">管理者モード</span></h1><button id="admEnd" class="sub adm-only" type="button" style="margin-left:auto;padding:5px 12px;font-size:12px">管理者モードを終了</button><button id="pwaBtn" class="pwabtn" type="button" hidden>アプリとして入れる</button></div>
 <div id="noticeBar" hidden><span id="noticeTx"></span><a id="noticeGo" target="_blank" rel="noopener" hidden></a><button type="button" id="noticeX" aria-label="閉じる">×</button></div>
@@ -4115,6 +4139,18 @@ async function apiPost(path, body, method) { try { const r = await fetch(API + p
   } catch (e) { }
 })();
 // トップのお知らせ(URLの変更など)。管理者メニューから出し入れできる
+
+/* 旧サイト(GitHub Pages)を開いたとき、ホームに来るたびに引っ越しの案内を大きく出す */
+const NEW_URL = 'https://bsp-app.standard-reg-fuk.workers.dev';
+function isOldSite() { try { return /\.github\.io$/i.test(location.hostname) || /[?&]oldsite=1/.test(location.search); } catch (e) { return false; } }
+function oldSiteShow() {
+  if (!isOldSite()) return; const m = $('oldSite'); if (!m) return;
+  $('oldSiteUrl').href = NEW_URL; $('oldSiteUrl').textContent = NEW_URL; $('oldSiteGo').href = NEW_URL; m.hidden = false;
+}
+$('oldSiteX').onclick = () => { $('oldSite').hidden = true; };
+$('oldSiteCp').onclick = () => { const b = $('oldSiteCp'); const ok = () => { b.textContent = 'コピーしました'; setTimeout(() => b.textContent = 'URLをコピー', 1500); };
+  try { navigator.clipboard.writeText(NEW_URL).then(ok, () => { prompt('コピーしてください', NEW_URL); }); } catch (e) { prompt('コピーしてください', NEW_URL); } };
+oldSiteShow();
 function showNotice(n) {
   const bar = $('noticeBar'); if (!bar) return;
   let gone = ''; try { gone = localStorage.getItem('bs-notice-x') || ''; } catch (e) { }
@@ -4915,6 +4951,7 @@ function resetToHome(msg) {
   hideSheet(); $('banner').hidden = true; $('logpanel').hidden = true; logOpen = false; menuOpen = false;
   $('game').hidden = true; $('lobby').hidden = false; document.body.classList.remove('ingame');
   say(msg || ''); try { freeUnreg(); } catch (e) { } free.mine = null; freeButtons(); free.joining = false; setTimeout(freeStart, 1200);
+  oldSiteShow();
 }
 function startGame() {
   G = newGame(myDefs, guestDefs, { first: $('first').value, test: false, mulligan: $('mullOn').checked });
@@ -6724,7 +6761,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v36.0.0 (2026/11/18)';
+const APP_VER = 'v36.0.1 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
