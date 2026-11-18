@@ -4,9 +4,13 @@ const path=require('path'),ROOT=path.join(__dirname,'..'),HP=process.env.HTML||[
 const html=fs.readFileSync(HP,'utf8');
 const eng=html.match(/<script id="engine">([\s\S]*?)<\/script>/)[1];
 const ctx={console,Math,JSON,Date,setTimeout,clearTimeout,window:{}};vm.createContext(ctx);
+<<<<<<< HEAD
 vm.runInContext(eng,ctx);const GODJS=path.join(__dirname,'god.js'),HAS_T=fs.existsSync(GODJS);
 if(HAS_T)vm.runInContext(fs.readFileSync(GODJS,'utf8'),ctx);   // 追加の学習用モジュール(あれば読み込む)
 vm.runInContext(HAS_T?'this.X={newGame,cleanDef,act,cpuDecide:cpuDecideTeacher,cpuDecideNormal,cpuSkip,CPUW,RECDB};':'this.X={newGame,cleanDef,act,cpuDecide,cpuSkip,CPUW,RECDB};',ctx);const X=ctx.X;
+=======
+vm.runInContext(eng+';this.X={newGame,cleanDef,act,cpuDecide,cpuSkip,CPUW,RECDB};',ctx);const X=ctx.X;
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
 const vm2=require('vm'),cx2={window:{}};vm2.createContext(cx2);vm2.runInContext(fs.readFileSync(path.join(ROOT,'cards/cards-data.js'),'utf8'),cx2);
 const RAW={};cx2.window.CARD_DB.forEach(s=>s.cards.forEach(c=>{RAW[c.id]=c}));
 const CD={};const cdef=id=>CD[id]||(CD[id]=X.cleanDef(RAW[id]));

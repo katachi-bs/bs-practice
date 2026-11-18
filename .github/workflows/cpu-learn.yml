@@ -1,0 +1,20 @@
+name: cpu-learn
+on:
+  schedule:
+    - cron: '17 18 * * *'
+  workflow_dispatch: {}
+jobs:
+  learn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 人間の対戦記録から学習して、勝ち越したときだけ反映
+        env:
+          API: https://bsp.standard-reg-fuk.workers.dev
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          APPLY: '1'
+        run: node tools/cpu_auto.js

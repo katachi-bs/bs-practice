@@ -1184,6 +1184,7 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     <p class="note">管理者モード中だけ表示されます。</p>
     <div class="row" style="margin:8px 0"><label class="ck">プレイヤーAのデッキ <select id="admDeckA" style="width:auto;min-width:170px"></select></label><label class="ck">プレイヤーBのデッキ <select id="admDeckB" style="width:auto;min-width:170px"></select></label></div>
     <div class="row"><button id="admExp2">2人分のデッキ情報を書き出す</button><button id="admExpAll" class="sub">保存済みの全デッキを書き出す</button><button id="admCards" class="sub">カード一覧(CSV)</button></div>
+<<<<<<< HEAD
     <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">① 管理用の合言葉</h3>
     <p class="note">下の「テスト送信」と「お知らせ」で使います(ADMIN_TOKEN)。この端末にだけ保存されます。</p>
     <div class="row"><label class="ck">合言葉 <input id="admNcK" type="password" style="width:220px" autocomplete="off"></label></div>
@@ -1216,6 +1217,19 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     <div id="admSmList" style="margin:6px 0;font-size:13px"></div>
     <div class="row"><label class="ck">追加するデッキ <select id="admSmSrc" style="width:auto;min-width:160px"></select></label><label class="ck">表示名 <input id="admSmName" maxlength="40" placeholder="(空なら【サンプル】＋デッキ名)" style="width:200px"></label><button id="admSmAdd" class="sub">追加</button></div>
     <div class="row"><button id="admSmPut">サーバーに反映(全員に配信)</button><button id="admSmDel" class="sub">配信をやめて初期に戻す</button><span class="note" id="admSmMsg"></span></div>
+=======
+    <h3 style="margin:12px 0 4px;font-size:13px">部屋作成の通知文</h3>
+    <p class="note">{name}=作成者名、{msg}=ひとこと。この端末に保存されます。全員に反映したい場合は「notify.json を書き出す」をGitHubのルートに置いてください(端末の設定が優先)。指定したプレイヤー名の人だけに通知を出せます(名前の確認はしていないため、テスト用の絞り込みです)。</p>
+    <div class="row"><label class="ck">タイトル <input id="admNtT" style="width:260px"></label><label class="ck">本文 <input id="admNtB" style="width:200px"></label></div>
+    <h3 style="margin:12px 0 4px;font-size:13px">トップのお知らせ(URL変更の案内など)</h3>
+    <p class="note">サーバーに保存され、全員のトップに表示されます(閉じた人には、内容を変えるまで出ません)。管理用の合言葉(ADMIN_TOKEN)はこの端末にだけ保存されます。</p>
+    <div class="row"><label class="ck" style="align-items:flex-start">文<textarea id="admNcT" rows="4" style="width:300px;max-width:100%"></textarea></label></div>
+    <div class="row"><label class="ck">リンク先 <input id="admNcU" placeholder="https://…" style="width:240px"></label><label class="ck">ボタン名 <input id="admNcL" value="新しいURLを開く" style="width:130px"></label></div>
+    <div class="row"><label class="ck">合言葉 <input id="admNcK" type="password" style="width:200px" autocomplete="off"></label></div>
+    <div class="row"><button id="admNcP">お知らせを表示する</button><button id="admNcD" class="sub">お知らせを消す</button><button id="admNcS" class="sub">URL変更の例文を入れる</button></div>
+    <div class="row"><label class="ck" style="align-items:flex-start">通知を送るプレイヤー名(1行に1名。空なら全員)<textarea id="admNtO" rows="3" style="width:220px"></textarea></label></div>
+    <div class="row"><button id="admNtS">保存</button><button id="admNtR" class="sub">初期に戻す</button><button id="admNtX" class="sub">notify.json を書き出す</button><button id="admNtTest" class="sub">テスト表示</button><button id="admNtPush" class="sub" title="自分のプレイヤー名で登録されている端末だけに、実際に通知を送ります">自分に通知を送る</button></div>
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
   </div>
   <div class="box b-adm" id="vidBox" hidden>
     <h2>盤面動画編集エディタ</h2>
@@ -1307,7 +1321,11 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
 <h4>1. このアプリについて</h4><p>BATTLE SPIRITS PRACTICE は、バトルスピリッツの練習のための非公式のファンツールです。公式・権利者とは関係ありません。カードの名称・画像・テキストなどの権利は、それぞれの権利者に帰属します。</p>
 <h4>2. 利用上の注意</h4><p>本アプリは無保証で提供します。ルール処理やCPUの動きに誤りがある場合があります。利用によって生じた損害について、運営は責任を負いません。他の利用者への迷惑行為や、不正な利用はやめてください。</p>
 <h4>3. 対戦記録の利用</h4><p>合言葉対戦・フリー対戦の記録と、CPU対戦(テストモードを除く)の記録を、CPUの改良のために、サーバーに保存して利用します。記録には、その対戦で使ったデッキのカード、対戦中のすべての操作、勝敗、乱数の種が含まれます。プレイヤー名は記録に含めず、記録から誰の対戦かは分かりません。ただし、デッキの内容と対戦の操作はそのまま含まれるため、<b>管理者はこれを見ることができます</b>。設定の「対戦記録をCPUの学習に使う」でオフにすると、以後の記録は送られません。</p>
+<<<<<<< HEAD
 <h4>4. 通知・ロビー</h4><p>新しい部屋が作られたときの通知を、初期設定でオンにしています。通知の許可は端末の設定で、いつでもオフにできます。通知をオンにしている場合のみ、通知のために、プレイヤー名と端末の通知用の情報をサーバーに保存します(通知の送り分けに使い、サーバーの管理者は見ることができます)。通知をオフにすると、これらは削除されます。<br>フリー対戦で募集した部屋の情報(プレイヤー名・ひとこと)は、募集の間だけサーバーに置かれ、募集をやめると消えます。</p>
+=======
+<h4>4. 通知</h4><p>新しい部屋が作られたときの通知を、初期設定でオンにしています。通知の許可は端末の設定で、いつでもオフにできます。通知をオンにしている場合は、通知のために、プレイヤー名と端末の通知用の情報をサーバーに保存します(通知の送り分けに使い、サーバーの管理者は見ることができます)。通知をオフにすると、これらは削除されます。</p>
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
 <h4>5. 保存される情報・デッキデータ</h4><p>「デッキを保存」したデッキの一覧や設定は、お使いの端末のブラウザ内にだけ保存され、サーバーには送られません。ただし、対人戦で使ったデッキの中身は、3の対戦記録に含まれます(オフにすれば送られません)。ブラウザのデータを消すと、端末内のデータは失われます。</p>
 <h4>6. 変更</h4><p>この規約は、予告なく変更することがあります。</p>
 <label class="ck" style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="shareRec"> 対戦記録をCPUの学習に使う(匿名)</label>
@@ -3242,10 +3260,14 @@ function cpuWantMull(G, i) {
   return low === 0 || mg >= Math.max(3, h.length - 1);
 }
 /* CPUの判断に使う重み(自己対戦で調整した値)。G.cpuW[i] があればそちらを使う */
+<<<<<<< HEAD
 const CPUW = { sBp: 1, sEff: 400, sFirst: 4000, sNx: 980.553, sNx0: 2500, sMg: 525.679, keepRes: 0, lvBp: 1, lvMin: 0, lvNx: 800, lvOn: 1, lvPre: 99999, aFree: 3, aLife: 2, aSwarm: 1, aRisk: 2.005, aDef: 2, aThr: 0.874, bLife: 1, bTrade: 1, bBp: 0, aPushM: 0, aBait: 0, aEarly: 0, aEarlyT: 3, aTrade: 0, sRed: 0, sCoreE: 0, sCoreT: 3, tEx: 0 };   // 追加の判断材料は標準ではオフ(従来と同じ強さ)。学習で調整される
 // カードの役割(見えている情報だけで判断): 召喚時にコアが増える/召喚した時点で仕事を終える小型/軽減の助けになる小型
 const cpuHasSumCore = d => (d.effects || []).some(e => e.timing && e.timing.kind === 'trigger' && e.timing.event === 'summon' && (e.ops || []).some(o => o.op === 'voidCore'));
 const cpuDone = d => d.type === 'spirit' && d.cost <= 2 && (d.effects || []).filter(e => e.timing.kind !== 'keyword').every(e => e.timing.kind === 'trigger' && e.timing.event === 'summon');
+=======
+const CPUW = { sBp: 1, sEff: 400, sFirst: 4000, sNx: 980.553, sNx0: 2500, sMg: 525.679, keepRes: 0, lvBp: 1, lvMin: 0, lvNx: 800, lvOn: 1, lvPre: 99999, aFree: 3, aLife: 2, aSwarm: 1, aRisk: 2.005, aDef: 2, aThr: 0.874, bLife: 1, bTrade: 1, bBp: 0 };
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
 const cpuW = (G, i) => (G.cpuW && G.cpuW[i]) || CPUW;
 function cpuSummonStrong(G, i) {
   const W = cpuW(G, i), P = G.p[i], res = P.reserve, mySp = P.field.filter(k => k.def.type === 'spirit').length, myNx = P.field.some(k => k.def.type === 'nexus');
@@ -3256,8 +3278,12 @@ function cpuSummonStrong(G, i) {
     const spare = res.length - x.need, lv = (x.k.def.levels || []).filter(l => l.core <= spare && l.core >= x.place).sort((a, b) => b.core - a.core)[0];
     x.put = lv ? lv.core : x.place;
     const eff = x.k.def.effects.filter(e => e.timing.kind !== 'keyword').length;
+<<<<<<< HEAD
     const dd = x.k.def, roleB = dd.type === 'spirit' ? ((G.turnNo <= W.sCoreT && cpuHasSumCore(dd) ? W.sCoreE : 0) + (dd.cost <= 1 && dd.symbols && dd.symbols.normal >= 1 && P.hand.some(h => h !== x.k && h.def.color === dd.color && h.def.reduction > 0) ? W.sRed : 0)) : 0;
     x.score = x.k.def.type === 'spirit' ? ((lv ? lv.bp : ((x.k.def.levels || [])[0] || {}).bp || 0) * W.sBp + eff * W.sEff + (mySp === 0 ? W.sFirst : 0) + roleB) : (myNx ? W.sNx : W.sNx0) + eff * W.sMg;
+=======
+    x.score = x.k.def.type === 'spirit' ? ((lv ? lv.bp : ((x.k.def.levels || [])[0] || {}).bp || 0) * W.sBp + eff * W.sEff + (mySp === 0 ? W.sFirst : 0)) : (myNx ? W.sNx : W.sNx0) + eff * W.sMg;
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
   });
   cands.sort((a, b) => b.score - a.score || b.k.def.cost - a.k.def.cost);
   const x = cands[0], ids = res.slice().sort((a, b) => (a.soul ? 1 : 0) - (b.soul ? 1 : 0)).map(c => c.id);
@@ -3289,6 +3315,7 @@ function cpuMagicStrong(G, i) {
 }
 function cpuAttackStrong(G, i) {
   const W = cpuW(G, i), P = G.p[i], O = G.p[1 - i];
+<<<<<<< HEAD
   const mine = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canAttackNow(G, k) && (!atkToll(G, i, k) || P.reserve.length)).sort((a, b) => curBP(G, b) - curBP(G, a));
   if (!mine.length) return null;
   const oppBl = O.field.filter(k => k.def.type === 'spirit' && !k.tapped), oppMax = Math.max(0, ...oppBl.map(k => curBP(G, k)));
@@ -3326,6 +3353,49 @@ function cpuBlockStrong(G, i, b) {
 // 以前のCPU(比較用)
 function cpuAttackOld(G, i) {
   const P = G.p[i], O = G.p[1 - i];
+=======
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
+  const mine = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canAttackNow(G, k) && (!atkToll(G, i, k) || P.reserve.length)).sort((a, b) => curBP(G, b) - curBP(G, a));
+  if (!mine.length) return null;
+  const oppBl = O.field.filter(k => k.def.type === 'spirit' && !k.tapped), oppMax = Math.max(0, ...oppBl.map(k => curBP(G, k)));
+  const oppLife = O.life.length, oppAll = O.field.filter(k => k.def.type === 'spirit').length;
+  const myUn = P.field.filter(k => k.def.type === 'spirit' && !k.tapped).length;
+<<<<<<< HEAD
+  if (mine.length > oppBl.length && mine.length - oppBl.length >= oppLife) return { k: 'attack', iid: mine[0].iid };
+  const safe = mine.filter(k => !oppBl.length || curBP(G, k) >= oppMax);
+  if (!safe.length) return null;
+  if (oppAll > 0 && myUn <= 1 && P.life.length <= 3 && !(oppBl.length === 0 && oppLife <= 1)) return null;
+  return { k: 'attack', iid: safe[0].iid };
+}
+=======
+  if (mine.length > oppBl.length && mine.length - oppBl.length >= oppLife) return { k: 'attack', iid: mine[0].iid };   // とどめを狙える
+  // 守りの必要さ(自分のライフが少なく、残る守り手が少ないほど大きい)
+  const defNeed = (myUn <= 1 ? 1 : 0) * Math.max(0, (5 - P.life.length) / 4) * (oppAll > 0 ? 1 : 0);
+  let best = null;
+  mine.forEach(k => {
+    const bp = curBP(G, k), risk = oppBl.length ? Math.max(0, oppMax - bp) / 1000 : 0;
+    const sc = (oppBl.length === 0 ? W.aFree : 0) + W.aLife * Math.max(0, (6 - oppLife) / 6) * 2 + W.aSwarm * Math.max(0, mine.length - oppBl.length) - W.aRisk * risk - W.aDef * defNeed;
+    if (!best || sc > best.sc) best = { k, sc };
+  });
+  if (best && best.sc >= W.aThr) return { k: 'attack', iid: best.k.iid };
+  return null;
+}
+function cpuBlockStrong(G, i, b) {
+  const W = cpuW(G, i), P = G.p[i], O = G.p[1 - i], A = O.field.find(x => x.iid === b.iid), ab = A ? curBP(G, A) : 0, dmg = A ? atkDmgPreview(G, b, A) : 1;
+  const bl = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canBlockWith(G, k)).map(k => ({ k, bp: curBP(G, k) }));
+  if (!bl.length) return { k: 'block', iid: null };
+  const weak = bl.slice().sort((a, b2) => a.bp - b2.bp || a.k.def.cost - b2.k.def.cost)[0];
+  const win = bl.filter(x => x.bp > ab + W.bBp * 1000).sort((a, b2) => a.bp - b2.bp)[0];
+  if (win) return { k: 'block', iid: win.k.iid };
+  const trade = bl.filter(x => x.bp === ab && A && x.k.def.cost <= A.def.cost + W.bTrade).sort((a, b2) => a.k.def.cost - b2.k.def.cost)[0];
+  if (trade) return { k: 'block', iid: trade.k.iid };
+  if (clashForced(G)) return { k: 'block', iid: weak.k.iid };
+  if (P.life.length <= dmg || P.life.length <= W.bLife) return { k: 'block', iid: weak.k.iid };
+  return { k: 'block', iid: null };
+}
+// 以前のCPU(比較用)
+function cpuAttackOld(G, i) {
+  const P = G.p[i], O = G.p[1 - i];
   const mine = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canAttackNow(G, k) && (!atkToll(G, i, k) || P.reserve.length)).sort((a, b) => curBP(G, b) - curBP(G, a));
   if (!mine.length) return null;
   const oppBl = O.field.filter(k => k.def.type === 'spirit' && !k.tapped), oppMax = Math.max(0, ...oppBl.map(k => curBP(G, k)));
@@ -3337,6 +3407,7 @@ function cpuAttackOld(G, i) {
   if (oppAll > 0 && myUn <= 1 && P.life.length <= 3 && !(oppBl.length === 0 && oppLife <= 1)) return null;
   return { k: 'attack', iid: safe[0].iid };
 }
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
 function cpuBlockOld(G, i, b) {
   const P = G.p[i], O = G.p[1 - i], A = O.field.find(x => x.iid === b.iid), ab = A ? curBP(G, A) : 0, dmg = A ? atkDmgPreview(G, b, A) : 1;
   const bl = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canBlockWith(G, k)).map(k => ({ k, bp: curBP(G, k) }));
@@ -4181,12 +4252,16 @@ const API = 'https://bsp.standard-reg-fuk.workers.dev';   // Cloudflare Worker(�
 let SRV_FLAGS = {};   // サーバーから届く設定(cpuRec=false にするとCPU対戦の記録は送らない)
 let PUSH_KEY = '', pushOn = false;
 const u8 = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; const r = atob(s), u = new Uint8Array(r.length); for (let i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; };
+<<<<<<< HEAD
 function devId() { try { let d = localStorage.getItem('bs-devid'); if (!d) { d = Array.from(crypto.getRandomValues(new Uint8Array(9)), b => b.toString(36).padStart(2, '0')).join('').slice(0, 14); localStorage.setItem('bs-devid', d); } return d; } catch (e) { return 'tmp' + Math.random().toString(36).slice(2, 10); } }   // 端末ごとのランダムなID(名前とは無関係)
 function platOf() { const u = navigator.userAgent || ''; return /iPhone|iPad|iPod/.test(u) ? 'iOS' : /Android/.test(u) ? 'Android' : /Windows/.test(u) ? 'Win' : /Mac/.test(u) ? 'Mac' : /Linux|CrOS/.test(u) ? 'Linux' : ''; }
 function seenPing() { try { if (nameOk()) apiPost('/seen', { name: getName(), dev: devId(), plat: platOf() }); } catch (e) { } }   // 最終ログイン・オンライン状態の記録(サーバー側で、30秒に1回までしか書き込まない)
 async function apiPost(path, body, method) { try { const r = await fetch(API + path, { method: method || 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }); return r.ok ? await r.json() : null; } catch (e) { return null; } }
 setTimeout(seenPing, 2500); setInterval(() => { if (!document.hidden) seenPing(); }, 60000);   // アプリを開いて見えている間は、60秒ごとに「オンライン」を知らせる
  try { $('myName').addEventListener('change', seenPing); document.addEventListener('visibilitychange', () => { if (!document.hidden) seenPing(); }); } catch (e) { }
+=======
+async function apiPost(path, body, method) { try { const r = await fetch(API + path, { method: method || 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }); return r.ok ? await r.json() : null; } catch (e) { return null; } }
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
 // サーバーの設定(通知文・CPUの重み・通知用の鍵)を読み込む
 (async function loadSrvCfg() {
   try {
@@ -4194,8 +4269,11 @@ setTimeout(seenPing, 2500); setInterval(() => { if (!document.hidden) seenPing()
     if (j.title) window.__ntFile = Object.assign({}, window.__ntFile || {}, { title: j.title, body: j.body != null ? j.body : '' });
     if (j.w && typeof j.w === 'object') Object.keys(j.w).forEach(k => { if (k in CPUW && typeof j.w[k] === 'number') CPUW[k] = j.w[k]; });
     if (j.flags && typeof j.flags === 'object') SRV_FLAGS = j.flags;
+<<<<<<< HEAD
     if (Array.isArray(j.samples) && j.samples.length) { window.SAMPLE_DECKS = j.samples; window.__srvSamples = true; try { bRefreshSelects(); } catch (e) { } }   // 管理者が配信したサンプルデッキ(フォルダ・内蔵より優先)
     try { if (typeof admSmLoad === 'function') admSmLoad(); } catch (e) { }
+=======
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
     showNotice(j.notice); PUSH_KEY = j.vapid || ''; pushSync();
   } catch (e) { }
 })();
@@ -6825,7 +6903,11 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
+<<<<<<< HEAD
 const APP_VER = 'v36.4.0 (2026/11/18)';
+=======
+const APP_VER = 'v36.1.1 (2026/11/18)';
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
@@ -7624,6 +7706,7 @@ const admNtOnlyVal = () => $('admNtO').value.split(/\r?\n/).map(x => x.trim()).f
 $('admNtS').onclick = () => { try { localStorage.setItem('bs-nt-tpl', JSON.stringify({ title: $('admNtT').value || NT_DEF.title, body: $('admNtB').value, only: admNtOnlyVal() })); } catch (e) { } toast('通知文を保存しました'); };
 $('admNtR').onclick = () => { try { localStorage.removeItem('bs-nt-tpl'); } catch (e) { } window.__ntFile = null; admNtFill(); toast('初期に戻しました'); };
 $('admNtX').onclick = () => { const b = new Blob([JSON.stringify({ title: $('admNtT').value || NT_DEF.title, body: $('admNtB').value, only: admNtOnlyVal() }, null, 2)], { type: 'application/json' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'notify.json'; a.click(); };
+<<<<<<< HEAD
 /* 管理者: サンプルデッキの管理(サーバーに保存して全員に配信) */
 let admSm = [];
 function admSmLoad() { admSm = JSON.parse(JSON.stringify(window.SAMPLE_DECKS || [])); admSmRender(); }
@@ -7691,6 +7774,11 @@ setInterval(() => { try { if (document.body.classList.contains('adm') && !docume
 $('admNtPush').onclick = async () => {
   const key = ($('admNcK').value || '').trim(), nm = (($('admNtTo').value || '').trim() || (($('myName') && $('myName').value) || '').trim()).slice(0, 12);
   if (!key) { toast('「① 管理用の合言葉」を入力してください'); return; } if (!nm) { toast('送り先のプレイヤー名を入れてください'); return; }
+=======
+$('admNtPush').onclick = async () => {
+  const key = ($('admNcK').value || '').trim(), nm = (($('myName') && $('myName').value) || '').trim().slice(0, 12);
+  if (!key) { toast('下の「合言葉」を入力してください'); return; } if (!nm) { toast('プレイヤー名を入れてください'); return; }
+>>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
   try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
   try { const r = await fetch(API + '/admin/test', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: JSON.stringify({ name: nm }) }); const j = await r.json().catch(() => ({}));
     if (!r.ok) { toast(r.status === 401 ? '合言葉が違います' : '送れませんでした(' + r.status + ')'); return; }
