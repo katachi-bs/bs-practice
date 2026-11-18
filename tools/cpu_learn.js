@@ -3,11 +3,7 @@
 // 既定では、勝った側の操作だけを手本にする(強い人のまねをするため)。ALL=1 で両方。
 // 使い方: node tools/cpu_learn.js 記録.json [出力.json]   (記録.json は、対戦記録の配列)
 const {X,cdef}=require('./cpu_sim.js');const fs=require('fs');
-<<<<<<< HEAD
 const RANGE={sBp:[0,2],sEff:[0,1500],sFirst:[0,8000],sNx:[0,3000],sNx0:[0,4000],sMg:[0,1500],keepRes:[0,3,1],lvBp:[0,3],lvMin:[0,1500],lvNx:[0,3000],aFree:[0,6],aLife:[0,4],aSwarm:[0,3],aRisk:[0,3],aDef:[0,5],aThr:[-2,4],lvPre:[500,8000],bLife:[0,5,1],bTrade:[0,3,1],bBp:[0,3],aPushM:[0,4,1],aBait:[0,1,1],aEarly:[0,6],aTrade:[0,6],sRed:[0,2000],sCoreE:[0,5000],tEx:[0,1500]};
-=======
-const RANGE={sBp:[0,2],sEff:[0,1500],sFirst:[0,8000],sNx:[0,3000],sNx0:[0,4000],sMg:[0,1500],keepRes:[0,3,1],lvBp:[0,3],lvMin:[0,1500],lvNx:[0,3000],aFree:[0,6],aLife:[0,4],aSwarm:[0,3],aRisk:[0,3],aDef:[0,5],aThr:[-2,4],lvPre:[500,8000],bLife:[0,5,1],bTrade:[0,3,1],bBp:[0,3]};
->>>>>>> 45031516b51edfe1d925c9580b0279d4e4defa74
 const KEYS=Object.keys(RANGE).filter(k=>X.CPUW[k]!==undefined);
 const rnd=()=>Math.random();
 function perturb(base,scale){const c=Object.assign({},base);const n=1+Math.floor(rnd()*4);
