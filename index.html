@@ -1194,7 +1194,7 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     <div class="row"><label class="ck">合言葉 <input id="admNcK" type="password" style="width:200px" autocomplete="off"></label></div>
     <div class="row"><button id="admNcP">お知らせを表示する</button><button id="admNcD" class="sub">お知らせを消す</button><button id="admNcS" class="sub">URL変更の例文を入れる</button></div>
     <div class="row"><label class="ck" style="align-items:flex-start">通知を送るプレイヤー名(1行に1名。空なら全員)<textarea id="admNtO" rows="3" style="width:220px"></textarea></label></div>
-    <div class="row"><button id="admNtS">保存</button><button id="admNtR" class="sub">初期に戻す</button><button id="admNtX" class="sub">notify.json を書き出す</button><button id="admNtTest" class="sub">テスト表示</button></div>
+    <div class="row"><button id="admNtS">保存</button><button id="admNtR" class="sub">初期に戻す</button><button id="admNtX" class="sub">notify.json を書き出す</button><button id="admNtTest" class="sub">テスト表示</button><button id="admNtPush" class="sub" title="自分のプレイヤー名で登録されている端末だけに、実際に通知を送ります">自分に通知を送る</button></div>
   </div>
   <div class="box b-adm" id="vidBox" hidden>
     <h2>盤面動画編集エディタ</h2>
@@ -6765,7 +6765,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v36.1.0 (2026/11/18)';
+const APP_VER = 'v36.1.1 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
@@ -7564,6 +7564,14 @@ const admNtOnlyVal = () => $('admNtO').value.split(/\r?\n/).map(x => x.trim()).f
 $('admNtS').onclick = () => { try { localStorage.setItem('bs-nt-tpl', JSON.stringify({ title: $('admNtT').value || NT_DEF.title, body: $('admNtB').value, only: admNtOnlyVal() })); } catch (e) { } toast('通知文を保存しました'); };
 $('admNtR').onclick = () => { try { localStorage.removeItem('bs-nt-tpl'); } catch (e) { } window.__ntFile = null; admNtFill(); toast('初期に戻しました'); };
 $('admNtX').onclick = () => { const b = new Blob([JSON.stringify({ title: $('admNtT').value || NT_DEF.title, body: $('admNtB').value, only: admNtOnlyVal() }, null, 2)], { type: 'application/json' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'notify.json'; a.click(); };
+$('admNtPush').onclick = async () => {
+  const key = ($('admNcK').value || '').trim(), nm = (($('myName') && $('myName').value) || '').trim().slice(0, 12);
+  if (!key) { toast('下の「合言葉」を入力してください'); return; } if (!nm) { toast('プレイヤー名を入れてください'); return; }
+  try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
+  try { const r = await fetch(API + '/admin/test', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: JSON.stringify({ name: nm }) }); const j = await r.json().catch(() => ({}));
+    if (!r.ok) { toast(r.status === 401 ? '合言葉が違います' : '送れませんでした(' + r.status + ')'); return; }
+    toast(j.targets ? '「' + nm + '」の ' + j.targets + '台に送りました(届いた: ' + j.sent + '台)' : '「' + nm + '」で登録された端末がありません(通知を許可して、名前を入れた端末で一度アプリを開いてください)'); } catch (e) { toast('送れませんでした(通信エラー)'); }
+};
 $('admNtTest').onclick = () => { $('admNtS').onclick(); const t = ntTpl(); toast(t.title.replace(/\{name\}/g, getName() || 'プレイヤー').replace(/\{msg\}/g, 'テスト')); };
 function admGateOpen() { $('admPass').value = ''; $('admMsg').textContent = ''; $('admGate').hidden = false; $('admGate').style.display = 'flex'; setTimeout(() => $('admPass').focus(), 30); }
 function admGateClose() { $('admGate').hidden = true; $('admGate').style.display = 'none'; }
