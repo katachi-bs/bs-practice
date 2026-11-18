@@ -4101,7 +4101,7 @@ function freeGotRooms(rs) {
   for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
   free.shown = keep.concat(rest).slice(0, FREE_MAX); freeRender();
 }
-const API = 'https://bsp.skeigassa1987.workers.dev';   // Cloudflare Worker(対戦記録の受け取り・通知・設定の配信)
+const API = 'https://bsp.standard-reg-fuk.workers.dev';   // Cloudflare Worker(対戦記録の受け取り・通知・設定の配信)
 let PUSH_KEY = '', pushOn = false;
 const u8 = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; const r = atob(s), u = new Uint8Array(r.length); for (let i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; };
 async function apiPost(path, body, method) { try { const r = await fetch(API + path, { method: method || 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }); return r.ok ? await r.json() : null; } catch (e) { return null; } }
@@ -6724,7 +6724,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v35.0.42 (2026/11/18)';
+const APP_VER = 'v36.0.0 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;

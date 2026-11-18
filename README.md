@@ -1,10 +1,17 @@
+# v36.0.0 (2026/11/18)
+- 通知・記録サーバーの接続先を新しいアドレス(standard-reg-fuk.workers.dev)に変えました。
+
+# v35.0.43 (2026/11/18)
+- cloudflare/worker.js を更新済みのものに貼り替え(v35.0.42 のお知らせ機能と同じ。追加の変更なし)
+- 更新ファイル: index.html, README.md, sw.js, cloudflare/worker.js(Workerに貼る)
+
 # v35.0.42 (2026/11/18)
 - トップに「お知らせ」を表示できるようにした(URL変更の案内など)。管理者メニューの「トップのお知らせ」で、文・リンク先・ボタン名を入れて「お知らせを表示する」(サーバー保存。全員に出る。閉じた人には内容を変えるまで出ない)。「URL変更の例文を入れる」ボタンあり
 - cloudflare/worker.js を更新(お知らせ用の管理API追加)。Worker のコードを貼り替えて、もう一度デプロイしてください
 - 更新ファイル: index.html, README.md, cloudflare/worker.js(Workerに貼る)
 
 # v35.0.41 (2026/11/18)
-- Cloudflare Worker(bsp.skeigassa1987.workers.dev)とつなぎました。コードは cloudflare/worker.js、表は cloudflare/schema.sql
+- Cloudflare Worker(bsp.standard-reg-fuk.workers.dev)とつなぎました。コードは cloudflare/worker.js、表は cloudflare/schema.sql
 - 通知: アプリを閉じていても届くプッシュ通知に対応(通知をオンにして許可すると、プレイヤー名と一緒に登録される)。部屋を作ると、オンにしている人へ通知。サーバー側で「通知を送るプレイヤー名」を指定できる(管理用API)。通知が使える端末では、アプリ内の簡易通知は出さない
 - 対戦記録: 対人戦が終わると、匿名で(プレイヤー名なし)サーバーへ送る。設定「対戦記録をCPUの学習に使う」(下の利用規約欄)でオフにできる
 - サーバーの設定(通知文・CPUの重み)を起動時に読み込む
