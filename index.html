@@ -1285,9 +1285,9 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
 <details id="appFoot" ontoggle="this.querySelector('summary').textContent=(this.open?'▲':'▼')+' 利用規約・プライバシー'"><summary>▼ 利用規約・プライバシー</summary><div class="terms">
 <h4>1. このアプリについて</h4><p>BATTLE SPIRITS PRACTICE は、バトルスピリッツの練習のための非公式のファンツールです。公式・権利者とは関係ありません。カードの名称・画像・テキストなどの権利は、それぞれの権利者に帰属します。</p>
 <h4>2. 利用上の注意</h4><p>本アプリは無保証で提供します。ルール処理やCPUの動きに誤りがある場合があります。利用によって生じた損害について、運営は責任を負いません。他の利用者への迷惑行為や、不正な利用はやめてください。</p>
-<h4>3. 対戦記録の利用</h4><p>対人戦の記録(その対戦で使ったカード、対戦中の操作、勝敗)は、CPUの改良のために匿名で収集・利用することがあります。プレイヤー名などの個人を特定する情報や、保存したデッキの一覧は含めません。設定の「対戦記録をCPUの学習に使う」でオフにできます。</p>
-<h4>4. 通知</h4><p>新しい部屋が作られたときの通知を、初期設定でオンにしています。通知の許可は端末の設定で、いつでもオフにできます。通知のために、プレイヤー名と端末の通知用の情報を保存することがあります。</p>
-<h4>5. 保存される情報・デッキデータ</h4><p>保存したデッキや設定は、お使いの端末のブラウザ内にだけ保存されます。サーバーには送られず、管理者がそのデッキデータを見ることはできません。ブラウザのデータを消すと失われます。</p>
+<h4>3. 対戦記録の利用</h4><p>合言葉対戦・フリー対戦の記録と、CPU対戦(テストモードを除く)の記録を、CPUの改良のために、サーバーに保存して利用します。記録には、その対戦で使ったデッキのカード、対戦中のすべての操作、勝敗、乱数の種が含まれます。プレイヤー名は記録に含めず、記録から誰の対戦かは分かりません。ただし、デッキの内容と対戦の操作はそのまま含まれるため、<b>管理者はこれを見ることができます</b>。設定の「対戦記録をCPUの学習に使う」でオフにすると、以後の記録は送られません。</p>
+<h4>4. 通知</h4><p>新しい部屋が作られたときの通知を、初期設定でオンにしています。通知の許可は端末の設定で、いつでもオフにできます。通知をオンにしている場合は、通知のために、プレイヤー名と端末の通知用の情報をサーバーに保存します(通知の送り分けに使い、サーバーの管理者は見ることができます)。通知をオフにすると、これらは削除されます。</p>
+<h4>5. 保存される情報・デッキデータ</h4><p>「デッキを保存」したデッキの一覧や設定は、お使いの端末のブラウザ内にだけ保存され、サーバーには送られません。ただし、対人戦で使ったデッキの中身は、3の対戦記録に含まれます(オフにすれば送られません)。ブラウザのデータを消すと、端末内のデータは失われます。</p>
 <h4>6. 変更</h4><p>この規約は、予告なく変更することがあります。</p>
 <label class="ck" style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="shareRec"> 対戦記録をCPUの学習に使う(匿名)</label>
 </div><p class="note" style="margin-top:8px">BATTLE SPIRITS PRACTICE 非公式ファンツール</p></details>
@@ -4126,6 +4126,7 @@ function freeGotRooms(rs) {
   free.shown = keep.concat(rest).slice(0, FREE_MAX); freeRender();
 }
 const API = 'https://bsp.standard-reg-fuk.workers.dev';   // Cloudflare Worker(対戦記録の受け取り・通知・設定の配信)
+let SRV_FLAGS = {};   // サーバーから届く設定(cpuRec=false にするとCPU対戦の記録は送らない)
 let PUSH_KEY = '', pushOn = false;
 const u8 = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; const r = atob(s), u = new Uint8Array(r.length); for (let i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; };
 async function apiPost(path, body, method) { try { const r = await fetch(API + path, { method: method || 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }); return r.ok ? await r.json() : null; } catch (e) { return null; } }
@@ -4135,6 +4136,7 @@ async function apiPost(path, body, method) { try { const r = await fetch(API + p
     const r = await fetch(API + '/cfg', { cache: 'no-cache' }); if (!r.ok) return; const j = await r.json();
     if (j.title) window.__ntFile = Object.assign({}, window.__ntFile || {}, { title: j.title, body: j.body != null ? j.body : '' });
     if (j.w && typeof j.w === 'object') Object.keys(j.w).forEach(k => { if (k in CPUW && typeof j.w[k] === 'number') CPUW[k] = j.w[k]; });
+    if (j.flags && typeof j.flags === 'object') SRV_FLAGS = j.flags;
     showNotice(j.notice); PUSH_KEY = j.vapid || ''; pushSync();
   } catch (e) { }
 })();
@@ -4545,15 +4547,17 @@ function finishRec() {
   const e = rpMake(G); if (!e) return;
   rpAdd(e);
   if (isHost && !solo && !cpu) { const m = { t: 'rec', rec: e }; specBroadcast(m, true); }
-  if (isHost && !solo && !cpu) uploadRec(e);
+  const testM = !!(G.settings && G.settings.test);
+  if (isHost && !solo && !cpu && !testM) uploadRec(e, { mode: 'pvp' });                              // 合言葉対戦・フリー対戦
+  else if (cpu && !solo && !testM && SRV_FLAGS.cpuRec !== false) uploadRec(e, { mode: 'cpu', hs: 0 });   // CPU対戦(テストモードは除く。人間は席0)
 }
 // 対人戦の記録を、匿名でサーバーへ送る(プレイヤー名は含めない。設定でオフにできる)
-async function uploadRec(e) {
+async function uploadRec(e, meta) {
   try {
     let on = true; try { on = localStorage.getItem('bs-share') !== '0'; } catch (x) { }
     if (!on || !e || !Array.isArray(e.acts) || e.acts.length < 8) return;
     const d = unpackDefs(cl(e.defs)), ids = d.map(a => a.map(x => x.def.id));
-    await apiPost('/rec', { ver: e.ver, seed: e.seed, s: e.s, acts: e.acts, defs: ids, winner: e.winner, turns: e.turns, why: e.why });
+    await apiPost('/rec', { ver: e.ver, seed: e.seed, s: e.s, acts: e.acts, defs: ids, winner: e.winner, turns: e.turns, why: e.why, mode: (meta && meta.mode) || 'pvp', hs: meta && meta.hs != null ? meta.hs : undefined });
   } catch (x) { }
 }
 function rpEntryDefs(e) {
@@ -6761,7 +6765,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v36.0.1 (2026/11/18)';
+const APP_VER = 'v36.1.0 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
