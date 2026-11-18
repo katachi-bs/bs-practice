@@ -42,7 +42,7 @@ body.adm:not(.ingame){background:#14307a}
 #hedit #heOv{position:absolute;inset:0;touch-action:none}
 #hedit .hetr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:5px 8px;background:#0e1736}
 #hedit .hetr input[type=range]{width:110px}
-#hedit .hetl{display:flex;height:196px;flex:none;border-top:1px solid #2a3a73;background:#0b1229}
+#hedit .hetl{display:flex;height:240px;flex:none;border-top:1px solid #2a3a73;background:#0b1229}
 #hedit .hetll{width:92px;flex:none;border-right:1px solid #2a3a73;padding-top:22px}
 #hedit .hetll div{height:24px;display:flex;align-items:center;padding-left:8px;font-size:11.5px;border-bottom:1px solid #1d2a5a;box-sizing:border-box}
 #hedit .hets{flex:1;min-width:0;overflow:auto;position:relative}
@@ -53,10 +53,14 @@ body.adm:not(.ingame){background:#14307a}
 #hedit .hetick.f{border-left-color:#1b2650;color:transparent}
 #hedit .hemk{position:absolute;top:2px;height:19px;padding:0 6px;border-radius:5px;font-size:10.5px;display:flex;align-items:center;white-space:nowrap;cursor:ew-resize;box-sizing:border-box;touch-action:none;border:1px solid #5fe3a1;background:#1e6b4a}
 #hedit .hemk.k-hdel,#hedit .hemk.k-rm{background:#7a2a3a;border-color:#ff8fa0}
-#hedit .hemk.k-turn{background:#6a4a14;border-color:#ffd36e}
+#hedit .hemk.k-turn{background:#6a4a14;border-color:#ffd36e;overflow:hidden}
+#hedit .hemk.st-start{background:#2a5a8a}#hedit .hemk.st-core{background:#2a6a6a}#hedit .hemk.st-draw{background:#3a6a3a}#hedit .hemk.st-refresh{background:#5a6a2a}#hedit .hemk.st-main{background:#8a5a1a}#hedit .hemk.st-attack{background:#8a2a2a}#hedit .hemk.st-main2{background:#7a4a5a}#hedit .hemk.st-end{background:#4a3a7a}
 #hedit .hemk.k-life,#hedit .hemk.k-res,#hedit .hemk.k-ct,#hedit .hemk.k-refresh,#hedit .hemk.k-ttrash{background:#2a3f8a;border-color:#7fa8ff}
 #hedit .hemk.k-core,#hedit .hemk.k-tap{background:#4a2a7a;border-color:#c79bff}
+#hedit .hemk.k-open{background:#27456f;border-color:#7aa8ff;overflow:hidden}#hedit .hemk.k-oact{background:#1e6b6b;border-color:#5fe3e3}#hedit .herz{position:absolute;right:0;top:0;bottom:0;width:9px;background:#7aa8ff;cursor:ew-resize}
+#hedit .hemk.k-cshow{background:#7a5a1a;border-color:#ffd36e}#hedit .hemk img.mkt{height:17px;width:12px;object-fit:cover;border-radius:2px;margin-right:4px;flex:none}
 #hedit .hemk.sel{outline:2px solid #ffd36e}
+#hedit .heio{position:absolute;top:0;height:22px;background:#4a78ff66;pointer-events:none}
 #hedit .heph{position:absolute;top:0;bottom:0;width:2px;background:#ff5a8a;pointer-events:none;z-index:5}
 #hedit .heghost{position:fixed;z-index:400;width:56px;height:78px;border-radius:5px;background:#e4e8f2 center/cover no-repeat;border:2px solid #ffd36e;pointer-events:none;opacity:.9;transform:translate(-50%,-50%)}
 #hedit #hePop{position:fixed;z-index:420;background:#14204a;border:1px solid #5a78d8;border-radius:8px;padding:4px;display:flex;flex-direction:column;min-width:200px;max-height:80vh;overflow:auto}
@@ -69,11 +73,18 @@ body.adm:not(.ingame){background:#14307a}
 .hewin[hidden]{display:none}
 .hewin .wh{display:flex;align-items:center;gap:5px;padding:3px 6px;background:#14307a;color:#fff;font-size:11.5px;cursor:move;flex:none;touch-action:none}
 .hewin .wh span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hewin .wh input{width:62px;background:#243a7a;color:#fff;border:1px solid #3d57a8;border-radius:4px;font-size:11px;padding:1px 3px}
+.hewin .wh label{display:flex;align-items:center;gap:3px;white-space:nowrap}.hewin .wh button{white-space:nowrap}.hewin .wh input{width:62px!important;background:#243a7a;color:#fff;border:1px solid #3d57a8;border-radius:4px;font-size:11px;padding:1px 3px}
 .hewin .wh button{background:#243a7a;color:#fff;border:1px solid #3d57a8;border-radius:4px;font-size:11px;padding:1px 6px;cursor:pointer}
 .hewin video{flex:1;min-height:0;width:100%;background:#000;object-fit:contain}
 #heExp{position:fixed;inset:0;z-index:430;background:#000b;display:flex;align-items:center;justify-content:center}
 #heExp[hidden]{display:none}
+#heLay{position:fixed;inset:0;z-index:432;background:#000c;display:flex;align-items:center;justify-content:center}#heLay[hidden]{display:none}
+#heLay .hebox.wide{background:#101a3a;border:1px solid #3d57a8;border-radius:10px;padding:10px;width:calc(100% - 24px);height:calc(100% - 24px);display:flex;flex-direction:column;gap:8px;color:#e8eeff;max-width:none}
+#heLay .hlh,#heLay .hlf{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#heLay .hlh .sp{flex:1}
+#heLay select,#heLay input[type=number],#heLay button{background:#243a7a;color:#fff;border:1px solid #3d57a8;border-radius:6px;padding:4px 8px;font-size:12.5px;width:auto}#heLay input[type=number]{width:70px}
+#heLayWrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:#05070f;border-radius:8px}
+#heLayCv{display:block;background:#000}#heLayBox{position:absolute;left:0;top:0}
+#heLay .hlb{position:absolute;border:2px dashed #7aa8ff;box-sizing:border-box;cursor:move;color:#fff;font-size:12px}#heLay .hlb.sel{border-color:#ffd36e;background:#ffd36e18}#heLay .hlb span{background:#000a;padding:1px 5px;border-radius:3px}#heLay .hlb i{position:absolute;right:0;bottom:0;width:14px;height:14px;background:#ffd36e;cursor:nwse-resize}
 #heExp .hebox{background:#101a3a;border:1px solid #3d57a8;border-radius:10px;padding:14px;max-width:560px;width:calc(100% - 24px);color:#e8eeff;display:flex;flex-direction:column;gap:8px}
 #heExp .hebox label{display:flex;align-items:center;gap:6px}
 #heExp select,#heExp input[type=number],#heExp button{background:#243a7a;color:#fff;border:1px solid #3d57a8;border-radius:6px;padding:4px 9px;font-size:12.5px}
@@ -88,6 +99,10 @@ body.adm:not(.ingame){background:#14307a}
 body.ingame main{max-width:none;padding:6px}
 body.ingame h1{display:none}
 h1{font-size:18px;margin:4px 0 10px}
+.adm-only{display:none!important}
+body.ingame #appFoot,body.bc #appFoot,body.ingame #noticeBar,body.bc #noticeBar{display:none}
+#noticeBar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0;padding:10px 12px;border-radius:10px;background:#3a2f0a;border:1px solid #ffd36e;color:#ffe9a8;font-size:13px;line-height:1.5}#noticeBar[hidden]{display:none}#noticeBar span{flex:1;min-width:200px}#noticeBar a{background:#ffd36e;color:#1a1200;font-weight:800;border-radius:8px;padding:6px 12px;text-decoration:none;white-space:nowrap}#noticeBar button{background:none;border:0;color:#ffe9a8;font-size:20px;cursor:pointer;padding:0 4px}
+#appFoot{margin:24px 0 12px;padding-top:10px;border-top:1px solid var(--line)}#appFoot summary{cursor:pointer;font-size:13px;font-weight:700;list-style:none;padding:6px 0}#appFoot summary::-webkit-details-marker{display:none}#appFoot[open] summary{color:var(--accent,#ffd36e)}#appFoot .terms h4{margin:10px 0 2px;font-size:13px}#appFoot .terms p{margin:0;font-size:12.5px;line-height:1.6}body.adm .adm-only{display:inline-block!important}.admtag{font-size:12px;font-weight:800;color:#1a1200;background:#ffd36e;border-radius:6px;padding:2px 8px;vertical-align:middle;margin-left:6px;letter-spacing:.05em}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .pwabtn{font-size:12px;padding:5px 12px;border-radius:999px;background:#1b2a55;border:1px solid #4f6fc0;color:#dbe6ff;cursor:pointer;margin:4px 0 10px;white-space:nowrap}
 #pwaBox{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:12px}
@@ -1063,7 +1078,8 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
 </head>
 <body>
 <main>
-<div class="hrow"><h1>BATTLE SPIRITS PRACTICE</h1><button id="pwaBtn" class="pwabtn" type="button" hidden>アプリとして入れる</button></div>
+<div class="hrow"><h1>BATTLE SPIRITS PRACTICE <span class="admtag adm-only">管理者モード</span></h1><button id="admEnd" class="sub adm-only" type="button" style="margin-left:auto;padding:5px 12px;font-size:12px">管理者モードを終了</button><button id="pwaBtn" class="pwabtn" type="button" hidden>アプリとして入れる</button></div>
+<div id="noticeBar" hidden><span id="noticeTx"></span><a id="noticeGo" target="_blank" rel="noopener" hidden></a><button type="button" id="noticeX" aria-label="閉じる">×</button></div>
 <div id="pwaBox" hidden><div class="pwaback" data-pwaclose="1"></div><div class="pwapanel" role="dialog" aria-label="アプリとして入れる方法">
   <div class="pwahd"><b>アプリとして入れる方法</b><button type="button" class="pwax" data-pwaclose="1" aria-label="閉じる">✕</button></div>
   <p class="note">ブラウザのアドレスバーなしで、アプリのように開けます。お使いの端末の手順を開いてください(自動で近いものが開きます)。</p>
@@ -1105,6 +1121,8 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     <h2>フリー対戦</h2>
     <p class="note">合言葉なしで、いま募集中の部屋に入って対戦できます。自分で部屋を作って、相手を待つこともできます。</p>
     <div class="row" style="margin:8px 0"><input id="freeMsg" placeholder="ひとこと(例: 初心者歓迎・ゆっくりやりましょう)" maxlength="24" autocomplete="off" style="flex:1;min-width:180px"><button id="bFreeMake">部屋を作る</button></div>
+    <label class="ck" style="display:flex;gap:6px;align-items:center;margin:2px 0 6px"><input type="checkbox" id="freeNtMake" checked> 部屋を作った時、通知を受け取る設定の人に知らせる</label>
+    <label class="ck" style="display:flex;gap:6px;align-items:center;margin:2px 0 6px"><input type="checkbox" id="freeNt"> 新しい部屋が作られたら通知を受け取る(アプリを開いている間・裏にある間)</label>
     <label class="ck" style="display:flex;gap:6px;align-items:center;margin:2px 0 6px"><input type="checkbox" id="freeSpec" checked> 観戦を許可する(オフにすると、対戦中だと分かるだけで、観戦では入れません)</label>
     <div id="freeStat" class="note"></div>
     <div id="freeList" class="freegrid" hidden></div>
@@ -1142,7 +1160,17 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     <p class="note">管理者モード中だけ表示されます。</p>
     <div class="row" style="margin:8px 0"><label class="ck">プレイヤーAのデッキ <select id="admDeckA" style="width:auto;min-width:170px"></select></label><label class="ck">プレイヤーBのデッキ <select id="admDeckB" style="width:auto;min-width:170px"></select></label></div>
     <div class="row"><button id="admExp2">2人分のデッキ情報を書き出す</button><button id="admExpAll" class="sub">保存済みの全デッキを書き出す</button><button id="admCards" class="sub">カード一覧(CSV)</button></div>
-    <div class="row" style="margin-top:10px"><button id="admEnd" class="sub" style="padding:5px 12px;font-size:12px">管理者モードを終了</button></div>
+    <h3 style="margin:12px 0 4px;font-size:13px">部屋作成の通知文</h3>
+    <p class="note">{name}=作成者名、{msg}=ひとこと。この端末に保存されます。全員に反映したい場合は「notify.json を書き出す」をGitHubのルートに置いてください(端末の設定が優先)。指定したプレイヤー名の人だけに通知を出せます(名前の確認はしていないため、テスト用の絞り込みです)。</p>
+    <div class="row"><label class="ck">タイトル <input id="admNtT" style="width:260px"></label><label class="ck">本文 <input id="admNtB" style="width:200px"></label></div>
+    <h3 style="margin:12px 0 4px;font-size:13px">トップのお知らせ(URL変更の案内など)</h3>
+    <p class="note">サーバーに保存され、全員のトップに表示されます(閉じた人には、内容を変えるまで出ません)。管理用の合言葉(ADMIN_TOKEN)はこの端末にだけ保存されます。</p>
+    <div class="row"><label class="ck" style="align-items:flex-start">文<textarea id="admNcT" rows="4" style="width:300px;max-width:100%"></textarea></label></div>
+    <div class="row"><label class="ck">リンク先 <input id="admNcU" placeholder="https://…" style="width:240px"></label><label class="ck">ボタン名 <input id="admNcL" value="新しいURLを開く" style="width:130px"></label></div>
+    <div class="row"><label class="ck">合言葉 <input id="admNcK" type="password" style="width:200px" autocomplete="off"></label></div>
+    <div class="row"><button id="admNcP">お知らせを表示する</button><button id="admNcD" class="sub">お知らせを消す</button><button id="admNcS" class="sub">URL変更の例文を入れる</button></div>
+    <div class="row"><label class="ck" style="align-items:flex-start">通知を送るプレイヤー名(1行に1名。空なら全員)<textarea id="admNtO" rows="3" style="width:220px"></textarea></label></div>
+    <div class="row"><button id="admNtS">保存</button><button id="admNtR" class="sub">初期に戻す</button><button id="admNtX" class="sub">notify.json を書き出す</button><button id="admNtTest" class="sub">テスト表示</button></div>
   </div>
   <div class="box b-adm" id="vidBox" hidden>
     <h2>盤面動画編集エディタ</h2>
@@ -1230,11 +1258,20 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
   <div id="specPal" hidden></div>
   <div id="toast" hidden></div>
 </section>
+<details id="appFoot" ontoggle="this.querySelector('summary').textContent=(this.open?'▲':'▼')+' 利用規約・プライバシー'"><summary>▼ 利用規約・プライバシー</summary><div class="terms">
+<h4>1. このアプリについて</h4><p>BATTLE SPIRITS PRACTICE は、バトルスピリッツの練習のための非公式のファンツールです。公式・権利者とは関係ありません。カードの名称・画像・テキストなどの権利は、それぞれの権利者に帰属します。</p>
+<h4>2. 利用上の注意</h4><p>本アプリは無保証で提供します。ルール処理やCPUの動きに誤りがある場合があります。利用によって生じた損害について、運営は責任を負いません。他の利用者への迷惑行為や、不正な利用はやめてください。</p>
+<h4>3. 対戦記録の利用</h4><p>対人戦の記録(その対戦で使ったカード、対戦中の操作、勝敗)は、CPUの改良のために匿名で収集・利用することがあります。プレイヤー名などの個人を特定する情報や、保存したデッキの一覧は含めません。設定の「対戦記録をCPUの学習に使う」でオフにできます。</p>
+<h4>4. 通知</h4><p>新しい部屋が作られたときの通知を、初期設定でオンにしています。通知の許可は端末の設定で、いつでもオフにできます。通知のために、プレイヤー名と端末の通知用の情報を保存することがあります。</p>
+<h4>5. 保存される情報・デッキデータ</h4><p>保存したデッキや設定は、お使いの端末のブラウザ内にだけ保存されます。サーバーには送られず、管理者がそのデッキデータを見ることはできません。ブラウザのデータを消すと失われます。</p>
+<h4>6. 変更</h4><p>この規約は、予告なく変更することがあります。</p>
+<label class="ck" style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="shareRec"> 対戦記録をCPUの学習に使う(匿名)</label>
+</div><p class="note" style="margin-top:8px">BATTLE SPIRITS PRACTICE 非公式ファンツール</p></details>
 </main>
 <div id="admGate" hidden style="position:fixed;left:0;right:0;top:0;bottom:0;z-index:300;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center"><div class="box" style="min-width:260px;margin:0"><div class="row"><input id="admPass" type="password" placeholder="パスワード" autocomplete="off" style="width:170px"><button id="admGo">OK</button><button id="admCancel" class="sub">閉じる</button></div><p class="note" id="admMsg" style="margin:6px 0 0"></p></div></div>
 <div id="hedit" hidden>
   <div class="hehd"><b>盤面動画編集エディタ</b><span class="sp"></span>
-    <button id="hePoolT">カード一覧</button><label class="hebtn">参考動画を追加<input type="file" id="heVidIn" accept="video/*" multiple hidden></label><button id="heTile" title="表示中の参考動画を横一列に並べます。再生すると、作った盤面と一緒に同時に進みます">参考を並べる</button><span id="heVidBar" style="display:flex;gap:4px;flex-wrap:wrap"></span><label>音声 <select id="heAud"></select></label><button id="heSave">保存</button><label class="hebtn">開く<input type="file" id="heLoad" accept=".json,application/json" hidden></label><button id="heExpBtn">書き出し</button><button id="heClose">閉じる</button></div>
+    <button id="hePoolT">カード一覧</button><label class="hebtn">参考動画を追加<input type="file" id="heVidIn" accept="video/*" multiple hidden></label><button id="heTile" title="表示中の参考動画を横一列に並べます。再生すると、作った盤面と一緒に同時に進みます">参考を並べる</button><span id="heVidBar" style="display:flex;gap:4px;flex-wrap:wrap"></span><label>音声 <select id="heAud"></select></label><button id="heSave">保存</button><label class="hebtn">開く<input type="file" id="heLoad" accept=".json,application/json" hidden></label><button id="heLayBtn">出力確認(YouTube)</button><button id="heExpBtn">書き出し</button><button id="heClose">閉じる</button></div>
   <div class="hebody">
     <aside class="hepool" id="hePoolBox">
       <h4>デッキA</h4><select id="hePdA"></select>
@@ -1244,20 +1281,28 @@ body.revopen #revbox{z-index:90}body.revopen #sheet{align-items:flex-end !import
     </aside>
     <section class="hemain">
       <div id="heWrap"><div id="heStage"><iframe id="heFr"></iframe><div id="heOv"></div></div></div>
-      <div class="hetr"><button id="heTo0">⏮</button><button id="hePrev">◀ コマ</button><button id="hePlay">▶ 再生</button><button id="heNext">コマ ▶</button><button id="heM100">-0.1秒</button><button id="heP100">+0.1秒</button><label>時刻(秒) <input type="number" id="heTin2" step="0.001" min="0" value="0" style="width:90px"></label><span id="heTime" style="font-variant-numeric:tabular-nums;min-width:90px"></span><label>全体の長さ(秒) <input type="number" id="heDur" step="1" min="1" value="20" style="width:62px"></label><label>拡大 <input type="range" id="heZoom" min="20" max="600" value="70"></label><span style="width:10px"></span><b>ターン区切り</b><select id="heTs0"><option value="0">Aの番</option><option value="1">Bの番</option></select><input type="number" id="heTn" min="1" value="1" style="width:50px"><select id="heTst"></select><button id="heTadd">この時刻に入れる</button><button id="heUndo">元に戻す</button></div>
-      <div class="hetl"><div class="hetll"><div>手札A</div><div>手札B</div><div>盤面A</div><div>盤面B</div><div>ゾーンA</div><div>ゾーンB</div><div>ターン</div></div><div class="hets" id="heTs"><div class="hetin" id="heTin"></div></div></div>
+      <div class="hetr"><button id="heTo0">⏮</button><button id="hePrev">◀ コマ</button><button id="hePlay">▶ 再生</button><button id="heNext">コマ ▶</button><button id="heM100">-0.1秒</button><button id="heP100">+0.1秒</button><label>時刻(秒) <input type="number" id="heTin2" step="0.001" min="0" value="0" style="width:90px"></label><span id="heTime" style="font-variant-numeric:tabular-nums;min-width:90px"></span><label>全体の長さ(秒) <input type="number" id="heDur" step="1" min="1" value="20" style="width:62px"></label><label>拡大 <input type="range" id="heZoom" min="20" max="600" value="70"></label><button id="heFit2">全体表示</button><span style="width:10px"></span><b>ステップ</b><button id="heStN" title="再生しながら押していくと、前のステップの次のステップを自動で入れます(Nキー・Enterキー)">次のステップ ▶ <span id="heStNm"></span></button><select id="heStS"></select><button id="heStA">これを入れる</button><label title="盤面にカードを出した時、相手側の盤面にそのカード画像を出します"><input type="checkbox" id="heShowNew"> 出した時に相手側へカード画像</label><label>表示秒 <input type="number" id="heShowDur" min="0.1" step="0.1" value="2" style="width:52px"></label><button id="heUndo">元に戻す</button></div>
+      <div class="hetr"><button id="hePv">◀ 前の印</button><button id="heNx">次の印 ▶</button><button id="heIn">開始(I)</button><button id="heOut2">終了(O)</button><button id="heRc">範囲クリア</button><label><input type="checkbox" id="heLoop"> 範囲をループ</label><label><input type="checkbox" id="heSnapC" checked> 吸着</label><label>速度 <select id="heSpd"><option value="0.25">×0.25</option><option value="0.5">×0.5</option><option value="1" selected>×1</option><option value="1.5">×1.5</option><option value="2">×2</option></select></label><button id="heCp">コピー</button><button id="hePs">貼り付け</button><button id="heDl2">削除</button><button id="heHelpB">操作一覧(?)</button><button id="heNew">新規</button></div>
+      <div class="hetl"><div class="hetll"><div>手札A</div><div>手札B</div><div>盤面A</div><div>盤面B</div><div>ゾーンA</div><div>ゾーンB</div><div>ステップ</div><div style="height:40px">音声波形</div></div><div class="hets" id="heTs"><div class="hetin" id="heTin"></div></div></div>
     </section>
   </div>
   <div id="hePop" hidden></div>
   <div id="heWins"></div>
+  <div id="heLay" hidden><div class="hebox wide">
+    <div class="hlh"><b>出力確認(YouTube)</b><label>サイズ <select id="heLSize"><option value="1920x1080">1920×1080</option><option value="1280x720">1280×720</option><option value="2560x1440">2560×1440</option><option value="3840x2160">3840×2160</option></select></label><label>配置 <select id="heLPre"><option value="std">標準(4画面)</option><option value="wide">手札を広く</option></select></label><label>F <select id="heLFs"></select></label><label title="手札のカードをどこまで見せるか(大きいほど手札の列が広がります)">手札の見せ方 <input type="range" id="heLHs" min="0.4" max="1" step="0.01" value="0.57"></label><button id="heLRef">この時刻で更新</button><span id="heLayMsg"></span><span class="sp"></span><button id="heLClose">閉じる</button></div>
+    <div id="heLayWrap"><div style="position:relative"><canvas id="heLayCv"></canvas><div id="heLayBox"></div></div></div>
+    <div class="hlf"><b id="heLSel">盤面</b> X<input type="number" id="heLX"> Y<input type="number" id="heLY"> 幅<input type="number" id="heLW"> 高さ<input type="number" id="heLH"><label><input type="checkbox" id="heLFill"> 枠いっぱいに引き伸ばす</label><span style="color:#9fb4ff">枠をドラッグで移動、右下の角で大きさを変えます(座標は1920×1080の画面で数えます)</span></div>
+  </div></div>
   <div id="heExp" hidden><div class="hebox">
     <h3 style="margin:0">書き出し</h3>
-    <label>出力 <select id="heOut"><option value="three">手札A・手札B・盤面の3本</option><option value="all">画面全体の1本</option><option value="A">手札Aだけ</option><option value="B">手札Bだけ</option><option value="C">盤面だけ</option></select></label>
-    <label>形式 <select id="heFmt"><option value="webm">動画(WebM)</option><option value="zip">PNG連番(ZIP)</option></select></label>
+    <label>出力 <select id="heOut"><option value="compose">YouTube用(4画面を並べた1本)</option><option value="three">手札A・手札B・盤面の3本</option><option value="all">画面全体の1本</option><option value="A">手札Aだけ</option><option value="B">手札Bだけ</option><option value="C">盤面だけ</option></select></label>
+    <label hidden>形式 <select id="heFmt"><option value="webm">動画(WebM)</option><option value="zip">PNG連番(ZIP)</option></select></label>
     <label>範囲(秒) <input type="number" id="heR0" step="0.001" min="0" value="0" style="width:90px"> から <input type="number" id="heR1" step="0.001" min="0" value="20" style="width:90px"></label>
-    <label>画質 <select id="heSc"><option value="1">1920×1080</option><option value="2">3840×2160</option></select></label>
+    <label hidden>分割時の画質 <select id="heSc"><option value="1">1920×1080</option><option value="2" selected>3840×2160</option></select></label>
+    <label hidden>画質 <select id="heQual"><option value="1">標準</option><option value="1.6" selected>高画質</option><option value="2.5">最高画質(ファイル大)</option></select></label>
+    <label hidden>フレームレート <select id="heFps"><option value="30">30fps</option><option value="60">60fps</option></select></label>
     <label>音声 <select id="heAud2"></select></label>
-    <div class="note" style="color:#9fb4ff">動画は書き出し中、実時間で録画します。長さぶんの時間がかかります。</div>
+    <div class="note" style="color:#9fb4ff">画質・形式は自動(最高画質。対応ブラウザではMP4、それ以外はWebM)。動画は書き出し中、実時間で録画します。長さぶんの時間がかかります。</div>
     <div style="display:flex;gap:8px;align-items:center"><button id="heGo">書き出す</button><button id="heExpClose">閉じる</button><span id="heProg" style="color:#cfe0ff"></span></div>
   </div></div>
 </div>
@@ -3135,8 +3180,8 @@ function usableFor(G, i) {
 
 /* --- CPU(相手プレイヤーとして、人と同じ操作を自動で出す) --- */
 const cpuSkip = new Set();
-function cpuSummon(G) {
-  const P = G.p[1], res = P.reserve;
+function cpuSummon(G, i = 1) {
+  const P = G.p[i], res = P.reserve;
   const cands = P.hand.filter(k => k.def.type !== 'magic' && !cpuSkip.has(k.iid)).map(k => { const r = payRequirement(P, k.def, {}); return { k, need: r.need, place: minPlaceOf(k.def), ok: r.ok }; })
     .filter(x => x.ok && x.need + x.place <= res.length).sort((a, b) => b.k.def.cost - a.k.def.cost);
   if (!cands.length) return null;
@@ -3151,8 +3196,11 @@ function cpuWantMull(G, i) {
   const h = G.p[i].hand, low = h.filter(k => k.def.type !== 'magic' && k.def.cost <= 3).length, mg = h.filter(k => k.def.type === 'magic').length;
   return low === 0 || mg >= Math.max(3, h.length - 1);
 }
+/* CPUの判断に使う重み(自己対戦で調整した値)。G.cpuW[i] があればそちらを使う */
+const CPUW = { sBp: 1, sEff: 400, sFirst: 4000, sNx: 980.553, sNx0: 2500, sMg: 525.679, keepRes: 0, lvBp: 1, lvMin: 0, lvNx: 800, lvOn: 1, lvPre: 99999, aFree: 3, aLife: 2, aSwarm: 1, aRisk: 2.005, aDef: 2, aThr: 0.874, bLife: 1, bTrade: 1, bBp: 0 };
+const cpuW = (G, i) => (G.cpuW && G.cpuW[i]) || CPUW;
 function cpuSummonStrong(G, i) {
-  const P = G.p[i], res = P.reserve, mySp = P.field.filter(k => k.def.type === 'spirit').length, myNx = P.field.some(k => k.def.type === 'nexus');
+  const W = cpuW(G, i), P = G.p[i], res = P.reserve, mySp = P.field.filter(k => k.def.type === 'spirit').length, myNx = P.field.some(k => k.def.type === 'nexus');
   const cands = P.hand.filter(k => k.def.type !== 'magic' && !cpuSkip.has(k.iid)).map(k => { const r = payRequirement(P, k.def, {}); return { k, need: r.need, place: minPlaceOf(k.def), ok: r.ok }; })
     .filter(x => x.ok && x.need + x.place <= res.length);
   if (!cands.length) return null;
@@ -3160,11 +3208,27 @@ function cpuSummonStrong(G, i) {
     const spare = res.length - x.need, lv = (x.k.def.levels || []).filter(l => l.core <= spare && l.core >= x.place).sort((a, b) => b.core - a.core)[0];
     x.put = lv ? lv.core : x.place;
     const eff = x.k.def.effects.filter(e => e.timing.kind !== 'keyword').length;
-    x.score = x.k.def.type === 'spirit' ? ((lv ? lv.bp : ((x.k.def.levels || [])[0] || {}).bp || 0) + eff * 400 + (mySp === 0 ? 4000 : 0)) : (myNx ? 500 : 2500) + eff * 600;
+    x.score = x.k.def.type === 'spirit' ? ((lv ? lv.bp : ((x.k.def.levels || [])[0] || {}).bp || 0) * W.sBp + eff * W.sEff + (mySp === 0 ? W.sFirst : 0)) : (myNx ? W.sNx : W.sNx0) + eff * W.sMg;
   });
   cands.sort((a, b) => b.score - a.score || b.k.def.cost - a.k.def.cost);
   const x = cands[0], ids = res.slice().sort((a, b) => (a.soul ? 1 : 0) - (b.soul ? 1 : 0)).map(c => c.id);
   return { k: 'play', iid: x.k.iid, pay: ids.slice(0, x.need), place: ids.slice(x.need, x.need + x.put) };
+}
+// リザーブのコアを盤面のカードに移して、レベルを上げる(コアの移動)
+function cpuLevelStrong(G, i, pre) {
+  const W = cpuW(G, i), P = G.p[i], res = P.reserve; if (!W.lvOn) return null;
+  const avail = res.length - W.keepRes; if (avail <= 0) return null;
+  let best = null;
+  P.field.forEach(k => {
+    const L = k.def.levels || []; if (!L.length) return;
+    const n = k.cores.length, cur = L.filter(l => l.core <= n).pop(), nx = L.find(l => l.core > n); if (!nx) return;
+    const need = nx.core - n; if (need <= 0 || need > avail) return;
+    const gain = k.def.type === 'spirit' ? ((nx.bp || 0) - ((cur && cur.bp) || 0)) * W.lvBp / Math.max(1, need) : W.lvNx / Math.max(1, need);
+    if (gain < Math.max(W.lvMin, pre || 0)) return; if (!best || gain > best.gain) best = { k, need, gain };
+  });
+  if (!best) return null;
+  const ids = res.slice().sort((a, b) => (a.soul ? 1 : 0) - (b.soul ? 1 : 0)).slice(0, best.need).map(c => c.id);
+  return { k: 'moveCores', ids, to: { zone: 'card', iid: best.k.iid } };
 }
 function cpuMagicStrong(G, i) {
   const P = G.p[i], O = G.p[1 - i], res = P.reserve;
@@ -3175,19 +3239,52 @@ function cpuMagicStrong(G, i) {
   return { k: 'play', iid: x.k.iid, pay: ids.slice(0, x.r.need), place: [] };
 }
 function cpuAttackStrong(G, i) {
-  const P = G.p[i], O = G.p[1 - i];
+  const W = cpuW(G, i), P = G.p[i], O = G.p[1 - i];
   const mine = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canAttackNow(G, k) && (!atkToll(G, i, k) || P.reserve.length)).sort((a, b) => curBP(G, b) - curBP(G, a));
   if (!mine.length) return null;
   const oppBl = O.field.filter(k => k.def.type === 'spirit' && !k.tapped), oppMax = Math.max(0, ...oppBl.map(k => curBP(G, k)));
   const oppLife = O.life.length, oppAll = O.field.filter(k => k.def.type === 'spirit').length;
   const myUn = P.field.filter(k => k.def.type === 'spirit' && !k.tapped).length;
   if (mine.length > oppBl.length && mine.length - oppBl.length >= oppLife) return { k: 'attack', iid: mine[0].iid };   // とどめを狙える
-  const safe = mine.filter(k => !oppBl.length || curBP(G, k) >= oppMax);
-  if (!safe.length) return null;
-  if (oppAll > 0 && myUn <= 1 && P.life.length <= 3 && !(oppBl.length === 0 && oppLife <= 1)) return null;   // 守りを残す
-  return { k: 'attack', iid: safe[0].iid };
+  // 守りの必要さ(自分のライフが少なく、残る守り手が少ないほど大きい)
+  const defNeed = (myUn <= 1 ? 1 : 0) * Math.max(0, (5 - P.life.length) / 4) * (oppAll > 0 ? 1 : 0);
+  let best = null;
+  mine.forEach(k => {
+    const bp = curBP(G, k), risk = oppBl.length ? Math.max(0, oppMax - bp) / 1000 : 0;
+    const sc = (oppBl.length === 0 ? W.aFree : 0) + W.aLife * Math.max(0, (6 - oppLife) / 6) * 2 + W.aSwarm * Math.max(0, mine.length - oppBl.length) - W.aRisk * risk - W.aDef * defNeed;
+    if (!best || sc > best.sc) best = { k, sc };
+  });
+  if (best && best.sc >= W.aThr) return { k: 'attack', iid: best.k.iid };
+  return null;
 }
 function cpuBlockStrong(G, i, b) {
+  const W = cpuW(G, i), P = G.p[i], O = G.p[1 - i], A = O.field.find(x => x.iid === b.iid), ab = A ? curBP(G, A) : 0, dmg = A ? atkDmgPreview(G, b, A) : 1;
+  const bl = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canBlockWith(G, k)).map(k => ({ k, bp: curBP(G, k) }));
+  if (!bl.length) return { k: 'block', iid: null };
+  const weak = bl.slice().sort((a, b2) => a.bp - b2.bp || a.k.def.cost - b2.k.def.cost)[0];
+  const win = bl.filter(x => x.bp > ab + W.bBp * 1000).sort((a, b2) => a.bp - b2.bp)[0];
+  if (win) return { k: 'block', iid: win.k.iid };
+  const trade = bl.filter(x => x.bp === ab && A && x.k.def.cost <= A.def.cost + W.bTrade).sort((a, b2) => a.k.def.cost - b2.k.def.cost)[0];
+  if (trade) return { k: 'block', iid: trade.k.iid };
+  if (clashForced(G)) return { k: 'block', iid: weak.k.iid };
+  if (P.life.length <= dmg || P.life.length <= W.bLife) return { k: 'block', iid: weak.k.iid };
+  return { k: 'block', iid: null };
+}
+// 以前のCPU(比較用)
+function cpuAttackOld(G, i) {
+  const P = G.p[i], O = G.p[1 - i];
+  const mine = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canAttackNow(G, k) && (!atkToll(G, i, k) || P.reserve.length)).sort((a, b) => curBP(G, b) - curBP(G, a));
+  if (!mine.length) return null;
+  const oppBl = O.field.filter(k => k.def.type === 'spirit' && !k.tapped), oppMax = Math.max(0, ...oppBl.map(k => curBP(G, k)));
+  const oppLife = O.life.length, oppAll = O.field.filter(k => k.def.type === 'spirit').length;
+  const myUn = P.field.filter(k => k.def.type === 'spirit' && !k.tapped).length;
+  if (mine.length > oppBl.length && mine.length - oppBl.length >= oppLife) return { k: 'attack', iid: mine[0].iid };
+  const safe = mine.filter(k => !oppBl.length || curBP(G, k) >= oppMax);
+  if (!safe.length) return null;
+  if (oppAll > 0 && myUn <= 1 && P.life.length <= 3 && !(oppBl.length === 0 && oppLife <= 1)) return null;
+  return { k: 'attack', iid: safe[0].iid };
+}
+function cpuBlockOld(G, i, b) {
   const P = G.p[i], O = G.p[1 - i], A = O.field.find(x => x.iid === b.iid), ab = A ? curBP(G, A) : 0, dmg = A ? atkDmgPreview(G, b, A) : 1;
   const bl = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canBlockWith(G, k)).map(k => ({ k, bp: curBP(G, k) }));
   if (!bl.length) return { k: 'block', iid: null };
@@ -3200,8 +3297,8 @@ function cpuBlockStrong(G, i, b) {
   if (P.life.length <= dmg || P.life.length <= 2) return { k: 'block', iid: weak.k.iid };
   return { k: 'block', iid: null };
 }
-function cpuDecide(G) {
-  const i = 1, P = G.p[1], O = G.p[0];
+function cpuDecide(G, i = 1) {
+  const P = G.p[i], O = G.p[1 - i];
   if (G.winner != null) return null;
   if (G.pick) return G.pick.pi === i ? { k: 'setFirst', first: true } : null;
   if (G.mull) return G.mull.order[G.mull.idx] === i ? { k: 'mulligan', yes: cpuStrong(G, i) ? cpuWantMull(G, i) : false } : null;
@@ -3234,7 +3331,7 @@ function cpuDecide(G) {
     if (b.phase === 'block') {
       if (b.prio !== i) return null;
       { const mb = mustBlocker(G); if (mb) return { k: 'block', iid: mb }; }
-      if (cpuStrong(G, i)) return cpuBlockStrong(G, i, b);
+      if (cpuStrong(G, i)) return cpuW(G, i).old ? cpuBlockOld(G, i, b) : cpuBlockStrong(G, i, b);
       const A = O.field.find(x => x.iid === b.iid), ab = A ? curBP(G, A) : 0;
       const c = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canBlockWith(G, k)).map(k => ({ k, bp: curBP(G, k) })).filter(x => x.bp >= ab).sort((a, b2) => a.bp - b2.bp);
       if (!c.length && clashForced(G)) { const w = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canBlockWith(G, k)).sort((a, b2) => curBP(G, a) - curBP(G, b2)); return { k: 'block', iid: w[0].iid }; }
@@ -3243,9 +3340,9 @@ function cpuDecide(G) {
     return null;
   }
   if (G.turn !== i) return null;
-  if (G.step === 'main' || G.step === 'main2') { const sm = cpuStrong(G, i) ? (cpuSummon(G) || cpuMagicStrong(G, i)) : cpuSummon(G); if (sm) return sm; }
+  if (G.step === 'main' || G.step === 'main2') { const sm = cpuStrong(G, i) ? (cpuW(G, i).old ? (cpuSummon(G, i) || cpuMagicStrong(G, i)) : (cpuLevelStrong(G, i, cpuW(G, i).lvPre) || cpuSummonStrong(G, i) || cpuMagicStrong(G, i) || cpuLevelStrong(G, i))) : cpuSummon(G, i); if (sm) return sm; }
   if (G.step === 'attack' && !G.noAttack) {
-    if (cpuStrong(G, i)) { const sa = cpuAttackStrong(G, i); return sa || { k: 'next' }; }
+    if (cpuStrong(G, i)) { const sa = cpuW(G, i).old ? cpuAttackOld(G, i) : cpuAttackStrong(G, i); return sa || { k: 'next' }; }
     const oppMax = Math.max(0, ...O.field.filter(k => k.def.type === 'spirit' && !k.tapped).map(k => curBP(G, k)));
     const atk = P.field.filter(k => k.def.type === 'spirit' && !k.tapped && canAttackNow(G, k) && (!atkToll(G, i, k) || P.reserve.length) && curBP(G, k) >= oppMax).sort((a, b) => curBP(G, b) - curBP(G, a))[0];
     if (atk) return { k: 'attack', iid: atk.iid };
@@ -3874,7 +3971,8 @@ function nameGate() {
 try { $('myName').value = localStorage.getItem('bs-name') || ''; } catch (e) { }
 try { const bn = localStorage.getItem('bs-bbsname'); if (bn) $('bbsName').value = bn; } catch (e) { }
 $('bbsName').oninput = () => { try { localStorage.setItem('bs-bbsname', $('bbsName').value.trim().slice(0, 12)); } catch (e) { } };
-$('myName').oninput = () => { try { localStorage.setItem('bs-name', $('myName').value.trim().slice(0, 12)); } catch (e) { } nameGate(); };
+let nameT = 0;
+$('myName').oninput = () => { try { localStorage.setItem('bs-name', $('myName').value.trim().slice(0, 12)); } catch (e) { } nameGate(); clearTimeout(nameT); nameT = setTimeout(() => { try { pushSync(); } catch (e) { } }, 1500); };
 nameGate();
 $('bMatch').onclick = async () => {
   const d = getDeck(); if (!d) return;
@@ -3917,12 +4015,12 @@ function asGuest(id, n, fr) {
 const HUB_ID = 'bsprac-free-hub-v1', FREE_MAX = 8;
 const free = { peer: null, hub: false, conns: new Map(), rooms: new Map(), link: null, mine: null, list: [], shown: [], stopped: true, timer: null, joining: false, got: false };
 const freeSay = m => { };   // 部屋がある時だけ一覧を表示する(状態の文言は出さない)
-const roomOf = m => ({ id: m.id, name: m.name, msg: m.msg, st: m.st === 'play' ? 'play' : 'wait', n2: str(m.n2, 12), sp: m.sp ? 1 : 0, ns: Math.min(99, +m.ns || 0) });
-const freeSnap = () => { const t = Date.now(); free.rooms.forEach((r, k) => { if (r._at && t - r._at > 60000) free.rooms.delete(k); }); return [...free.rooms.values()].map(r => ({ id: r.id, name: r.name, msg: r.msg, st: r.st, n2: r.n2, sp: r.sp, ns: r.ns })); };   // 一定時間(60秒)更新のない部屋は、残骸として一覧から消す
+const roomOf = m => ({ id: m.id, name: m.name, msg: m.msg, st: m.st === 'play' ? 'play' : 'wait', n2: str(m.n2, 12), sp: m.sp ? 1 : 0, ns: Math.min(99, +m.ns || 0), nt: m.nt ? 1 : 0 });
+const freeSnap = () => { const t = Date.now(); free.rooms.forEach((r, k) => { if (r._at && t - r._at > 60000) free.rooms.delete(k); }); return [...free.rooms.values()].map(r => ({ id: r.id, name: r.name, msg: r.msg, st: r.st, n2: r.n2, sp: r.sp, ns: r.ns, nt: r.nt })); };   // 一定時間(60秒)更新のない部屋は、残骸として一覧から消す
 function hubBroadcast() { const rs = freeSnap(); free.conns.forEach(c => { try { if (c.open) c.send({ t: 'rooms', rooms: rs }); } catch (e) { } }); freeGotRooms(rs); }
 function hubHandle(c, m) {
   if (!m || typeof m !== 'object') return;
-  if (m.t === 'reg' && typeof m.id === 'string') { free.rooms.set(m.id.slice(0, 40), Object.assign(roomOf({ id: m.id.slice(0, 40), name: str(m.name, 12) || 'プレイヤー', msg: str(m.msg, 24), st: m.st, n2: m.n2, sp: m.sp, ns: m.ns }), { _at: Date.now() })); c._room = m.id; hubBroadcast(); }
+  if (m.t === 'reg' && typeof m.id === 'string') { free.rooms.set(m.id.slice(0, 40), Object.assign(roomOf({ id: m.id.slice(0, 40), name: str(m.name, 12) || 'プレイヤー', msg: str(m.msg, 24), st: m.st, n2: m.n2, sp: m.sp, ns: m.ns, nt: m.nt }), { _at: Date.now() })); c._room = m.id; hubBroadcast(); }
   else if (m.t === 'unreg') { free.rooms.delete(String(m.id)); hubBroadcast(); }
   else if (m.t === 'list') { try { c.send({ t: 'rooms', rooms: freeSnap() }); } catch (e) { } }
 }
@@ -3996,11 +4094,64 @@ function freeCancelRoom(started) {
 }
 function freeButtons() { const b = $('bFreeMake'); if (b) b.textContent = free.mine ? '募集をやめる' : '部屋を作る'; }
 function freeGotRooms(rs) {
-  free.got = true; free.list = (Array.isArray(rs) ? rs : []).filter(r => r && typeof r.id === 'string' && !(free.mine && r.id === free.mine.id)).slice(0, 200);
+  const first = !free.got; free.got = true; free.list = (Array.isArray(rs) ? rs : []).filter(r => r && typeof r.id === 'string' && !(free.mine && r.id === free.mine.id)).slice(0, 200);
+  { const sn = free.seen || (free.seen = new Set()); if (sn.size > 500) sn.clear(); free.list.forEach(r => { if (sn.has(r.id)) return; sn.add(r.id); if (!first && r.nt && r.st !== 'play') freeNotify(r); }); }
   const wait = free.list.filter(r => r.st !== 'play'), ids = new Set(wait.map(r => r.id)), keep = free.shown.filter(i => ids.has(i));   // いま見えている部屋は、残っていればそのまま(対戦中の部屋は別枠で常に表示)
   const rest = wait.map(r => r.id).filter(i => !keep.includes(i));
   for (let i = rest.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [rest[i], rest[j]] = [rest[j], rest[i]]; }
   free.shown = keep.concat(rest).slice(0, FREE_MAX); freeRender();
+}
+const API = 'https://bsp.skeigassa1987.workers.dev';   // Cloudflare Worker(対戦記録の受け取り・通知・設定の配信)
+let PUSH_KEY = '', pushOn = false;
+const u8 = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; const r = atob(s), u = new Uint8Array(r.length); for (let i = 0; i < r.length; i++) u[i] = r.charCodeAt(i); return u; };
+async function apiPost(path, body, method) { try { const r = await fetch(API + path, { method: method || 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }); return r.ok ? await r.json() : null; } catch (e) { return null; } }
+// サーバーの設定(通知文・CPUの重み・通知用の鍵)を読み込む
+(async function loadSrvCfg() {
+  try {
+    const r = await fetch(API + '/cfg', { cache: 'no-cache' }); if (!r.ok) return; const j = await r.json();
+    if (j.title) window.__ntFile = Object.assign({}, window.__ntFile || {}, { title: j.title, body: j.body != null ? j.body : '' });
+    if (j.w && typeof j.w === 'object') Object.keys(j.w).forEach(k => { if (k in CPUW && typeof j.w[k] === 'number') CPUW[k] = j.w[k]; });
+    showNotice(j.notice); PUSH_KEY = j.vapid || ''; pushSync();
+  } catch (e) { }
+})();
+// トップのお知らせ(URLの変更など)。管理者メニューから出し入れできる
+function showNotice(n) {
+  const bar = $('noticeBar'); if (!bar) return;
+  let gone = ''; try { gone = localStorage.getItem('bs-notice-x') || ''; } catch (e) { }
+  if (!n || !n.text || String(n.id) === gone) { bar.hidden = true; return; }
+  $('noticeTx').textContent = n.text; const a = $('noticeGo'); if (n.url) { a.href = n.url; a.textContent = n.label || '開く'; a.hidden = false; } else a.hidden = true;
+  bar.hidden = false; bar.dataset.id = n.id;
+}
+$('noticeX').onclick = () => { const b = $('noticeBar'); b.hidden = true; try { localStorage.setItem('bs-notice-x', b.dataset.id || ''); } catch (e) { } };
+// このアプリの通知(プッシュ)の登録。通知がオンで許可されているときだけ、プレイヤー名と一緒にサーバーへ登録する
+async function pushSync() {
+  try {
+    if (!PUSH_KEY || !('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
+    const reg = await navigator.serviceWorker.ready; let sub = await reg.pushManager.getSubscription();
+    if (!(ntPref() && Notification.permission === 'granted')) { if (sub) { const ep = sub.endpoint; await sub.unsubscribe().catch(() => { }); apiPost('/sub', { endpoint: ep }, 'DELETE'); } pushOn = false; return; }
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(PUSH_KEY) });
+    const name = (($('myName').value || '').trim().slice(0, 12)); if (!name) { pushOn = false; return; }
+    const r = await apiPost('/sub', { sub: sub.toJSON(), name }); pushOn = !!r; window.__pushEp = sub.endpoint;
+  } catch (e) { pushOn = false; }
+}
+try { navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.t === 'push') toast(e.data.title); }); } catch (e) { }
+const NT_DEF = { title: '{name}が部屋を作成しました', body: '{msg}' };
+function ntOnly() { let a = null; try { a = JSON.parse(localStorage.getItem('bs-nt-tpl') || 'null'); } catch (e) { } const l = a && Array.isArray(a.only) ? a.only : (window.__ntFile && Array.isArray(window.__ntFile.only) ? window.__ntFile.only : []); return l.map(x => String(x).trim()).filter(Boolean); }
+function ntTpl() { let a = {}; try { a = JSON.parse(localStorage.getItem('bs-nt-tpl') || '{}') || {}; } catch (e) { } if (!a.title && window.__ntFile) a = window.__ntFile; return { title: a.title || NT_DEF.title, body: a.body != null && a.title ? a.body : (a.body != null ? a.body : NT_DEF.body) }; }
+try { fetch('notify.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(j => { if (j && j.title) window.__ntFile = j; }).catch(() => { }); } catch (e) { }
+function ntPref() { try { return localStorage.getItem('bs-nt') !== '0'; } catch (e) { return true; } }
+function ntOn() { try { return ntPref() && 'Notification' in window && Notification.permission === 'granted'; } catch (e) { return false; } }
+function freeNotify(r) {
+  try {
+    if (!ntOn() || pushOn) return;   // プッシュ通知が使えるときは、サーバーからの通知にまかせる
+    { const ol = ntOnly(); if (ol.length && !ol.includes((getName() || '').trim())) return; }   // 管理者が指定したプレイヤー名の人だけに通知
+    const tp = ntTpl(), fm = x => String(x || '').replace(/\{name\}/g, r.name || 'プレイヤー').replace(/\{msg\}/g, r.msg || '');
+    const title = fm(tp.title);
+    if (document.visibilityState === 'visible') { toast(title); return; }
+    const opt = { body: fm(tp.body), tag: 'bs-room', renotify: true, icon: 'icons/icon-192.png' };
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opt)).catch(() => { try { new Notification(title, opt); } catch (e) { } });
+    else new Notification(title, opt);
+  } catch (e) { }
 }
 function freeShuffle() {
   const ids = free.list.filter(r => r.st !== 'play').map(r => r.id); for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
@@ -4019,10 +4170,29 @@ $('bFreeMake').onclick = () => {
   const d = getDeck(); if (!d) return;
   myDefs = d.defs; matchTest = false; cpu = false; solo = false;
   const id = 'bsprac-f-' + Math.random().toString(36).slice(2, 10);
-  free.mine = { id, name: getName(), msg: ($('freeMsg').value || '').trim().slice(0, 24), st: 'wait', n2: '', sp: $('freeSpec').checked ? 1 : 0, ns: 0 }; freeButtons(); freeRender();
+  free.mine = { id, name: getName(), msg: ($('freeMsg').value || '').trim().slice(0, 24), st: 'wait', n2: '', sp: $('freeSpec').checked ? 1 : 0, ns: 0, nt: $('freeNtMake').checked ? 1 : 0 }; freeButtons(); freeRender();
+  if ($('freeNtMake').checked) apiPost('/room', { name: getName(), msg: free.mine.msg, self: window.__pushEp || '' });   // 通知をオンにしている人へプッシュ通知
   asHost(id, 0, true);
 };
 $('bFreeShuffle').onclick = freeShuffle;
+try { $('freeNt').checked = ntPref() && 'Notification' in window && Notification.permission !== 'denied'; $('freeNtMake').checked = localStorage.getItem('bs-ntmake') !== '0'; } catch (e) { }
+try { $('shareRec').checked = localStorage.getItem('bs-share') !== '0'; } catch (e) { }
+$('shareRec').onchange = () => { try { localStorage.setItem('bs-share', $('shareRec').checked ? '1' : '0'); } catch (e) { } };
+$('freeNtMake').onchange = () => { try { localStorage.setItem('bs-ntmake', $('freeNtMake').checked ? '1' : '0'); } catch (e) { } };
+let ntAsked = false;
+// 初期値は「通知を受け取る」。許可の確認は、最初に画面を触ったときに出す(端末の決まりで、操作のあとにしか出せない)
+document.addEventListener('click', async () => {
+  if (ntAsked || !ntPref() || !('Notification' in window) || Notification.permission !== 'default') return; ntAsked = true;
+  try { const p = await Notification.requestPermission(); $('freeNt').checked = p === 'granted'; pushSync(); } catch (e) { }
+}, true);
+$('freeNt').onchange = async () => {
+  const on = $('freeNt').checked; ntAsked = true;
+  if (!on) { try { localStorage.setItem('bs-nt', '0'); } catch (e) { } pushSync(); return; }
+  if (!('Notification' in window)) { $('freeNt').checked = false; toast('この端末・ブラウザでは通知が使えません(iPhoneはホーム画面に追加したアプリで使えます)'); return; }
+  let p = Notification.permission; if (p === 'default') { try { p = await Notification.requestPermission(); } catch (e) { } }
+  if (p !== 'granted') { $('freeNt').checked = false; toast('通知が許可されませんでした。端末の設定で許可してください'); return; }
+  try { localStorage.setItem('bs-nt', '1'); } catch (e) { } toast('通知をオンにしました'); pushSync();
+};
 $('freeList').addEventListener('click', e => {
   const sp = e.target.closest('[data-fspec]');
   if (sp) { if (free.mine) freeCancelRoom(false); myDefs = []; matchTest = false; cpu = false; solo = false; free.joining = true; wantSpec = true; asGuest(sp.dataset.fspec, 3, true); return; }
@@ -4339,6 +4509,16 @@ function finishRec() {
   const e = rpMake(G); if (!e) return;
   rpAdd(e);
   if (isHost && !solo && !cpu) { const m = { t: 'rec', rec: e }; specBroadcast(m, true); }
+  if (isHost && !solo && !cpu) uploadRec(e);
+}
+// 対人戦の記録を、匿名でサーバーへ送る(プレイヤー名は含めない。設定でオフにできる)
+async function uploadRec(e) {
+  try {
+    let on = true; try { on = localStorage.getItem('bs-share') !== '0'; } catch (x) { }
+    if (!on || !e || !Array.isArray(e.acts) || e.acts.length < 8) return;
+    const d = unpackDefs(cl(e.defs)), ids = d.map(a => a.map(x => x.def.id));
+    await apiPost('/rec', { ver: e.ver, seed: e.seed, s: e.s, acts: e.acts, defs: ids, winner: e.winner, turns: e.turns, why: e.why });
+  } catch (x) { }
 }
 function rpEntryDefs(e) {
   try { const d = unpackDefs(cl(e.defs)); return [d[0].map(x => x.def), d[1].map(x => x.def)]; } catch (x) { return null; }
@@ -4487,7 +4667,7 @@ function bcPlan() {
 }
 /* 手札: 名前の見える所までを見せ、効果の部分は画面の端で見切れる。多いときは、実際のカードのように重ねて詰め、1列に収める */
 function bcHands(baseV) {
-  const st = $('stage'), bw = st.clientWidth - 12, cwh = baseV * 0.72, ch = cwh * 1.4, p = ch * 0.57;
+  const st = $('stage'), bw = st.clientWidth - 12, cwh = baseV * 0.72, ch = cwh * 1.4, p = ch * (window.__HESHOW || 0.57);
   ['hand', 'oppHand'].forEach(id => {
     const e = $(id); if (!e) return; const row = e.querySelector('.handrow'); if (!row) return; const cards = [...row.querySelectorAll('.card')], n = cards.length;
     e.style.setProperty('--hcw', cwh + 'px'); const step = n > 1 ? Math.min(cwh * 1.04, (bw - cwh) / (n - 1)) : 0, left = (bw - ((n - 1) * step + cwh)) / 2;
@@ -6544,7 +6724,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v35.0.32 (2026/11/18)';
+const APP_VER = 'v35.0.42 (2026/11/18)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;
@@ -6576,7 +6756,7 @@ function sha256hex(str) {
 }
 function setAdm(on) {
   if (on && !admPC()) on = false;
-  document.body.classList.toggle('adm', on); $('admBox').hidden = !on; $('vidBox').hidden = !on;
+  document.body.classList.toggle('adm', on); $('admBox').hidden = !on; $('vidBox').hidden = !on; if (on) admNtFill();
   try { localStorage.setItem('bs-adm', on ? '1' : ''); } catch (e) { }
   if (on) admFill();
 }
@@ -6611,53 +6791,105 @@ $('admCards').onclick = () => {
   admOut('カード一覧(CSV)', 'bsp-cards.csv', '\ufeff' + rows.join('\n'), 'text/csv');
 };
 $('admEnd').onclick = () => setAdm(false);
-const HE = { t: 0, dur: 20000, zoom: 70, ops: [], nid: 1, uid: 1, sel: null, pk: null, vids: [], audio: 'last', playing: false, names: ['A', 'B'], undo: [], ready: false, busy: false, want: null, key: '', sc: 1, drag: null, raf: 0, t0: 0, tb: 0, busyExp: false };
+const HE = { t: 0, dur: 20000, zoom: 70, ops: [], nid: 1, uid: 1, sel: new Set(), inT: null, outT: null, rate: 1, loop: false, snap: true, clip: null, pk: null, vids: [], audio: 'last', playing: false, names: ['A', 'B'], undo: [], ready: false, busy: false, want: null, key: '', sc: 1, drag: null, raf: 0, t0: 0, tb: 0, busyExp: false, showNew: false, showDur: 2000 };
+function heLastTurn(T) { let r = null; HE.ops.forEach(o => { if (o.k === 'turn' && o.t <= T && (!r || o.t > r.t || (o.t === r.t && o.id > r.id))) r = o; }); return r; }
+function heNextStep(T) {
+  const l = heLastTurn(T); if (!l || STEPS.indexOf(l.step) < 0) return { s: l ? l.s : 0, no: l ? l.no : 1, step: 'start' };
+  const i = STEPS.indexOf(l.step); if (i < STEPS.length - 1) return { s: l.s, no: l.no, step: STEPS[i + 1] };
+  return { s: 1 - l.s, no: l.no + 1, step: 'start' };
+}
+function heStepAdd(n) {
+  n = n || heNextStep(HE.t); heSnap(); HE.ops = HE.ops.filter(o => !(o.k === 'turn' && o.t === HE.t)); const g = HE.nid++; HE.ops.push({ k: 'turn', s: n.s, no: n.no, step: n.step, t: HE.t, g, id: HE.nid++ }); HE.sel = new Set([g]); heTL(); heSync();
+}
+function heStLab() { const b = $('heStNm'); if (!b) return; const n = heNextStep(HE.t); b.textContent = '→ ' + (n.step === 'start' ? n.no + 'ターン(' + (n.s ? 'B' : 'A') + ')の' : '') + STEP_JP[n.step]; }
 const heNm = id => { const c = cardById(id); return c ? c.def.name : String(id); };
 const heDef = id => { const c = cardById(id); return c ? c.def : null; };
 const heFmt = ms => { const m = Math.floor(ms / 60000), s = (ms - m * 60000) / 1000; return m + ':' + (s < 10 ? '0' : '') + s.toFixed(3); };
 const heSleep = ms => new Promise(r => setTimeout(r, ms));
 const heUid = () => 'e' + (HE.uid++);
 function heSnap() { HE.undo.push(JSON.stringify({ ops: HE.ops, nid: HE.nid, uid: HE.uid })); if (HE.undo.length > 80) HE.undo.shift(); }
-function heUndo() { const s = HE.undo.pop(); if (!s) return; const o = JSON.parse(s); HE.ops = o.ops; HE.nid = o.nid; HE.uid = o.uid; HE.sel = null; heTL(); heSync(); }
-function heGrp(list, t) { heSnap(); const g = HE.nid++; list.forEach(o => { o.t = t == null ? HE.t : t; o.g = g; o.id = HE.nid++; HE.ops.push(o); }); HE.sel = g; heTL(); heSync(); }
+function heUndo() { const s = HE.undo.pop(); if (!s) return; const o = JSON.parse(s); HE.ops = o.ops; HE.nid = o.nid; HE.uid = o.uid; HE.sel = new Set(); heTL(); heSync(); }
+function heGrp(list, t) { heSnap(); const g = HE.nid++; list.forEach(o => { o.t = t == null ? HE.t : t; o.g = g; o.id = HE.nid++; HE.ops.push(o); }); HE.sel = new Set([g]); heTL(); heSync(); }
 const heSide = (S, u) => { for (let i = 0; i < 2; i++) { const k = S[i].field.find(x => x.u === u); if (k) return { i, k }; } return null; };
-function heScene(T) {
+function heScene(T, noHl) {
   const S = [0, 1].map(() => ({ hand: [], field: [], life: 5, res: 3, ct: 0, trash: [], deck: 20 }));
-  let tu = { s: 0, no: 1, step: 'main' };
+  let tu = { s: 0, no: 1, step: 'none' };
+  const shows = [], opens = new Map();
   HE.ops.filter(o => o.t <= T).sort((a, b) => a.t - b.t || a.id - b.id).forEach(o => {
     const s = S[o.s || 0];
     switch (o.k) {
-      case 'hadd': s.hand.push({ u: o.u, c: o.c }); break;
+      case 'hadd': s.hand.push({ u: o.u, c: o.c, mo: o.mo ? 1 : 0 }); break;
       case 'hdel': { const i = s.hand.findIndex(x => x.u === o.u); if (i >= 0) s.hand.splice(i, 1); break; }
-      case 'put': { const n = o.n || 0; s.res = Math.max(0, s.res - n); s.field.push({ u: o.u, c: o.c, n, tp: 0 }); break; }
-      case 'rm': { const f = heSide(S, o.u); if (!f) break; const q = S[f.i]; q.field.splice(q.field.indexOf(f.k), 1); if (o.cr === 'ct') q.ct += f.k.n; else q.res += f.k.n; if (o.to === 'trash') q.trash.push(f.k.c); else if (o.to === 'hand') q.hand.push({ u: o.hu, c: f.k.c }); break; }
-      case 'core': { const f = heSide(S, o.u); if (!f) break; const q = S[f.i]; if (o.d > 0) { q.res = Math.max(0, q.res - o.d); f.k.n += o.d; } else { const d = Math.min(-o.d, f.k.n); f.k.n -= d; if (o.to === 'ct') q.ct += d; else q.res += d; } break; }
+      case 'cshow': { if (T < o.t + (o.dur || 2000)) shows.push({ c: o.c, s: o.s || 0 }); break; }
+      case 'put': { s.field.push({ u: o.u, c: o.c, n: o.n || 0, tp: 0, mo: 0 }); if (o.show && T < o.t + (o.dur || 2000)) shows.push({ c: o.c, s: o.s || 0 }); break; }
+      case 'rm': { const f = heSide(S, o.u); if (!f) break; const q = S[f.i]; q.field.splice(q.field.indexOf(f.k), 1); if (o.to === 'trash') q.trash.push(f.k.c); else if (o.to === 'deck') q.deck++; else if (o.to === 'hand') q.hand.push({ u: o.hu, c: f.k.c, mo: f.k.mo }); break; }
+      case 'mono': { const f = heSide(S, o.u); if (f) { f.k.mo = o.v != null ? o.v : (f.k.mo ? 0 : 1); break; } for (const q of S) { const h = q.hand.find(x => x.u === o.u); if (h) { h.mo = o.v != null ? o.v : (h.mo ? 0 : 1); break; } } break; }
+      case 'core': { const f = heSide(S, o.u); if (!f) break; const q = S[f.i]; f.k.n = Math.max(0, f.k.n + o.d); break; }
       case 'tap': { const f = heSide(S, o.u); if (f) f.k.tp = o.v != null ? o.v : (f.k.tp ? 0 : 1); break; }
-      case 'life': { if (o.d < 0) { const d = Math.min(-o.d, s.life); s.life -= d; if (o.to === 'ct') s.ct += d; else s.res += d; } else { s.life += o.d; s.res = Math.max(0, s.res - o.d); } break; }
+      case 'life': s.life = Math.max(0, s.life + o.d); break;
       case 'res': s.res = Math.max(0, s.res + o.d); break;
-      case 'ct': { const d = Math.min(o.d, s.res); s.res -= d; s.ct += d; break; }
-      case 'refresh': s.res += s.ct; s.ct = 0; break;
+      case 'ct': s.ct = Math.max(0, s.ct + o.d); break;
+      case 'ttdel': s.trash.pop(); break;
       case 'ttrash': s.trash.push(o.c); break;
+      case 'open': opens.set(o.oid, { oid: o.oid, s: o.s || 0, n: o.n, cards: o.cards.slice(), mo: (o.mo || []).slice(), t: o.t, end: o.end, acts: {} }); break;
+      case 'oact': { const q = opens.get(o.og); if (!q || q.acts[o.i]) break; q.acts[o.i] = { to: o.to, t: o.t }; const c = q.cards[o.i], pu = 'o' + o.og + '_' + o.i, mo = q.mo[o.i] ? 1 : 0; if (o.to === 'deck') s.deck++; else if (c && o.to === 'hand') s.hand.push({ u: pu, c, mo }); else if (c && o.to === 'trash') s.trash.push(c); else if (c && o.to === 'field') s.field.push({ u: pu, c, n: 0, tp: 0, mo }); break; }
       case 'turn': tu = { s: o.s, no: o.no, step: o.step }; break;
     }
   });
-  return { S, tu, names: HE.names };
+  const hl = []; if (!noHl) HE.ops.forEach(o => { if (HE.sel.has(o.g) && o.u) hl.push(o.u); });
+  const ov = { opens: [], fly: [] };
+  opens.forEach(q => {
+    if (T >= q.end) return; const gone = []; let left = 0;
+    for (let i = 0; i < q.n; i++) { const a = q.acts[i]; if (a && T >= a.t) { gone.push(i); if (T - a.t < 450 && q.cards[i]) ov.fly.push({ oid: q.oid, s: q.s, i, c: q.cards[i], mo: q.mo[i] ? 1 : 0, to: a.to, p: (T - a.t) / 450 }); else if (T - a.t < 450 || !q.cards[i]) { } } else left++; }
+    if (left || ov.fly.some(f => f.oid === q.oid)) ov.opens.push({ oid: q.oid, s: q.s, n: q.n, cards: q.cards, mo: q.mo, gone });
+  });
+  return { S, tu, names: HE.names, shows, hl, ov, hs: HE.hs };
 }
 function heSrcLoad() {
   return new Promise(async res => {
     if (HE.ready) { res(); return; }
     let src = ''; try { const r = await fetch(location.href); if (r.ok) src = await r.text(); } catch (e) { }
     if (!src || src.indexOf('id="hedit"') < 0) src = '<!doctype html>' + document.documentElement.outerHTML;
-    src = src.replace(/<head[^>]*>/i, m => m + '<script>window.__HEF=1<\/script><style>#bcbar,#hedit,#connbar,#toast{display:none!important}</style>');
+    src = src.replace(/<head[^>]*>/i, m => m + '<script>window.__HEF=1<\/script><style>#bcbar,#hedit,#connbar,#toast,#side,.specbadge,#bctop .n s{display:none!important}body.henost #bctop .stp{visibility:hidden}html.heonly,html.heonly body{background:transparent!important}html.heonly body>*:not(.heshow):not(.heopen):not(.heopf){visibility:hidden!important}.hehl{outline:6px solid #ffe36e!important;outline-offset:3px;box-shadow:0 0 40px 12px #ffe36e!important;border-radius:8px}</style>');
     const fr = $('heFr'); fr.onload = async () => { for (let n = 0; n < 200 && !(fr.contentWindow && fr.contentWindow.heDraw); n++) await heSleep(50); HE.ready = !!(fr.contentWindow && fr.contentWindow.heDraw); res(); };
     fr.srcdoc = src;
   });
 }
 if (window.__HEF) {
+  const heOvRects = (r, ov) => ov.opens.map((o, k) => {
+    const n = ov.opens.length, h = r.height / n, top = r.top + k * h, ch = Math.min(h * 0.8, (r.width * 0.94 / o.n) / 0.714), cw = ch * 0.714, gap = Math.min(18, cw * 0.08), tw = o.n * cw + (o.n - 1) * gap, x0 = r.left + (r.width - tw) / 2, y0 = top + (h - ch) / 2;
+    return { x0, y0, cw, ch, gap, top, h };
+  });
+  window.heOnly = on => document.documentElement.classList.toggle('heonly', !!on);
+  window.heOv = ov => {
+    document.querySelectorAll('.heopen,.heopf').forEach(e => e.remove());
+    if (!ov || !ov.opens.length) return;
+    const mat = document.getElementById('mat'); if (!mat) return; const r = mat.getBoundingClientRect(), rc = heOvRects(r, ov);
+    ov.opens.forEach((o, k) => {
+      const q = rc[k], d = document.createElement('div'); d.className = 'heopen'; d.dataset.oid = o.oid;
+      d.style.cssText = 'position:fixed;z-index:70;left:' + r.left + 'px;top:' + q.top + 'px;width:' + r.width + 'px;height:' + q.h + 'px;background:rgba(6,12,34,.9);border:3px solid #7aa8ff;border-radius:14px;box-sizing:border-box';
+      for (let i = 0; i < o.n; i++) {
+        if (o.gone.includes(i)) continue;
+        const c = document.createElement('div'); c.className = 'heopc'; c.dataset.i = i; c.dataset.oid = o.oid;
+        c.style.cssText = 'position:absolute;box-sizing:border-box;border-radius:10px;overflow:hidden;left:' + (q.x0 + i * (q.cw + q.gap) - r.left) + 'px;top:' + (q.y0 - q.top) + 'px;width:' + q.cw + 'px;height:' + q.ch + 'px;' + (o.cards[i] ? 'box-shadow:0 6px 24px #000c;background:#111' : 'border:4px dashed #9fc0ff;background:#2a3a6a;color:#cfe0ff;display:flex;align-items:center;justify-content:center;font:900 ' + (q.cw * 0.4) + 'px sans-serif');
+        if (o.cards[i]) { const im = document.createElement('img'); im.src = artOf(o.cards[i]); im.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;' + (o.mo[i] ? 'filter:grayscale(1)' : ''); c.appendChild(im); } else c.textContent = '?';
+        d.appendChild(c);
+      }
+      document.body.appendChild(d);
+    });
+    ov.fly.forEach(f => {
+      const k = ov.opens.findIndex(o => o.oid === f.oid); if (k < 0) return; const q = rc[k], x = q.x0 + f.i * (q.cw + q.gap), y = q.y0;
+      const half = document.querySelector(f.s ? '.half.opp' : '.half.me'), hb = document.getElementById(f.s ? 'oppHand' : 'hand');
+      let tg = null; if (f.to === 'hand' && hb) tg = hb.getBoundingClientRect(); else if (f.to === 'deck' && half && half.querySelector('.deck')) tg = half.querySelector('.deck').getBoundingClientRect(); else if (f.to === 'trash' && half && half.querySelector('.zone.trash')) tg = half.querySelector('.zone.trash').getBoundingClientRect(); else if (half) tg = half.getBoundingClientRect();
+      if (!tg) return; const e = f.p < 0.5 ? 2 * f.p * f.p : 1 - Math.pow(-2 * f.p + 2, 2) / 2, tx = tg.left + tg.width / 2, ty = tg.top + tg.height / 2, w = q.cw + (60 - q.cw) * e, hh = q.ch + (84 - q.ch) * e, cx = x + q.cw / 2 + (tx - x - q.cw / 2) * e, cy = y + q.ch / 2 + (ty - y - q.ch / 2) * e;
+      const d = document.createElement('div'); d.className = 'heopf'; d.style.cssText = 'position:fixed;z-index:80;pointer-events:none;left:' + (cx - w / 2) + 'px;top:' + (cy - hh / 2) + 'px;width:' + w + 'px;height:' + hh + 'px;border-radius:8px;overflow:hidden;box-shadow:0 6px 24px #000c;opacity:' + (1 - 0.5 * e);
+      d.innerHTML = '<img src="' + artOf(f.c) + '" style="width:100%;height:100%;object-fit:cover;' + (f.mo ? 'filter:grayscale(1)' : '') + '">'; document.body.appendChild(d);
+    });
+  };
   window.heDraw = async sc => {
     const dm = defById(), L = CARD_LIST.filter(c => c.def.type === 'spirit').slice(0, 40).map(c => c.def);
     const g = newGame(L.slice(), L.slice(), { first: 'host', mulligan: false, norec: true });
-    g.names = [sc.names[0], sc.names[1]]; g.turn = sc.tu.s; g.turnNo = sc.tu.no; g.step = sc.tu.step; g.noAttack = false; g.log = []; g.evs = []; g.battle = null; g.queue = []; g.pending = null; g.winner = null; g.pick = null; g.mull = null;
+    g.names = [sc.names[0], sc.names[1]]; g.turn = sc.tu.s; g.turnNo = sc.tu.no; g.step = STEPS.includes(sc.tu.step) ? sc.tu.step : 'main'; document.body.classList.toggle('henost', !STEPS.includes(sc.tu.step)); g.noAttack = false; g.log = []; g.evs = []; g.battle = null; g.queue = []; g.pending = null; g.winner = null; g.pick = null; g.mull = null; g.trace = []; g.fx = [];
     sc.S.forEach((q, i) => {
       const P = g.p[i];
       P.deck = Array.from({ length: q.deck }, () => mkInst(L[0]));
@@ -6668,18 +6900,22 @@ if (window.__HEF) {
       P.coreTrash = Array.from({ length: q.ct }, () => mkCore(false));
       P.trash = q.trash.map(c => mkInst(dm.get(c))); P.removed = []; P.void = [];
     });
-    specReset(); BC.autoDone = true; document.body.classList.add('adm'); SPEC = true; showGame(); setSpecV(viewSpec(g)); bcOn();
+    document.querySelectorAll('.heshow').forEach(e => e.remove()); clearTimeout(animTimer); window.__HESHOW = sc.hs || 0.57; specReset(); BC.autoDone = true; document.body.classList.add('adm'); SPEC = true; showGame(); setSpecV(viewSpec(g)); bcOn();
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     await heSleep(260);
+    sc.shows.forEach(x => { const hf = document.querySelector(x.s ? '.half.me' : '.half.opp'); if (!hf) return; const r = hf.getBoundingClientRect(), d = document.createElement('div'); d.className = 'heshow'; d.style.cssText = 'position:fixed;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px'; d.innerHTML = '<img src="' + artOf(x.c) + '" style="height:78%;max-width:90%;object-fit:contain;border-radius:10px;box-shadow:0 8px 40px #000c">'; document.body.appendChild(d); });
+    sc.S.forEach((q, i) => { q.field.forEach(f => { if (!f.mo) return; const e = document.querySelector('.slot[data-slot="' + f.u + '"]'); if (e) { const c = e.querySelector('.card') || e; c.style.filter = 'grayscale(1)'; } }); q.hand.forEach(h => { if (!h.mo) return; const e = document.querySelector('.card[data-card="' + h.u + '"]'); if (e) e.style.filter = 'grayscale(1)'; }); });
+    (sc.hl || []).forEach(u => { const e = document.querySelector('.slot[data-slot="' + u + '"]') || document.querySelector('.card[data-card="' + u + '"]'); if (e) e.classList.add('hehl'); });
+    window.heOv(sc.ov);
     for (let n = 0; n < 60 && ![...document.images].every(i => i.complete); n++) await heSleep(50);
     await heSleep(60);
   };
 }
 function heSync(force) {
   if (!HE.ready) return;
-  const sc = heScene(HE.t), key = JSON.stringify(sc);
-  if (!force && key === HE.key) return;
-  HE.key = key; HE.want = sc; if (!HE.busy) heFlush();
+  const sc = heScene(HE.t), ov = sc.ov; sc.ov = null; const key = JSON.stringify(sc), ok = JSON.stringify(ov);
+  if (!force && key === HE.key) { if (ok !== HE.ovKey && !HE.busy) { HE.ovKey = ok; try { $('heFr').contentWindow.heOv(ov); } catch (e) { } } return; }
+  HE.key = key; HE.ovKey = ok; sc.ov = ov; HE.want = sc; if (!HE.busy) heFlush();
 }
 async function heFlush() {
   HE.busy = true;
@@ -6707,6 +6943,7 @@ function heStageXY(ev) { const r = $('heStage').getBoundingClientRect(); return 
 function heWhat(ev) {
   const p = heStageXY(ev); if (!p.in || !HE.ready) return null;
   const d = $('heFr').contentDocument, el = d.elementFromPoint(p.x, p.y); if (!el) return { p };
+  const op = el.closest('.heopen'); if (op) { const oc = el.closest('.heopc'); return { p, z: 'open', oid: op.dataset.oid, oc: oc ? +oc.dataset.i : null, s: null }; }
   const hb = el.closest('#hand,#oppHand'), half = el.closest('.half'), sl = el.closest('.slot[data-slot]'), hc = el.closest('.card[data-card]');
   const s = hb ? (hb.id === 'hand' ? 0 : 1) : half ? (half.classList.contains('me') ? 0 : 1) : null;
   let z = null;
@@ -6718,68 +6955,74 @@ function hePopOpen(x, y, items) {
   pop.innerHTML = HE.menu.map((it, i) => it.t ? '<div class="hpt">' + esc(it.t) + '</div>' : '<button data-mi="' + i + '">' + esc(it.l) + '</button>').join('');
   pop.hidden = false; pop.style.left = Math.min(x, innerWidth - 260) + 'px'; pop.style.top = Math.max(4, Math.min(y, innerHeight - pop.offsetHeight - 6)) + 'px';
 }
-function heLvOf(def, n) { let lv = 1; (def.levels || []).forEach(l => { if (n >= l.core) lv = l.lv; }); return lv; }
-function heFxItems(sc, sd) {
-  const out = [], me = sc.S[sd], op = sc.S[1 - sd], seen = new Set();
-  me.field.forEach(k => {
-    const def = heDef(k.c); if (!def) return; const lv = heLvOf(def, k.n);
-    (def.effects || []).forEach(e => {
-      if (e.levels && e.levels.length && !e.levels.includes(lv)) return;
-      (e.ops || []).forEach(o => {
-        const tag = def.name + ': ';
-        const cand = (tg, side) => { const S = sc.S[side]; return S.field.filter(x => { const d = heDef(x.c); if (!d) return false; if (tg.type && d.type !== tg.type) return false; if (tg.family && !(d.family || []).includes(tg.family)) return false; if (tg.excludeSelf && x.u === k.u) return false; return true; }).map(x => ({ x, side })); };
-        if (o.op === 'draw') { const key = def.name + 'draw' + o.n; if (!seen.has(key)) { seen.add(key); out.push({ l: tag + 'カードを' + o.n + '枚引く(一覧で選んだカード)', fn: () => { if (!HE.pk) { toast('左の一覧でカードをクリックして選んでから、もう一度選んでください'); return; } heGrp(Array.from({ length: o.n }, () => ({ k: 'hadd', s: sd, c: HE.pk, u: heUid() }))); } }); } }
-        else if (o.op === 'voidCore') out.push({ l: tag + 'コア' + o.n + '個をコアトラッシュへ', fn: () => heGrp([{ k: 'core', s: sd, u: k.u, d: -o.n, to: 'ct' }]) });
-        else if (o.op === 'selfAct' && (o.verb === 'untap' || o.verb === 'tap')) out.push({ l: tag + (o.verb === 'untap' ? '回復する' : '疲労する'), fn: () => heGrp([{ k: 'tap', s: sd, u: k.u, v: o.verb === 'untap' ? 0 : 1 }]) });
-        else if (o.op === 'act' && o.target && (o.acts || []).some(a => a.verb === 'addCore')) {
-          const n = o.acts.find(a => a.verb === 'addCore').n || 1; cand(o.target, o.target.who === 'opp' ? 1 - sd : sd).forEach(c => out.push({ l: tag + 'コア+' + n + ' → ' + heNm(c.x.c), fn: () => heGrp([{ k: 'core', s: c.side, u: c.x.u, d: n }]) }));
-        }
-        else if (o.op === 'moveCores' && o.to) {
-          cand(o.to, o.to.who === 'opp' ? 1 - sd : sd).forEach(c => out.push({ l: tag + 'コア' + (o.max || 1) + '個まで → ' + heNm(c.x.c), fn: () => heGrp([{ k: 'core', s: sd, u: k.u, d: -(o.max || 1), to: 'res' }, { k: 'core', s: c.side, u: c.x.u, d: (o.max || 1) }]) }));
-        }
-        else if (o.op === 'destroy' && o.target) cand(o.target, o.target.who === 'opp' ? 1 - sd : sd).forEach(c => out.push({ l: tag + '破壊 → ' + heNm(c.x.c), fn: () => heGrp([{ k: 'rm', s: c.side, u: c.x.u, to: 'trash', cr: 'ct' }]) }));
-      });
-    });
-  });
-  return out.slice(0, 40);
+function heNs(l, fn) { return [1, 2, 3].map(n => ({ l: l + n, fn: () => fn(n) })); }
+function heZoneItems(s, z, sc) {
+  const it = [], nm = s ? 'B' : 'A', ad = (k, d, extra) => heGrp([Object.assign({ k, s, d }, extra || {})]);
+  const nn = (t, k, sg, extra) => { it.push({ t }); [1, 2, 3].forEach(n => it.push({ l: t.replace(/ .*/, '') + (sg > 0 ? '+' : '-') + n, fn: () => ad(k, sg * n, extra) })); };
+  if (!z || z === 'life' || z === 'field') { nn(nm + 'のライフ 増', 'life', 1); nn(nm + 'のライフ 減', 'life', -1); it.push({ l: 'ライフ-1 と リザーブ+1 を同時に', fn: () => heGrp([{ k: 'life', s, d: -1 }, { k: 'res', s, d: 1 }]) }); }
+  if (!z || z === 'res' || z === 'field') { nn(nm + 'のリザーブ 増', 'res', 1); nn(nm + 'のリザーブ 減', 'res', -1); }
+  if (!z || z === 'ct' || z === 'field') { nn(nm + 'のコアトラッシュ 増', 'ct', 1); nn(nm + 'のコアトラッシュ 減', 'ct', -1); }
+  if (!z || z === 'trash' || z === 'field') { it.push({ t: nm + 'のトラッシュ' }, { l: 'カード+1(一覧で選んだカード)', fn: () => { if (!HE.pk) { toast('左の一覧でカードをクリックして選んでください'); return; } heGrp([{ k: 'ttrash', s, c: HE.pk }]); } }, { l: 'カード-1(最後の1枚)', fn: () => heGrp([{ k: 'ttdel', s }]) }); }
+  it.push({ t: nm + 'のデッキをオープン' }, ...[1, 2, 3, 4, 5, 6, 7].map(n => ({ l: n + '枚オープン', fn: () => heOpenMake(s, n) })), { l: '枚数を入力…', fn: () => { const v = parseInt(prompt('オープンする枚数', '3'), 10); if (v > 0 && v <= 12) heOpenMake(s, v); } });
+  it.push({ t: nm + 'の手札' }, { l: '手札増加(一覧で選んだカード)', fn: () => { if (!HE.pk) { toast('左の一覧でカードをクリックして選んでください'); return; } heGrp([{ k: 'hadd', s, c: HE.pk, u: heUid() }]); } });
+  return it;
+}
+function heOpenMake(s, n) { heGrp([{ k: 'open', s, n, cards: Array(n).fill(null), mo: Array(n).fill(0), end: HE.t + 8000, oid: heUid() }]); }
+const heOpOf = oid => HE.ops.find(o => o.k === 'open' && o.oid === oid);
+function heOpAct(op, i, to) {
+  if (!op) return; if (!op.cards[i] && (to === 'hand' || to === 'trash' || to === 'field')) { toast('先にカードを入れてください(一覧で選んで「カードを入れる」)'); return; }
+  heSnap(); HE.ops = HE.ops.filter(o => !(o.k === 'oact' && o.og === op.oid && o.i === i)); const g = HE.nid++; HE.ops.push({ k: 'oact', s: op.s, og: op.oid, i, to, t: HE.t, g, id: HE.nid++ }); if (HE.t + 800 > op.end) op.end = HE.t + 800; HE.sel = new Set([g]); heTL(); heSync(true);
 }
 function heCtx(ev) {
   const w = heWhat(ev); if (!w || !w.p) return; ev.preventDefault();
-  const sc = heScene(HE.t), it = [], T = HE.t;
-  if (w.top) { it.push({ t: 'ターン' }); [0, 1].forEach(s => it.push({ l: (s ? 'B' : 'A') + 'の番にする', fn: () => heGrp([{ k: 'turn', s, no: sc.tu.no + (s !== sc.tu.s ? 1 : 0), step: 'main' }]) })); heMenuShow(ev, it); return; }
+  const sc = heScene(HE.t), it = [];
+  if (w.z === 'open') {
+    const op = heOpOf(w.oid), i = w.oc;
+    if (i != null && op) {
+      it.push({ t: 'オープンしたカード' }, { l: 'カードを入れる(一覧で選んだカード)', fn: () => { if (!HE.pk) { toast('左の一覧でカードをクリックして選んでください'); return; } heMod(op, x => { x.cards[i] = HE.pk; }); } }, { l: 'カードを空白に戻す', fn: () => heMod(op, x => { x.cards[i] = null; }) }, { l: 'モノクロ ON/OFF', fn: () => heMod(op, x => { x.mo[i] = x.mo[i] ? 0 : 1; }) });
+      it.push({ t: '処理(いまの時刻で確定)' }, { l: '手札に加える', fn: () => heOpAct(op, i, 'hand') }, { l: 'デッキの下に戻す', fn: () => heOpAct(op, i, 'deck') }, { l: 'トラッシュする', fn: () => heOpAct(op, i, 'trash') }, { l: '盤面に出す', fn: () => heOpAct(op, i, 'field') }, { l: 'そのまま消す(何も加えない)', fn: () => heOpAct(op, i, 'none') });
+    }
+    if (op) it.push({ t: 'このオープン' }, { l: '終了時刻をいまにする', fn: () => heMod(op, x => { x.end = Math.max(x.t + 100, HE.t); }) }, { l: 'このオープンを消す', fn: () => { heSnap(); HE.ops = HE.ops.filter(o => !(o.g === op.g || (o.k === 'oact' && o.og === op.oid))); HE.sel = new Set(); heTL(); heSync(true); } });
+    heMenuShow(ev, it); return;
+  }
+  if (w.top) {
+    const lt = heLastTurn(HE.t) || { s: 0, no: 1 };
+    it.push({ t: 'ステップ(いまの時刻に入れる)' });
+    STEPS.forEach(st => it.push({ l: STEP_JP[st], fn: () => heStepAdd({ s: lt.s, no: lt.no, step: st }) }));
+    it.push({ t: 'ターンを変えて入れる' });
+    [0, 1].forEach(s => it.push({ l: (s ? 'B' : 'A') + 'の番のスタート(次のターン数)', fn: () => heStepAdd({ s, no: lt.no + (s !== lt.s ? 1 : 0), step: 'start' }) }));
+    heMenuShow(ev, it); return;
+  }
   if (w.u) {
-    const f = heSide(sc.S, w.u), side = f ? f.i : 0, c = f ? f.k.c : null;
+    const f = heSide(sc.S, w.u), side = f ? f.i : 0, c = f ? f.k.c : null, po = HE.ops.find(o => o.k === 'put' && o.u === w.u), pt = po ? po.t : HE.t;
     it.push({ t: c ? heNm(c) : 'カード' });
-    it.push({ l: 'コア+1(リザーブから)', fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: 1 }]) }, { l: 'コア+2(リザーブから)', fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: 2 }]) }, { l: 'コア-1(リザーブへ)', fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: -1, to: 'res' }]) }, { l: 'コア-1(コアトラッシュへ)', fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: -1, to: 'ct' }]) },
-      { l: '疲労 / 回復', fn: () => heGrp([{ k: 'tap', s: side, u: w.u }]) },
-      { l: '破壊(トラッシュへ・コアはコアトラッシュへ)', fn: () => heGrp([{ k: 'rm', s: side, u: w.u, to: 'trash', cr: 'ct' }]) },
-      { l: '手札に戻す', fn: () => heGrp([{ k: 'rm', s: side, u: w.u, to: 'hand', hu: heUid() }]) },
-      { l: '盤面から消す', fn: () => heGrp([{ k: 'rm', s: side, u: w.u }]) });
-    const fx = heFxItems(sc, side); if (fx.length) { it.push({ t: '盤面のカードの効果(Lvに合うもの)' }); fx.forEach(x => it.push(x)); }
+    it.push({ l: '疲労 / 回復', fn: () => heGrp([{ k: 'tap', s: side, u: w.u }]) }, { l: 'モノクロ ON/OFF', fn: () => heGrp([{ k: 'mono', s: side, u: w.u }]) }, { l: '破壊(トラッシュへ)', fn: () => heGrp([{ k: 'rm', s: side, u: w.u, to: 'trash' }]) }, { l: '消滅(盤面から消す)', fn: () => heGrp([{ k: 'rm', s: side, u: w.u }]) }, { l: '手札に戻す', fn: () => heGrp([{ k: 'rm', s: side, u: w.u, to: 'hand', hu: heUid() }]) }, { l: 'デッキの下に戻す', fn: () => heGrp([{ k: 'rm', s: side, u: w.u, to: 'deck' }]) });
+    it.push({ t: 'カードのコア(いまの時刻)' });
+    [1, 2, 3].forEach(n => it.push({ l: 'コア+' + n, fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: n }]) }));
+    [1, 2, 3].forEach(n => it.push({ l: 'コア-' + n, fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: -n }]) }));
+    if (po) {
+      it.push({ t: '召喚と同時に払う(出した時刻 ' + heFmt(pt) + ')' });
+      [1, 2, 3, 4, 5].forEach(n => it.push({ l: 'コア' + n + '個を置き、リザーブ-' + n, fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: n }, { k: 'res', s: side, d: -n }], pt) }));
+      [1, 2, 3, 4, 5].forEach(n => it.push({ l: 'コア' + n + '個を置くだけ', fn: () => heGrp([{ k: 'core', s: side, u: w.u, d: n }], pt) }));
+      [1, 2, 3].forEach(n => it.push({ l: 'リザーブ-' + n + ' かつ コアトラッシュ+' + n, fn: () => heGrp([{ k: 'res', s: side, d: -n }, { k: 'ct', s: side, d: n }], pt) }));
+    }
     heMenuShow(ev, it); return;
   }
   if (w.z === 'hand' && w.hu) {
     const side = w.s, c = (sc.S[side].hand.find(h => h.u === w.hu) || {}).c;
-    it.push({ t: c ? heNm(c) : '手札' }, { l: '手札減少(このカード)', fn: () => heGrp([{ k: 'hdel', s: side, u: w.hu }]) }, { l: '盤面に出す', fn: () => hePutFrom(side, c, w.hu) }, { l: 'トラッシュへ', fn: () => heGrp([{ k: 'hdel', s: side, u: w.hu }, { k: 'ttrash', s: side, c }]) });
+    it.push({ t: c ? heNm(c) : '手札' }, { l: '手札減少(このカード)', fn: () => heGrp([{ k: 'hdel', s: side, u: w.hu }]) }, { l: 'モノクロ ON/OFF', fn: () => heGrp([{ k: 'mono', s: side, u: w.hu, h: 1 }]) }, { l: '盤面に出す', fn: () => hePutFrom(side, c, w.hu) }, { l: 'トラッシュへ', fn: () => heGrp([{ k: 'hdel', s: side, u: w.hu }, { k: 'ttrash', s: side, c }]) });
     heMenuShow(ev, it); return;
   }
-  if (w.s != null) {
-    const s = w.s, nm = s ? 'B' : 'A';
-    it.push({ t: nm + 'のゾーン' });
-    if (w.z === 'life' || w.z === 'field' || w.z === 'hand') it.push({ l: 'ライフ減少 → リザーブ増加', fn: () => heGrp([{ k: 'life', s, d: -1, to: 'res' }]) }, { l: 'ライフ減少 → コアトラッシュ', fn: () => heGrp([{ k: 'life', s, d: -1, to: 'ct' }]) }, { l: 'ライフ増加(リザーブから)', fn: () => heGrp([{ k: 'life', s, d: 1 }]) });
-    it.push({ l: 'リザーブ+1', fn: () => heGrp([{ k: 'res', s, d: 1 }]) }, { l: 'リザーブ-1', fn: () => heGrp([{ k: 'res', s, d: -1 }]) }, { l: 'リザーブのコア1個 → コアトラッシュ', fn: () => heGrp([{ k: 'ct', s, d: 1 }]) }, { l: 'コアトラッシュを全部リザーブへ(リフレッシュ)', fn: () => heGrp([{ k: 'refresh', s }]) });
-    it.push({ l: '手札増加(一覧で選んだカード)', fn: () => { if (!HE.pk) { toast('左の一覧でカードをクリックして選んでください'); return; } heGrp([{ k: 'hadd', s, c: HE.pk, u: heUid() }]); } }, { l: 'トラッシュ+1(一覧で選んだカード)', fn: () => { if (!HE.pk) { toast('左の一覧でカードをクリックして選んでください'); return; } heGrp([{ k: 'ttrash', s, c: HE.pk }]); } });
-    const fx = heFxItems(sc, s); if (fx.length) { it.push({ t: '盤面のカードの効果' }); fx.forEach(x => it.push(x)); }
-    heMenuShow(ev, it);
-  }
+  if (w.s != null) { heZoneItems(w.s, w.z === 'hand' ? 'hand' : w.z, sc).forEach(x => it.push(x)); heMenuShow(ev, it); }
 }
 function heMenuShow(ev, it) { hePopOpen(ev.clientX, ev.clientY, it); }
 function hePutFrom(side, c, hu) {
   const d = heDef(c), ops = []; if (hu) ops.push({ k: 'hdel', s: side, u: hu });
-  if (d && d.type === 'magic') ops.push({ k: 'ttrash', s: side, c }); else ops.push({ k: 'put', s: side, c, u: heUid(), n: d && d.type === 'spirit' ? 1 : 0 });
+  if (d && d.type === 'magic') ops.push({ k: 'ttrash', s: side, c }); else ops.push({ k: 'put', s: side, c, u: heUid(), n: 0, show: HE.showNew ? 1 : 0, dur: HE.showDur });
   heGrp(ops);
 }
 function heDropDo(src, w) {
+  if (w && w.z === 'open' && w.oc != null && src.type === 'pool') { const op = heOpOf(w.oid); if (op) heMod(op, x => { x.cards[w.oc] = src.c; }); return; }
   if (!w || w.s == null) return;
   const s = w.s, z = w.z;
   if (src.type === 'pool') {
@@ -6789,11 +7032,11 @@ function heDropDo(src, w) {
   } else if (src.type === 'hand') {
     if (z === 'hand') { if (s === src.s) return; heGrp([{ k: 'hdel', s: src.s, u: src.u }, { k: 'hadd', s, c: src.c, u: heUid() }]); }
     else if (z === 'trash') heGrp([{ k: 'hdel', s: src.s, u: src.u }, { k: 'ttrash', s, c: src.c }]);
-    else { const d = heDef(src.c), ops = [{ k: 'hdel', s: src.s, u: src.u }]; if (d && d.type === 'magic') ops.push({ k: 'ttrash', s, c: src.c }); else ops.push({ k: 'put', s, c: src.c, u: heUid(), n: d && d.type === 'spirit' ? 1 : 0 }); heGrp(ops); }
+    else { const d = heDef(src.c), ops = [{ k: 'hdel', s: src.s, u: src.u }]; if (d && d.type === 'magic') ops.push({ k: 'ttrash', s, c: src.c }); else ops.push({ k: 'put', s, c: src.c, u: heUid(), n: 0, show: HE.showNew ? 1 : 0, dur: HE.showDur }); heGrp(ops); }
   } else if (src.type === 'field') {
     if (z === 'hand') heGrp([{ k: 'rm', s: src.s, u: src.u, to: 'hand', hu: heUid() }]);
     else if (z === 'trash') heGrp([{ k: 'rm', s: src.s, u: src.u, to: 'trash', cr: 'ct' }]);
-    else if (s !== src.s) { const d = heDef(src.c); heGrp([{ k: 'rm', s: src.s, u: src.u }, { k: 'put', s, c: src.c, u: heUid(), n: d && d.type === 'spirit' ? 1 : 0 }]); }
+    else if (s !== src.s) { const d = heDef(src.c); heGrp([{ k: 'rm', s: src.s, u: src.u }, { k: 'put', s, c: src.c, u: heUid(), n: 0, show: HE.showNew ? 1 : 0, dur: HE.showDur }]); }
   }
 }
 function heGhost(on, x, y, url) {
@@ -6827,14 +7070,16 @@ $('heOv').addEventListener('pointerdown', e => {
 $('heOv').addEventListener('contextmenu', heCtx);
 $('hePop').addEventListener('click', e => { const b = e.target.closest('button[data-mi]'); if (!b) return; const it = HE.menu[+b.dataset.mi]; $('hePop').hidden = true; if (it && it.fn) it.fn(); });
 document.addEventListener('pointerdown', e => { if (!$('hePop').hidden && !e.target.closest('#hePop') && !e.target.closest('#heOv')) $('hePop').hidden = true; });
-const heRow = o => ({ hadd: 0, hdel: 0, put: 2, rm: 2, core: 2, tap: 2, life: 4, res: 4, ct: 4, refresh: 4, ttrash: 4, turn: 6 }[o.k]) + (o.k === 'turn' ? 0 : (o.s || 0));
+const heRow = o => ({ cshow: 2, hadd: 0, hdel: 0, put: 2, rm: 2, core: 2, tap: 2, mono: 2, open: 4, oact: 4, life: 4, res: 4, ct: 4, ttdel: 4, ttrash: 4, turn: 6 }[o.k]) + (o.k === 'turn' ? 0 : (o.s || 0)) + (o.k === 'mono' && o.h ? -2 : 0);
 function heLab(o) {
-  const n = id => heNm(id).slice(0, 9), sg = d => (d > 0 ? '+' : '') + d;
+  const sg = d => (d > 0 ? '+' : '') + d;
   switch (o.k) {
-    case 'hadd': return '手札増加 ' + n(o.c); case 'hdel': return '手札減少'; case 'put': return '出す ' + n(o.c); case 'rm': return o.to === 'trash' ? '破壊' : o.to === 'hand' ? '手札へ' : '消す';
-    case 'core': return 'コア' + sg(o.d); case 'tap': return o.v === 0 ? '回復' : o.v === 1 ? '疲労' : '疲労/回復'; case 'life': return 'ライフ' + sg(o.d) + (o.d < 0 ? (o.to === 'ct' ? '→コアT' : '→リザーブ') : '');
-    case 'res': return 'リザーブ' + sg(o.d); case 'ct': return 'コアトラッシュ+' + o.d; case 'refresh': return 'リフレッシュ'; case 'ttrash': return 'トラッシュ+' + n(o.c);
-    case 'turn': return o.no + 'ターン ' + (o.s ? 'B' : 'A') + ' ' + (STEP_JP[o.step] || o.step);
+    case 'cshow': return '画像表示 ' + ((o.dur || 2000) / 1000) + 's'; case 'hadd': return '手札+'; case 'hdel': return '手札-'; case 'put': return '召喚' + (o.show ? ' 👁' + ((o.dur || 2000) / 1000) + 's' : '');
+    case 'rm': return o.to === 'trash' ? '破壊' : o.to === 'hand' ? '手札へ' : o.to === 'deck' ? 'デッキ下' : '消滅';
+    case 'core': return 'コア' + sg(o.d); case 'tap': return o.v === 0 ? '回復' : o.v === 1 ? '疲労' : '疲労/回復'; case 'mono': return 'モノクロ'; case 'life': return 'ライフ' + sg(o.d);
+    case 'res': return 'リザーブ' + sg(o.d); case 'ct': return 'コアトラッシュ' + sg(o.d); case 'ttdel': return 'トラッシュ-'; case 'ttrash': return 'トラッシュ+';
+    case 'open': return 'オープン' + o.n + '枚'; case 'oact': return { hand: '手札へ', deck: 'デッキ下', trash: 'トラッシュ', field: '盤面へ', none: 'そのまま' }[o.to] || o.to;
+    case 'turn': return (o.step === 'start' ? o.no + 'T ' + (o.s ? 'B' : 'A') + ' ' : '') + (STEP_JP[o.step] || '表示なし');
   }
   return o.k;
 }
@@ -6842,27 +7087,73 @@ function heTL() {
   const tin = $('heTin'), z = HE.zoom / 1000, last = HE.ops.reduce((m, o) => Math.max(m, o.t), 0), dur = Math.max(HE.dur, last + 4000);
   $('heDur').value = Math.round(dur / 1000); tin.style.width = (dur * z + 120) + 'px';
   let h = '<div class="herul" id="heRul">';
-  const stp = HE.zoom >= 300 ? 100 : HE.zoom >= 120 ? 250 : 1000, fine = HE.zoom >= 300 ? 100 : 0;
+  const stp = HE.zoom >= 300 ? 100 : HE.zoom >= 120 ? 250 : HE.zoom >= 40 ? 1000 : 5000;
   for (let t = 0; t <= dur; t += stp) h += '<div class="hetick' + (t % 1000 ? ' f' : '') + '" style="left:' + t * z + 'px">' + (t % 1000 === 0 ? (t / 1000) + 's' : '') + '</div>';
+  if (HE.inT != null || HE.outT != null) { const a = HE.inT != null ? HE.inT : 0, b = HE.outT != null ? HE.outT : dur; h += '<div class="heio" style="left:' + a * z + 'px;width:' + Math.max(2, (b - a) * z) + 'px"></div>'; }
   h += '</div>';
   for (let r = 0; r < 7; r++) h += '<div class="herow" style="top:' + (22 + r * 24) + 'px"></div>';
-  HE.ops.forEach(o => { h += '<div class="hemk k-' + o.k + (HE.sel === o.g ? ' sel' : '') + '" data-id="' + o.id + '" style="left:' + o.t * z + 'px;top:' + (22 + heRow(o) * 24 + 2) + 'px" title="' + esc(heLab(o) + ' @' + heFmt(o.t)) + '">' + esc(heLab(o)) + '</div>'; });
+  h += '<div class="herow" style="top:190px;height:40px"></div><canvas id="heWav" style="position:absolute;left:0;top:190px;height:40px;pointer-events:none"></canvas>';
+  const tops = HE.ops.filter(o => o.k === 'turn').sort((a, b) => a.t - b.t || a.id - b.id);
+  HE.ops.forEach(o => { const bw = o.k === 'turn' ? Math.max(24, ((tops[tops.indexOf(o) + 1] || { t: dur }).t - o.t) * z - 2) : o.k === 'open' ? Math.max(40, (o.end - o.t) * z) : 0; h += '<div class="hemk k-' + o.k + (o.k === 'turn' ? ' st-' + o.step : '') + (HE.sel.has(o.g) ? ' sel' : '') + '" data-id="' + o.id + '" style="left:' + o.t * z + 'px;' + (bw ? 'width:' + bw + 'px;' : '') + 'top:' + (22 + heRow(o) * 24 + 2) + 'px" title="' + esc(heLab(o) + ' @' + heFmt(o.t)) + '">' + (heMkCard(o) && artSm(heMkCard(o)) ? '<img class="mkt" draggable="false" src="' + esc(artSm(heMkCard(o))) + '">' : '') + esc(heLab(o)) + (o.k === 'open' ? '<i class="herz"></i>' : '') + '</div>'; });
   h += '<div class="heph" id="hePh" style="left:' + HE.t * z + 'px"></div>';
-  tin.innerHTML = h;
+  tin.innerHTML = h; heWaveDraw(); heAuto(); heSync();
 }
-function heSeek(ms, keepScroll) {
-  HE.t = Math.max(0, Math.round(ms)); $('heTin2').value = (HE.t / 1000).toFixed(3); $('heTime').textContent = heFmt(HE.t);
-  const ph = $('hePh'); if (ph) ph.style.left = HE.t * HE.zoom / 1000 + 'px';
+function heMkCard(o) {
+  if (o.c) return o.c; if (o.u) { const q = HE.ops.find(x => x.u === o.u && x.c); if (q) return q.c; }
+  if (o.k === 'oact') { const op = HE.ops.find(x => x.k === 'open' && x.oid === o.og); if (op && op.cards && op.cards[o.i]) return op.cards[o.i]; } return null;
+}
+(function () {
+  let hv = null;
+  const hide = () => { if (hv) hv.style.display = 'none'; };
+  document.addEventListener('mouseover', e => {
+    const m = e.target.closest && e.target.closest('#heTin .hemk'); if (!m) { hide(); return; }
+    const o = HE.ops.find(x => x.id === +m.dataset.id); const c = o && heMkCard(o); const u = c ? (artSm(c) || artOf(c)) : null; if (!u) { hide(); return; }
+    if (!hv) { hv = document.createElement('div'); hv.style.cssText = 'position:fixed;z-index:2000;pointer-events:none;border:2px solid #ffe36e;border-radius:6px;background:#000;box-shadow:0 4px 18px #000a'; hv.innerHTML = '<img style="display:block;width:150px;border-radius:4px">'; document.body.appendChild(hv); }
+    hv.firstChild.src = u; hv.style.display = 'block';
+    const r = m.getBoundingClientRect(); hv.style.left = Math.max(4, Math.min(innerWidth - 120, r.left)) + 'px'; hv.style.top = Math.max(4, r.top - 215) + 'px';
+  });
+  document.addEventListener('mouseleave', hide, true); document.addEventListener('scroll', hide, true);
+})();
+function heWaveDraw() {
+  const cv = $('heWav'); if (!cv) return; const id = heAudId(), v = HE.vids.find(x => x.id === id);
+  const z = HE.zoom / 1000, W = Math.min(16000, Math.round($('heTin').clientWidth)); cv.width = W; cv.style.width = W + 'px'; cv.height = 40;
+  if (!v || !v.wave) return; const c = cv.getContext('2d'); c.fillStyle = '#5fe3a1'; const pk = v.wave.pk;
+  for (let x = 0; x < W; x++) { const t0 = x / z / 1000 + v.off, t1 = (x + 1) / z / 1000 + v.off; if (t1 < 0) continue; let m = 0; for (let i = Math.max(0, Math.floor(t0 * 100)); i <= Math.floor(t1 * 100) && i < pk.length; i++) if (pk[i] > m) m = pk[i]; const hh = Math.min(20, m * 20); if (hh > 0.3) c.fillRect(x, 20 - hh, 1, hh * 2); }
+}
+async function heWaveMake(v) {
+  if (v.file.size > 400 * 1048576) { toast('動画が大きすぎて波形は作れません(400MBまで)'); return; }
+  try {
+    toast('波形を作っています…'); const ac = new (window.AudioContext || window.webkitAudioContext)(), buf = await ac.decodeAudioData(await v.file.arrayBuffer()), ch = buf.getChannelData(0), n = Math.ceil(buf.duration * 100), pk = new Float32Array(n), sp = Math.max(1, Math.floor(buf.sampleRate / 100));
+    for (let i = 0; i < n; i++) { let m = 0; const e = Math.min(ch.length, (i + 1) * sp); for (let j = i * sp; j < e; j += 4) { const a = Math.abs(ch[j]); if (a > m) m = a; } pk[i] = m; }
+    ac.close(); v.wave = { pk }; heWaveDraw(); toast('波形を表示しました');
+  } catch (e) { toast('この動画の音声から波形を作れませんでした'); }
+}
+let heAutoT = 0;
+function heAuto() { clearTimeout(heAutoT); heAutoT = setTimeout(() => { try { localStorage.setItem('bs-he-auto', JSON.stringify({ ops: HE.ops, nid: HE.nid, uid: HE.uid, dur: HE.dur, names: HE.names })); } catch (e) { } }, 600); }
+function heSeek(ms) {
+  HE.t = Math.max(0, Math.round(ms)); $('heTin2').value = (HE.t / 1000).toFixed(3); $('heTime').textContent = heFmt(HE.t) + '  F' + Math.round(HE.t * 30 / 1000);
+  const ph = $('hePh'); if (ph) ph.style.left = HE.t * HE.zoom / 1000 + 'px'; heStLab();
   heSync(); heVsync(true);
 }
 function hePlay(on) {
   if (on === HE.playing) return; HE.playing = on; $('hePlay').textContent = on ? '⏸ 停止' : '▶ 再生'; $('hePlay').classList.toggle('on', on);
-  if (on) { HE.t0 = performance.now(); HE.tb = HE.t; heVsync(true); const loop = () => { if (!HE.playing) return; heSeek(HE.tb + performance.now() - HE.t0); const sc = $('heTs'), x = HE.t * HE.zoom / 1000; if (x > sc.scrollLeft + sc.clientWidth - 40) sc.scrollLeft = x - 60; HE.raf = requestAnimationFrame(loop); }; HE.raf = requestAnimationFrame(loop); }
-  else { cancelAnimationFrame(HE.raf); heVsync(true); }
+  if (on) {
+    HE.t0 = performance.now(); HE.tb = HE.t; heVsync(true);
+    const loop = () => {
+      if (!HE.playing) return;
+      let t = HE.tb + (performance.now() - HE.t0) * HE.rate;
+      const lo = HE.inT != null ? HE.inT : 0, hi = HE.outT != null ? HE.outT : HE.ops.reduce((m, o) => Math.max(m, o.t), 0) + 1000;
+      if (HE.loop && t >= hi) { HE.tb = lo; HE.t0 = performance.now(); t = lo; heSeek(t); heVsync(true); }
+      else heSeek(t);
+      const sc = $('heTs'), x = HE.t * HE.zoom / 1000; if (x > sc.scrollLeft + sc.clientWidth - 40) sc.scrollLeft = x - 60;
+      HE.raf = requestAnimationFrame(loop);
+    };
+    HE.raf = requestAnimationFrame(loop);
+  } else { cancelAnimationFrame(HE.raf); heVsync(true); }
 }
 function heVsync(force) {
   HE.vids.forEach(v => {
-    const tg = HE.t / 1000 + v.off, el = v.el; el.muted = !(heAudId() === v.id) || !HE.playing;
+    const tg = HE.t / 1000 + v.off, el = v.el; el.muted = !(heAudId() === v.id) || !HE.playing; el.playbackRate = HE.rate;
     if (tg < 0) { if (!el.paused) el.pause(); if (force && Math.abs(el.currentTime) > 0.03) el.currentTime = 0; return; }
     if (HE.playing) { if (el.paused) { el.currentTime = tg; el.play().catch(() => { }); } else if (Math.abs(el.currentTime - tg) > 0.3) el.currentTime = tg; }
     else { if (!el.paused) el.pause(); if (force && Math.abs(el.currentTime - tg) > 0.02) el.currentTime = tg; }
@@ -6876,11 +7167,11 @@ function heAudFill() {
 function heVidAdd(f) {
   const id = HE.vids.length ? HE.vids[HE.vids.length - 1].id + 1 : 1, n = HE.vids.length;
   const win = document.createElement('div'); win.className = 'hewin'; win.style.left = (240 + n * 28) + 'px'; win.style.top = (110 + n * 28) + 'px'; win.style.width = '400px'; win.style.height = '270px';
-  win.innerHTML = '<div class="wh"><span>' + esc(f.name) + '</span><label title="動画の時刻 = 編集の時刻 + この値">ずれ(秒)<input type="number" step="0.001" value="0"></label><button data-a="sync" title="この動画をいまの位置で止めてから押すと、編集の現在時刻にここを合わせます">いまに合わせる</button><button data-a="hide">×</button></div><video controls playsinline preload="auto"></video>';
+  win.innerHTML = '<div class="wh"><span>' + esc(f.name) + '</span><label title="動画の時刻 = 編集の時刻 + この値">ずれ(秒)<input type="number" step="0.001" value="0"></label><button data-a="wave" title="音声の波形をタイムラインに出します(動画は400MBまで)">波形</button><button data-a="sync" title="この動画をいまの位置で止めてから押すと、編集の現在時刻にここを合わせます">いまに合わせる</button><button data-a="hide">×</button></div><video controls playsinline preload="auto"></video>';
   const el = win.querySelector('video'); el.src = URL.createObjectURL(f); el.muted = true;
-  const v = { id, name: f.name, el, win, off: 0 }; HE.vids.push(v); $('heWins').appendChild(win);
-  const inp = win.querySelector('input'); inp.onchange = () => { v.off = parseFloat(inp.value) || 0; heVsync(true); };
-  win.addEventListener('click', e => { const b = e.target.closest('button[data-a]'); if (!b) return; if (b.dataset.a === 'hide') { win.hidden = true; heAudFill(); } else { v.off = el.currentTime - HE.t / 1000; inp.value = v.off.toFixed(3); } });
+  const v = { id, name: f.name, el, win, off: 0, file: f, wave: null }; HE.vids.push(v); $('heWins').appendChild(win);
+  const inp = win.querySelector('input'); inp.onchange = () => { v.off = parseFloat(inp.value) || 0; heVsync(true); heWaveDraw(); };
+  win.addEventListener('click', e => { const b = e.target.closest('button[data-a]'); if (!b) return; if (b.dataset.a === 'hide') { win.hidden = true; heAudFill(); } else if (b.dataset.a === 'wave') { heWaveMake(v); } else { v.off = el.currentTime - HE.t / 1000; inp.value = v.off.toFixed(3); heWaveDraw(); } });
   const hd = win.querySelector('.wh');
   hd.addEventListener('pointerdown', e => { if (e.target.closest('input,button,label')) return; const r = win.getBoundingClientRect(), dx = e.clientX - r.left, dy = e.clientY - r.top; const mv = q => { win.style.left = Math.max(0, q.clientX - dx) + 'px'; win.style.top = Math.max(0, q.clientY - dy) + 'px'; }; const up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); }; document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up); });
   heAudFill(); $('heAud').value = 'last'; $('heAud2').value = 'last';
@@ -6889,7 +7180,7 @@ $('heTile').onclick = () => { const ws = HE.vids.filter(v => !v.win.hidden); if 
 $('heVidIn').onchange = e => { [...e.target.files].forEach(heVidAdd); e.target.value = ''; };
 $('heVidBar').onclick = e => { const b = e.target.closest('button[data-vid]'); if (!b) return; const v = HE.vids.find(x => x.id === +b.dataset.vid); if (!v) return; v.win.hidden = !v.win.hidden; heAudFill(); };
 function heOpen() {
-  if (!admPC()) return; $('hedit').hidden = false; hePdFill(); hePool(); heTL(); $('heTst').innerHTML = STEPS.map(s => '<option value="' + s + '">' + STEP_JP[s] + '</option>').join(''); $('heTst').value = 'main'; heAudFill();
+  if (!admPC()) return; $('hedit').hidden = false; hePdFill(); hePool(); if (!HE.ops.length) { try { const a = JSON.parse(localStorage.getItem('bs-he-auto') || 'null'); if (a && a.ops && a.ops.length) { HE.ops = a.ops; HE.nid = a.nid || 1; HE.uid = a.uid || 1; HE.dur = a.dur || 20000; HE.names = a.names || ['A', 'B']; toast('前回の編集を復元しました'); } } catch (e) { } } heTL(); $('heStS').innerHTML = STEPS.map(s => '<option value="' + s + '">' + STEP_JP[s] + '</option>').join(''); $('heStS').value = 'main'; heStLab(); heAudFill();
   requestAnimationFrame(async () => { heFit(); await heSrcLoad(); heFit(); heSync(true); heSeek(HE.t); });
 }
 function heClose() { hePlay(false); $('hedit').hidden = true; $('hePop').hidden = true; HE.vids.forEach(v => { v.el.pause(); v.win.hidden = true; }); heAudFill(); }
@@ -6907,31 +7198,138 @@ $('heTin2').onchange = () => { hePlay(false); heSeek((parseFloat($('heTin2').val
 $('heDur').onchange = () => { HE.dur = Math.max(1000, (parseFloat($('heDur').value) || 20) * 1000); heTL(); };
 $('heZoom').oninput = () => { HE.zoom = +$('heZoom').value; heTL(); };
 $('heUndo').onclick = heUndo;
-$('heTadd').onclick = () => heGrp([{ k: 'turn', s: +$('heTs0').value, no: Math.max(1, +$('heTn').value || 1), step: $('heTst').value }]);
+$('hePv').onclick = () => heJump(-1); $('heNx').onclick = () => heJump(1);
+$('heIn').onclick = () => { HE.inT = HE.t; heTL(); }; $('heOut2').onclick = () => { HE.outT = HE.t; heTL(); }; $('heRc').onclick = () => { HE.inT = HE.outT = null; heTL(); };
+$('heLoop').onchange = () => { HE.loop = $('heLoop').checked; }; $('heSnapC').onchange = () => { HE.snap = $('heSnapC').checked; };
+$('heSpd').onchange = () => { HE.rate = +$('heSpd').value; if (HE.playing) { HE.tb = HE.t; HE.t0 = performance.now(); } heVsync(true); };
+$('heCp').onclick = heCopy; $('hePs').onclick = hePaste; $('heDl2').onclick = heDelSel;
+$('heHelpB').onclick = e => heHelp(e.clientX, e.clientY - 260);
+$('heFit2').onclick = () => { const dur = Math.max(HE.dur, HE.ops.reduce((m, o) => Math.max(m, o.t), 0) + 4000); HE.zoom = Math.max(20, Math.min(600, ($('heTs').clientWidth - 140) / dur * 1000)); $('heZoom').value = HE.zoom; heTL(); };
+{ let nt = 0; $('heNew').onclick = () => { if (!nt) { $('heNew').textContent = '本当に消す?'; nt = setTimeout(() => { nt = 0; $('heNew').textContent = '新規'; }, 3000); return; } clearTimeout(nt); nt = 0; $('heNew').textContent = '新規'; heSnap(); HE.ops = []; HE.sel = new Set(); HE.inT = HE.outT = null; heTL(); heSync(true); }; }
+$('heStN').onclick = () => heStepAdd(); $('heStA').onclick = () => { const l = heLastTurn(HE.t) || { s: 0, no: 1 }; heStepAdd({ s: l.s, no: l.no, step: $('heStS').value }); };
+$('heShowNew').onchange = () => { HE.showNew = $('heShowNew').checked; };
+$('heShowDur').onchange = () => { HE.showDur = Math.max(100, Math.round((parseFloat($('heShowDur').value) || 2) * 1000)); };
+function heSnapT(t, skip) {
+  if (!HE.snap) return t;
+  const th = 8 / HE.zoom * 1000; let best = t, bd = th;
+  const c = [0, HE.t]; if (HE.inT != null) c.push(HE.inT); if (HE.outT != null) c.push(HE.outT);
+  HE.ops.forEach(o => { if (!skip.has(o.g)) c.push(o.t); });
+  c.forEach(x => { const d = Math.abs(x - t); if (d < bd) { bd = d; best = x; } });
+  return best;
+}
 $('heTs').addEventListener('pointerdown', e => {
   const m = e.target.closest('.hemk');
+  if (m && e.target.closest('.herz')) {
+    e.preventDefault(); const o = HE.ops.find(x => x.id === +m.dataset.id); if (!o) return; heSnap(); const r = $('heTin').getBoundingClientRect();
+    const mv = q => { o.end = Math.max(o.t + 100, Math.round(heSnapT((q.clientX - r.left) / HE.zoom * 1000, new Set([o.g])))); heTL(); }, up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); heSync(true); };
+    document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up); return;
+  }
   if (m) {
-    e.preventDefault(); const o = HE.ops.find(x => x.id === +m.dataset.id); if (!o) return; HE.sel = o.g; heTL();
-    const grp = HE.ops.filter(x => x.g === o.g), orig = grp.map(x => x.t), x0 = e.clientX; let moved = false;
-    const mv = q => { const dt = Math.round((q.clientX - x0) / HE.zoom * 1000); if (!moved && Math.abs(q.clientX - x0) < 3) return; if (!moved) { heSnap(); moved = true; } grp.forEach((x, i) => { x.t = Math.max(0, orig[i] + dt); }); heTL(); };
+    e.preventDefault(); const o = HE.ops.find(x => x.id === +m.dataset.id); if (!o) return;
+    if (e.shiftKey || e.ctrlKey || e.metaKey) { if (HE.sel.has(o.g)) HE.sel.delete(o.g); else HE.sel.add(o.g); heTL(); return; }
+    if (!HE.sel.has(o.g)) HE.sel = new Set([o.g]); heTL();
+    const sel = HE.sel, grp = HE.ops.filter(x => sel.has(x.g)), orig = grp.map(x => x.t), x0 = e.clientX; let moved = false;
+    const mv = q => {
+      if (!moved && Math.abs(q.clientX - x0) < 3) return; if (!moved) { heSnap(); moved = true; }
+      let dt = Math.round((q.clientX - x0) / HE.zoom * 1000); const st = heSnapT(orig[grp.indexOf(o)] + dt, sel); dt = st - orig[grp.indexOf(o)];
+      const mn = Math.min(...orig); if (mn + dt < 0) dt = -mn; grp.forEach((x, i) => { x.t = orig[i] + dt; }); heTL();
+    };
     const up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); if (moved) heSync(); else heSeek(o.t); };
     document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up); return;
   }
   const rul = e.target.closest('#heRul'); if (rul) {
-    hePlay(false); const r = $('heTin').getBoundingClientRect(); heSeek((e.clientX - r.left) / HE.zoom * 1000);
-    const mv = q => heSeek((q.clientX - r.left) / HE.zoom * 1000), up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); };
-    document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up);
+    hePlay(false); const r = $('heTin').getBoundingClientRect(); const at = q => heSeek(heSnapT((q.clientX - r.left) / HE.zoom * 1000, new Set()));
+    at(e);
+    const mv = q => at(q), up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); };
+    document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up); return;
   }
+  if (!e.shiftKey && !e.ctrlKey) { HE.sel = new Set(); heTL(); }
 });
-$('heTs').addEventListener('contextmenu', e => { const m = e.target.closest('.hemk'); if (!m) return; e.preventDefault(); const o = HE.ops.find(x => x.id === +m.dataset.id); if (!o) return; HE.sel = o.g; heTL(); hePopOpen(e.clientX, e.clientY, [{ t: heLab(o) + ' ' + heFmt(o.t) }, { l: 'この操作を削除', fn: () => heDelSel() }, { l: 'ここに再生位置を合わせる', fn: () => heSeek(o.t) }]); });
-function heDelSel() { if (HE.sel == null) return; heSnap(); HE.ops = HE.ops.filter(o => o.g !== HE.sel); HE.sel = null; heTL(); heSync(); }
+$('heTs').addEventListener('wheel', e => {
+  if (!e.ctrlKey && !e.metaKey) return; e.preventDefault();
+  const sc = $('heTs'), r = sc.getBoundingClientRect(), tAt = (sc.scrollLeft + e.clientX - r.left) / HE.zoom * 1000;
+  HE.zoom = Math.max(20, Math.min(600, HE.zoom * (e.deltaY < 0 ? 1.2 : 1 / 1.2))); $('heZoom').value = HE.zoom; heTL(); sc.scrollLeft = tAt * HE.zoom / 1000 - (e.clientX - r.left);
+}, { passive: false });
+function heMod(o, fn) { heSnap(); fn(o); heTL(); heSync(true); }
+function heSelOps() { return HE.ops.filter(o => HE.sel.has(o.g)); }
+function heDelSel() { if (!HE.sel.size) return; heSnap(); HE.ops = HE.ops.filter(o => !HE.sel.has(o.g)); HE.sel = new Set(); heTL(); heSync(); }
+function heCopy() { const l = heSelOps(); if (!l.length) return; const t0 = Math.min(...l.map(o => o.t)); HE.clip = l.map(o => Object.assign({}, o, { t: o.t - t0 })); toast(new Set(l.map(o => o.g)).size + '個をコピーしました'); }
+function hePaste() {
+  if (!HE.clip || !HE.clip.length) return; heSnap(); const gm = new Map(), um = new Map(), ns = new Set();
+  HE.clip.forEach(o => { if ((o.k === 'put' || o.k === 'hadd') && !um.has(o.u)) um.set(o.u, heUid()); if (o.k === 'open' && !um.has(o.oid)) um.set(o.oid, heUid()); });
+  HE.clip.forEach(o => { if (!gm.has(o.g)) { gm.set(o.g, HE.nid++); ns.add(gm.get(o.g)); } const n = Object.assign({}, o, { t: HE.t + o.t, g: gm.get(o.g), id: HE.nid++ }); if (n.u && um.has(n.u)) n.u = um.get(n.u); if (n.hu && um.has(n.hu)) n.hu = um.get(n.hu); if (n.oid && um.has(n.oid)) n.oid = um.get(n.oid); if (n.og && um.has(n.og)) n.og = um.get(n.og); if (n.k === 'open') { n.end = n.end - o.t + n.t; n.cards = n.cards.slice(); n.mo = n.mo.slice(); } HE.ops.push(n); });
+  HE.sel = ns; heTL(); heSync();
+}
+function heJump(dir) {
+  const ts = [...new Set(HE.ops.map(o => o.t))].sort((a, b) => a - b), t = HE.t;
+  const n = dir > 0 ? ts.find(x => x > t) : [...ts].reverse().find(x => x < t); if (n != null) { hePlay(false); heSeek(n); const sc = $('heTs'), x = n * HE.zoom / 1000; if (x < sc.scrollLeft || x > sc.scrollLeft + sc.clientWidth - 40) sc.scrollLeft = Math.max(0, x - 80); }
+}
+function heShift(from, d) { heSnap(); HE.ops.forEach(o => { if (o.t >= from) o.t = Math.max(0, o.t + d); }); heTL(); heSync(); }
+function heHelp(x, y) {
+  hePopOpen(x, y, [{ t: '操作一覧' }, { t: 'Space 再生/停止 ・ ←→ コマ送り(Shiftで1秒)' }, { t: '↑↓ 前/次の印へ ・ J 1秒戻る ・ K 停止 ・ L 再生' }, { t: 'I / O 範囲の開始/終了(書き出し・ループ)' }, { t: 'Ctrl+C/V 印のコピー/貼り付け(再生位置へ)' }, { t: 'Shift/Ctrl+クリック 複数選択 ・ Ctrl+A 全選択' }, { t: 'Delete 削除 ・ Ctrl+Z 元に戻す' }, { t: 'Ctrl+ホイール 拡大縮小 ・ 目盛りを右クリックで「以降をずらす」' }, { t: '右クリック: 盤面・手札・ゾーン・タイムラインの印' }]);
+}
+$('heTs').addEventListener('contextmenu', e => {
+  const m = e.target.closest('.hemk'), rul = e.target.closest('#heRul');
+  if (rul) {
+    e.preventDefault(); const r = $('heTin').getBoundingClientRect(), T = Math.max(0, Math.round((e.clientX - r.left) / HE.zoom * 1000));
+    hePopOpen(e.clientX, e.clientY, [{ t: heFmt(T) + ' の位置' }, { l: 'ここを範囲の開始(I)にする', fn: () => { HE.inT = T; heTL(); } }, { l: 'ここを範囲の終了(O)にする', fn: () => { HE.outT = T; heTL(); } }, { l: '範囲をクリア', fn: () => { HE.inT = HE.outT = null; heTL(); } }, { t: 'ここ以降の印をずらす' }, ...[[100, '+0.1秒'], [500, '+0.5秒'], [1000, '+1秒'], [-100, '-0.1秒'], [-500, '-0.5秒'], [-1000, '-1秒']].map(a => ({ l: a[1], fn: () => heShift(T, a[0]) }))]);
+    return;
+  }
+  if (!m) {
+    if (!e.target.closest('#heTin')) return; e.preventDefault(); const r = $('heTin').getBoundingClientRect(), T = Math.max(0, Math.round((e.clientX - r.left) / HE.zoom * 1000));
+    hePopOpen(e.clientX, e.clientY, [{ t: heFmt(T) + ' の位置' }, { l: 'カード画像を表示(配信モードのように相手盤面へ)…', fn: () => heCardPick(T) }]); return;
+  }
+  const o = HE.ops.find(x => x.id === +m.dataset.id); if (!o) return;
+  if (!HE.sel.has(o.g)) { HE.sel = new Set([o.g]); heTL(); }
+  const it = [{ t: heLab(o) + ' ' + heFmt(o.t) }, { l: '削除', fn: () => heDelSel() }, { l: 'コピー', fn: heCopy }, { l: 'ここに再生位置を合わせる', fn: () => heSeek(o.t) }, { l: '時刻を数字で入力…', fn: () => { const v = prompt('時刻(秒)', (o.t / 1000).toFixed(3)); if (v == null) return; const n = Math.round(parseFloat(v) * 1000); if (isNaN(n) || n < 0) return; heSnap(); const d = n - o.t; heSelOps().forEach(x => { x.t = Math.max(0, x.t + d); }); heTL(); heSync(); } }];
+  if (o.k === 'put') it.push({ t: '相手側へのカード画像' }, { l: o.show ? '表示しない' : '表示する', fn: () => heMod(o, x => { x.show = x.show ? 0 : 1; }) }, ...[0.5, 1, 2, 3, 5].map(n => ({ l: '表示時間 ' + n + '秒', fn: () => heMod(o, x => { x.show = 1; x.dur = n * 1000; }) })), { l: '表示時間 +0.5秒', fn: () => heMod(o, x => { x.show = 1; x.dur = (x.dur || 2000) + 500; }) }, { l: '表示時間 -0.5秒', fn: () => heMod(o, x => { x.show = 1; x.dur = Math.max(100, (x.dur || 2000) - 500); }) });
+  { const mc = o.k !== 'cshow' ? heMkCard(o) : null; if (mc) { let sd = o.s; if (sd == null) { const f = o.u ? heSide(heScene(o.t, true).S, o.u) : null; sd = f ? f.i : 0; } const mk = t => heGrp([{ k: 'cshow', s: sd, c: mc, dur: HE.showDur || 2000 }], t);
+    it.push({ t: 'このカードの画像を表示(情報を引き継ぐ)' }, { l: 'この時刻に表示', fn: () => mk(o.t) }, { l: '再生位置に表示', fn: () => mk(HE.t) }); } }
+  if (o.k === 'cshow') it.push({ t: 'カード画像の表示時間' }, ...[0.5, 1, 2, 3, 5, 8].map(n => ({ l: n + '秒' + ((o.dur || 2000) === n * 1000 ? ' ✓' : ''), fn: () => heMod(o, x => { x.dur = n * 1000; }) })), { l: '+0.5秒', fn: () => heMod(o, x => { x.dur = (x.dur || 2000) + 500; }) }, { l: '-0.5秒', fn: () => heMod(o, x => { x.dur = Math.max(300, (x.dur || 2000) - 500); }) }, { l: o.s ? '出す側をAにする' : '出す側をBにする', fn: () => heMod(o, x => { x.s = x.s ? 0 : 1; }) }, { l: 'カードを変える…', fn: () => heCardPick(o.t, o) });
+  hePopOpen(e.clientX, e.clientY, it);
+});
+function heCardPick(T, edit) {
+  let box = $('heCS'); if (box) box.remove();
+  box = document.createElement('div'); box.id = 'heCS'; box.style.cssText = 'position:fixed;inset:0;z-index:3000;background:#000a;display:flex;align-items:center;justify-content:center';
+  const sc = heScene(T, true), seen = new Set(), ids = [];
+  const add = c => { if (c && !seen.has(c)) { seen.add(c); ids.push(c); } };
+  sc.S.forEach(q => { q.field.forEach(f => add(f.c)); q.hand.forEach(h => add(h.c)); q.trash.forEach(c => add(c)); });
+  const all = loadDecks(); ['A', 'B'].forEach(x => { const d = all[$('hePd' + x).value]; if (d) (d.cards || []).forEach(([id]) => add(id)); });
+  let side = edit ? (edit.s || 0) : 0, dur = edit ? (edit.dur || 2000) : (HE.showDur || 2000);
+  box.innerHTML = '<div style="background:#141c3c;border:1px solid #5a7ad8;border-radius:10px;padding:12px;width:min(760px,94vw);max-height:86vh;display:flex;flex-direction:column;gap:8px;color:#dfe8ff"><b>' + heFmt(T) + ' にカード画像を表示</b><div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><label>出す側 <select id="heCSs"><option value="0">A側のカード(Bの盤面に表示)</option><option value="1">B側のカード(Aの盤面に表示)</option></select></label><label>表示秒 <input id="heCSd" type="number" step="0.5" min="0.3" value="' + dur / 1000 + '" style="width:70px"></label><input id="heCSq" placeholder="カード名で検索" style="flex:1;min-width:140px"><button id="heCSx">閉じる</button></div><div id="heCSg" style="overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px"></div></div>';
+  document.body.appendChild(box); $('heCSs').value = side;
+  const draw = () => {
+    const q = $('heCSq').value.trim(), list = q ? CARD_LIST.filter(c => c.def.name.includes(q)).slice(0, 60).map(c => c.raw.id) : ids;
+    $('heCSg').innerHTML = list.map(id => '<div data-c="' + esc(id) + '" style="cursor:pointer;font-size:10px;text-align:center"><img draggable="false" src="' + esc(artSm(id) || artOf(id) || '') + '" style="width:100%;border-radius:4px;display:block">' + esc(heNm(id).slice(0, 10)) + '</div>').join('') || '<div>見つかりません</div>';
+  };
+  draw(); $('heCSq').oninput = draw; $('heCSx').onclick = () => box.remove();
+  box.onclick = e => { if (e.target === box) box.remove(); };
+  $('heCSg').onclick = e => {
+    const t = e.target.closest('[data-c]'); if (!t) return; const c = t.dataset.c, sd = +$('heCSs').value, du = Math.max(300, Math.round((parseFloat($('heCSd').value) || 2) * 1000));
+    box.remove(); if (edit) heMod(edit, x => { x.c = c; x.s = sd; x.dur = du; }); else heGrp([{ k: 'cshow', s: sd, c, dur: du }], T);
+  };
+}
 document.addEventListener('keydown', e => {
   if ($('hedit').hidden || e.target.closest('input,select,textarea')) return;
-  if (e.key === ' ') { e.preventDefault(); hePlay(!HE.playing); }
-  else if (e.key === 'ArrowLeft') { e.preventDefault(); hePlay(false); heSeek(HE.t - (e.shiftKey ? 1000 : 33)); }
-  else if (e.key === 'ArrowRight') { e.preventDefault(); hePlay(false); heSeek(HE.t + (e.shiftKey ? 1000 : 33)); }
-  else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); heDelSel(); }
-  else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); heUndo(); }
+  const k = e.key, c = e.ctrlKey || e.metaKey;
+  if (k === ' ') { e.preventDefault(); hePlay(!HE.playing); }
+  else if (k === 'ArrowLeft') { e.preventDefault(); hePlay(false); heSeek(HE.t - (e.shiftKey ? 1000 : 33)); }
+  else if (k === 'ArrowRight') { e.preventDefault(); hePlay(false); heSeek(HE.t + (e.shiftKey ? 1000 : 33)); }
+  else if (k === 'ArrowUp') { e.preventDefault(); heJump(-1); }
+  else if (k === 'ArrowDown') { e.preventDefault(); heJump(1); }
+  else if (k === 'Home') { e.preventDefault(); hePlay(false); heSeek(0); }
+  else if (k === 'Delete' || k === 'Backspace') { e.preventDefault(); heDelSel(); }
+  else if (c && k.toLowerCase() === 'z') { e.preventDefault(); heUndo(); }
+  else if (c && k.toLowerCase() === 'c') { e.preventDefault(); heCopy(); }
+  else if (c && k.toLowerCase() === 'v') { e.preventDefault(); hePaste(); }
+  else if (c && k.toLowerCase() === 'a') { e.preventDefault(); HE.sel = new Set(HE.ops.map(o => o.g)); heTL(); }
+  else if (!c && k.toLowerCase() === 'j') { hePlay(false); heSeek(HE.t - 1000); }
+  else if (!c && k.toLowerCase() === 'k') hePlay(false);
+  else if (!c && k.toLowerCase() === 'l') hePlay(true);
+  else if (!c && k.toLowerCase() === 'i') { HE.inT = HE.t; heTL(); }
+  else if (!c && k.toLowerCase() === 'o') { HE.outT = HE.t; heTL(); }
+  else if (k === 'n' || k === 'N' || k === 'Enter') { e.preventDefault(); heStepAdd(); }
+  else if (k === '?') heHelp(innerWidth / 2 - 150, 120);
 });
 $('heSave').onclick = () => {
   const o = { format: 'bsp-edit2', ops: HE.ops, nid: HE.nid, uid: HE.uid, dur: HE.dur, names: HE.names, off: HE.vids.map(v => [v.name, v.off]) };
@@ -6939,7 +7337,7 @@ $('heSave').onclick = () => {
 };
 $('heLoad').onchange = e => {
   const f = e.target.files[0]; if (!f) return; const r = new FileReader();
-  r.onload = () => { try { const o = JSON.parse(r.result); if (o.format !== 'bsp-edit2') throw 0; heSnap(); HE.ops = o.ops || []; HE.nid = o.nid || 1; HE.uid = o.uid || 1; HE.dur = o.dur || 20000; HE.names = o.names || ['A', 'B']; HE.sel = null; heTL(); heSync(true); toast('プロジェクトを開きました'); } catch (er) { toast('このファイルは開けませんでした'); } };
+  r.onload = () => { try { const o = JSON.parse(r.result); if (o.format !== 'bsp-edit2') throw 0; heSnap(); HE.ops = o.ops || []; HE.nid = o.nid || 1; HE.uid = o.uid || 1; HE.dur = o.dur || 20000; HE.names = o.names || ['A', 'B']; HE.sel = new Set(); heTL(); heSync(true); toast('プロジェクトを開きました'); } catch (er) { toast('このファイルは開けませんでした'); } };
   r.readAsText(f); e.target.value = '';
 };
 function heDl(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); }
@@ -6951,7 +7349,7 @@ async function heData(u) {
 }
 async function heRaster(scale) {
   const d = $('heFr').contentDocument, cl = d.documentElement.cloneNode(true);
-  cl.querySelectorAll('script,iframe,video,audio,link,#hedit,#bcbar,#connbar,#side').forEach(n => n.remove());
+  cl.querySelectorAll('script,iframe,video,audio,link,#hedit,#bcbar,#connbar,#side').forEach(n => n.remove()); cl.querySelectorAll('.hehl').forEach(n => n.classList.remove('hehl'));
   const all = [...cl.querySelectorAll('*')];
   for (const el of all) {
     const st = el.getAttribute && el.getAttribute('style');
@@ -6964,66 +7362,135 @@ async function heRaster(scale) {
   const img = new Image(); await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); });
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H; cv.getContext('2d').drawImage(img, 0, 0); return cv;
 }
+async function heRasterOv(sc, scale) {
+  if (!(sc.shows && sc.shows.length) && !(sc.ov && sc.ov.opens && sc.ov.opens.length)) return null;
+  const w = $('heFr').contentWindow; try { w.heOnly(true); return await heRaster(scale); } catch (e) { return null; } finally { try { w.heOnly(false); } catch (e) { } }
+}
 function heRects() {
   const d = $('heFr').contentDocument, g = s => { const e = d.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { x: Math.max(0, Math.round(r.left)), y: Math.max(0, Math.round(r.top)), w: Math.round(Math.min(r.width, 1920 - Math.max(0, r.left))), h: Math.round(Math.min(r.height, 1080 - Math.max(0, r.top))) }; };
   return { A: g('#hand'), B: g('#oppHand'), C: g('#mat'), all: { x: 0, y: 0, w: 1920, h: 1080 } };
 }
 async function heExport() {
   if (HE.busyExp) return; HE.busyExp = true; hePlay(false);
-  const prog = $('heProg'), fmt = $('heFmt').value, mode = $('heOut').value, sc = +$('heSc').value;
+  const prog = $('heProg'), fmt = $('heFmt').value, mode = $('heOut').value;
   const t0 = Math.round((parseFloat($('heR0').value) || 0) * 1000), t1 = Math.round((parseFloat($('heR1').value) || 0) * 1000);
   try {
     if (t1 <= t0) throw new Error('範囲が正しくありません');
-    const times = [...new Set([t0, ...HE.ops.map(o => o.t).filter(t => t > t0 && t < t1)])].sort((a, b) => a - b);
-    const outs = (mode === 'three' ? ['A', 'B', 'C'] : mode === 'all' ? ['all'] : [mode]);
-    const nm = { A: 'handA', B: 'handB', C: 'board', all: 'all' };
+    if (!HE.lay.reg) heLayDef();
+    const sc = mode === 'compose' ? (HE.lay.w >= 3840 ? 2 : 1) : +$('heSc').value;
+    const times = [...new Set([t0, ...HE.ops.flatMap(o => (o.k === 'put' && o.show) || o.k === 'cshow' ? [o.t, o.t + (o.dur || 2000)] : o.k === 'open' ? [o.t, o.end] : o.k === 'oact' ? [0, 1, 2, 3, 4, 5, 6, 7].map(i => o.t + i * 66) : [o.t]).filter(t => t > t0 && t < t1)])].sort((a, b) => a - b);
+    const outs = mode === 'three' ? ['A', 'B', 'C'] : [mode];
+    const nm = { A: 'handA', B: 'handB', C: 'board', all: 'all', compose: 'youtube' };
     const frames = []; let rects = null;
     for (let i = 0; i < times.length; i++) {
       prog.textContent = '画面を作っています ' + (i + 1) + '/' + times.length;
-      const s = heScene(times[i]); await $('heFr').contentWindow.heDraw(s);
+      const s = heScene(times[i], true); await $('heFr').contentWindow.heDraw(s);
       if (!rects) rects = heRects();
-      frames.push({ t: times[i], cv: await heRaster(sc) });
+      frames.push({ t: times[i], cv: await heRaster(sc), ov: (mode === 'compose' && HE.lay.fsrc === 'ref') ? await heRasterOv(s, sc) : null });
     }
     const end = t1, crop = (cv, k) => { const r = rects[k], c = document.createElement('canvas'); c.width = r.w * sc; c.height = r.h * sc; c.getContext('2d').drawImage(cv, r.x * sc, r.y * sc, r.w * sc, r.h * sc, 0, 0, c.width, c.height); return c; };
+    const mk = (k, f) => { if (k === 'all') return f.cv; if (k === 'compose') { const c = document.createElement('canvas'); c.width = HE.lay.w; c.height = HE.lay.h; heCompose(c.getContext('2d'), c.width, c.height, f.cv, sc, rects, null); return c; } return crop(f.cv, k); };
     if (fmt === 'zip') {
       for (const k of outs) {
         const files = [], enc = new TextEncoder(); let list = 'ffconcat version 1.0\n';
         for (let i = 0; i < frames.length; i++) {
-          const c = k === 'all' ? frames[i].cv : crop(frames[i].cv, k), blob = await new Promise(r => c.toBlob(r, 'image/png')), nmf = 'f' + String(i).padStart(4, '0') + '.png';
+          const c = mk(k, frames[i]), blob = await new Promise(r => c.toBlob(r, 'image/png')), nmf = 'f' + String(i).padStart(4, '0') + '.png';
           files.push({ name: nmf, data: new Uint8Array(await blob.arrayBuffer()) });
           const dur = ((i + 1 < frames.length ? frames[i + 1].t : end) - frames[i].t) / 1000; list += "file '" + nmf + "'\nduration " + dur.toFixed(3) + '\n';
         }
         list += "file 'f" + String(frames.length - 1).padStart(4, '0') + ".png'\n";
-        files.push({ name: 'list.txt', data: enc.encode(list) }, { name: 'README.txt', data: enc.encode('ffmpeg -f concat -safe 0 -i list.txt -vsync vfr -pix_fmt yuv420p out.mp4\n') });
+        files.push({ name: 'list.txt', data: enc.encode(list) }, { name: 'README.txt', data: enc.encode('ffmpeg -f concat -safe 0 -i list.txt -vsync vfr -pix_fmt yuv420p out.mp4\n' + (k === 'compose' && HE.lay.fsrc === 'ref' ? '参考Fの動画の部分は、PNG連番には入りません(WebM書き出しで入ります)。\n' : '')) });
         heDl(heZip(files), 'bsp-' + nm[k] + '.zip'); await heSleep(300);
       }
       prog.textContent = '書き出しました'; HE.busyExp = false; heSync(true); return;
     }
-    const rec = outs.map(k => { const cv = k === 'all' ? document.createElement('canvas') : crop(frames[0].cv, k); if (k === 'all') { cv.width = 1920 * sc; cv.height = 1080 * sc; } return { k, cv, ctx: cv.getContext('2d') }; });
+    const fvv = mode === 'compose' ? heFVid() : null;
+    const rec = outs.map(k => { const cv = k === 'all' ? document.createElement('canvas') : k === 'compose' ? document.createElement('canvas') : crop(frames[0].cv, k); if (k === 'all') { cv.width = 1920 * sc; cv.height = 1080 * sc; } if (k === 'compose') { cv.width = HE.lay.w; cv.height = HE.lay.h; } return { k, cv, ctx: cv.getContext('2d') }; });
     const aid = $('heAud2').value === 'last' ? (HE.vids.length ? HE.vids[HE.vids.length - 1].id : null) : $('heAud2').value === 'none' ? null : +$('heAud2').value, av = aid != null ? HE.vids.find(v => v.id === aid) : null;
-    let ac = null, adest = null, asrc = null;
+    let ac = null, adest = null;
     if (av) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); adest = ac.createMediaStreamDestination(); if (!av.src) av.src = ac.createMediaElementSource(av.el); av.src.connect(adest); } catch (e) { ac = null; } }
-    const draw = (r, t) => { let f = frames[0]; for (const x of frames) if (x.t <= t) f = x; const k = r.k; if (k === 'all') r.ctx.drawImage(f.cv, 0, 0); else { const q = rects[k]; r.ctx.drawImage(f.cv, q.x * sc, q.y * sc, q.w * sc, q.h * sc, 0, 0, r.cv.width, r.cv.height); } };
-    const mimes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'], mt = mimes.find(m => MediaRecorder.isTypeSupported(m)) || '';
-    rec.forEach(r => { draw(r, t0); const st = r.cv.captureStream(30); if (adest) adest.stream.getAudioTracks().forEach(tr => st.addTrack(tr)); r.mr = new MediaRecorder(st, mt ? { mimeType: mt, videoBitsPerSecond: 12000000 } : {}); r.ch = []; r.mr.ondataavailable = e => { if (e.data.size) r.ch.push(e.data); }; r.done = new Promise(res => { r.mr.onstop = res; }); });
-    if (av) { av.el.muted = false; const tg = t0 / 1000 + av.off; if (tg >= 0) { av.el.currentTime = tg; await heSleep(250); } }
-    rec.forEach(r => r.mr.start(100)); const T0 = performance.now(); let started = !av;
+    const draw = (r, t) => { let f = frames[0]; for (const x of frames) if (x.t <= t) f = x; const k = r.k; if (k === 'all') r.ctx.drawImage(f.cv, 0, 0); else if (k === 'compose') heCompose(r.ctx, r.cv.width, r.cv.height, f.cv, sc, rects, fvv && fvv.el.readyState >= 2 ? fvv.el : null, f.ov); else { const q = rects[k]; r.ctx.drawImage(f.cv, q.x * sc, q.y * sc, q.w * sc, q.h * sc, 0, 0, r.cv.width, r.cv.height); } };
+    const mimes = ['video/mp4;codecs=avc1.640033,mp4a.40.2', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'], mt = mimes.find(m => MediaRecorder.isTypeSupported(m)) || '';
+    rec.forEach(r => { draw(r, t0); const st = r.cv.captureStream(30); if (adest) adest.stream.getAudioTracks().forEach(tr => st.addTrack(tr)); r.mr = new MediaRecorder(st, mt ? { mimeType: mt, videoBitsPerSecond: Math.min(60000000, Math.round(r.cv.width * r.cv.height * 30 * 0.3)) } : {}); r.ch = []; r.mr.ondataavailable = e => { if (e.data.size) r.ch.push(e.data); }; r.done = new Promise(res => { r.mr.onstop = res; }); });
+    const vs = [av, fvv].filter((v, i, a) => v && a.indexOf(v) === i).map(v => ({ v, started: false }));
+    for (const q of vs) { q.v.el.muted = q.v !== av; const tg = t0 / 1000 + q.v.off; if (tg >= 0) q.v.el.currentTime = tg; }
+    if (vs.length) await heSleep(300);
+    rec.forEach(r => r.mr.start(100)); const T0 = performance.now();
     await new Promise(res => {
       const loop = () => {
         const t = t0 + (performance.now() - T0);
-        if (av && !started) { const tg = t / 1000 + av.off; if (tg >= 0) { started = true; if (Math.abs(av.el.currentTime - tg) > 0.05) av.el.currentTime = tg; av.el.play().catch(() => { }); } }
+        vs.forEach(q => { if (q.started) return; const tg = t / 1000 + q.v.off; if (tg >= 0) { q.started = true; if (Math.abs(q.v.el.currentTime - tg) > 0.05) q.v.el.currentTime = tg; q.v.el.play().catch(() => { }); } });
         rec.forEach(r => draw(r, Math.min(t, end))); prog.textContent = '録画中 ' + heFmt(Math.min(t, end)) + ' / ' + heFmt(end);
         if (t >= end) { res(); return; } requestAnimationFrame(loop);
       }; loop();
     });
     rec.forEach(r => r.mr.stop()); await Promise.all(rec.map(r => r.done));
-    if (av) { av.el.pause(); try { av.src.disconnect(); av.src.connect(ac.destination); } catch (e) { } }
-    for (const r of rec) { heDl(new Blob(r.ch, { type: 'video/webm' }), 'bsp-' + nm[r.k] + '.webm'); await heSleep(300); }
+    vs.forEach(q => q.v.el.pause()); if (av) { try { av.src.disconnect(); av.src.connect(ac.destination); } catch (e) { } }
+    for (const r of rec) { const mp = /mp4/.test(mt); heDl(new Blob(r.ch, { type: mp ? 'video/mp4' : 'video/webm' }), 'bsp-' + nm[r.k] + (mp ? '.mp4' : '.webm')); await heSleep(300); }
     prog.textContent = '書き出しました' + (av ? '(音声あり)' : '');
   } catch (e) { prog.textContent = '書き出しに失敗しました: ' + (e && e.message ? e.message : ''); }
   HE.busyExp = false; heSync(true);
 }
-$('heExpBtn').onclick = () => { $('heR1').value = (Math.max(HE.dur, HE.ops.reduce((m, o) => Math.max(m, o.t), 0) + 1000) / 1000).toFixed(3); $('heExp').hidden = false; };
+HE.lay = { w: 1920, h: 1080, fsrc: 'edit', fv: null, reg: null };
+function heLayDef(preset) {
+  const r = HE.rects || { A: { w: 116, h: 1030 }, B: { w: 116, h: 1030 }, C: { w: 1676, h: 1030 } }, subH = 180, H = 1080 - subH, ma = H / r.A.h, mb = H / r.B.h, wa = Math.round(r.A.w * ma * (preset === 'wide' ? 1.8 : 1)), wb = Math.round(r.B.w * mb * (preset === 'wide' ? 1.8 : 1));
+  HE.lay.reg = { A: { x: 0, y: 0, w: wa, h: H, fill: 0 }, B: { x: 1920 - wb, y: 0, w: wb, h: H, fill: 0 }, F: { x: wa, y: 0, w: 1920 - wa - wb, h: H, fill: 0 }, S: { x: 0, y: H, w: 1920, h: subH } };
+}
+function heCompose(ctx, W, H, srcCv, sc, rects, ve, ovCv) {
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); const k = W / 1920;
+  ['A', 'B', 'F'].forEach(id => {
+    const r = HE.lay.reg[id]; if (!r) return; let src = srcCv, sx, sy, sw, sh;
+    if (id === 'F' && ve) { src = ve; sx = 0; sy = 0; sw = ve.videoWidth; sh = ve.videoHeight; } else { const q = id === 'F' ? rects.C : rects[id]; sx = q.x * sc; sy = q.y * sc; sw = q.w * sc; sh = q.h * sc; }
+    if (!sw || !sh) return; let x = r.x * k, y = r.y * k, w = r.w * k, h = r.h * k;
+    if (!r.fill) { const m = Math.min(w / sw, h / sh), dw = sw * m, dh = sh * m; x += (w - dw) / 2; y += (h - dh) / 2; w = dw; h = dh; }
+    try { ctx.drawImage(src, sx, sy, sw, sh, x, y, w, h); } catch (e) { }
+    if (id === 'F' && ve && ovCv && rects.C) { const q = rects.C, ow = q.w * sc, oh = q.h * sc; let X = r.x * k, Y = r.y * k, Wd = r.w * k, Ht = r.h * k; if (!r.fill) { const m = Math.min(Wd / ow, Ht / oh), dw = ow * m, dh = oh * m; X += (Wd - dw) / 2; Y += (Ht - dh) / 2; Wd = dw; Ht = dh; } try { ctx.drawImage(ovCv, q.x * sc, q.y * sc, ow, oh, X, Y, Wd, Ht); } catch (e) { } }
+  });
+}
+function heFVid() { if (HE.lay.fsrc !== 'ref') return null; return HE.vids.find(v => v.id === HE.lay.fv) || null; }
+async function heLaySnap() {
+  $('heLayMsg').textContent = '画面を作っています…';
+  try { await new Promise(r => { const w = () => { if (!HE.busy && !HE.want) r(); else setTimeout(w, 60); }; w(); }); { const cvv = await heRaster(1), sc0 = heScene(HE.t, true); HE.snap = { cv: cvv, rects: heRects(), ov: HE.lay.fsrc === 'ref' ? await heRasterOv(sc0, 1) : null }; } HE.rects = HE.snap.rects; if (!HE.lay.reg) heLayDef(); } catch (e) { $('heLayMsg').textContent = '画面を作れませんでした'; return; }
+  $('heLayMsg').textContent = ''; heLayDraw();
+}
+function heLayDraw() {
+  const cv = $('heLayCv'); if (!cv || $('heLay').hidden) return; const W = HE.lay.w, H = HE.lay.h, bx = $('heLayWrap'), s = Math.min((bx.clientWidth - 8) / W, (bx.clientHeight - 8) / H);
+  cv.width = W; cv.height = H; cv.style.width = Math.floor(W * s) + 'px'; cv.style.height = Math.floor(H * s) + 'px'; HE.layS = s * (W / 1920);
+  const ctx = cv.getContext('2d'); if (HE.snap && HE.lay.reg) { const ve = heFVid(); heCompose(ctx, W, H, HE.snap.cv, 1, HE.snap.rects, ve && ve.el.readyState >= 2 ? ve.el : null, HE.snap.ov); } else { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H); }
+  const box = $('heLayBox'); box.style.width = cv.style.width; box.style.height = cv.style.height;
+  box.innerHTML = ['A', 'B', 'F', 'S'].map(id => { const r = HE.lay.reg[id], k = HE.layS; return '<div class="hlb' + (HE.laySel === id ? ' sel' : '') + '" data-r="' + id + '" style="left:' + r.x * k + 'px;top:' + r.y * k + 'px;width:' + r.w * k + 'px;height:' + r.h * k + 'px"><span>' + { A: '手札A', B: '手札B', F: HE.lay.fsrc === 'ref' ? '参考F' : '盤面', S: '字幕' }[id] + '</span><i></i></div>'; }).join('');
+  const r = HE.lay.reg[HE.laySel || 'F']; ['X', 'Y', 'W', 'H'].forEach(a => { $('heL' + a).value = Math.round(r[a.toLowerCase()]); }); $('heLFill').checked = !!r.fill; $('heLSel').textContent = { A: '手札A', B: '手札B', F: HE.lay.fsrc === 'ref' ? '参考F' : '盤面', S: '字幕' }[HE.laySel || 'F'];
+}
+function heLayOpen() {
+  $('heLay').hidden = false; $('heLSize').value = HE.lay.w + 'x' + HE.lay.h; $('heLHs').value = HE.hs; HE.laySel = HE.laySel || 'F';
+  $('heLFs').innerHTML = '<option value="edit">盤面(編集F)</option>' + HE.vids.map(v => '<option value="' + v.id + '">参考F: ' + esc(v.name.slice(0, 20)) + '</option>').join(''); $('heLFs').value = HE.lay.fsrc === 'ref' ? String(HE.lay.fv) : 'edit';
+  if (!HE.lay.reg) heLayDef(); heLaySnap().then(() => { if (!HE.rects) return; });
+}
+$('heLayBtn').onclick = heLayOpen; $('heLClose').onclick = () => { $('heLay').hidden = true; heLaySave(); };
+$('heLRef').onclick = heLaySnap;
+$('heLSize').onchange = () => { const [w, h] = $('heLSize').value.split('x').map(Number); HE.lay.w = w; HE.lay.h = h; heLayDraw(); };
+$('heLPre').onchange = () => { heLayDef($('heLPre').value); heLayDraw(); };
+$('heLFs').onchange = () => { const v = $('heLFs').value; HE.lay.fsrc = v === 'edit' ? 'edit' : 'ref'; HE.lay.fv = v === 'edit' ? null : +v; if (v !== 'edit') { const x = HE.vids.find(q => q.id === +v); if (x) { x.el.currentTime = Math.max(0, HE.t / 1000 + x.off); } } heLayDraw(); setTimeout(heLayDraw, 300); };
+$('heLHs').oninput = () => { HE.hs = +$('heLHs').value; clearTimeout(HE.hsT); HE.hsT = setTimeout(async () => { heSync(true); await heLaySnap(); heLayAfterHs(); }, 350); };
+function heLayAfterHs() { if (HE.snap && HE.lay.reg && HE.lay.auto !== false) { } }
+['X', 'Y', 'W', 'H'].forEach(a => { $('heL' + a).onchange = () => { const r = HE.lay.reg[HE.laySel || 'F']; r[a.toLowerCase()] = Math.max(0, +$('heL' + a).value || 0); heLayDraw(); }; });
+$('heLFill').onchange = () => { HE.lay.reg[HE.laySel || 'F'].fill = $('heLFill').checked ? 1 : 0; heLayDraw(); };
+$('heLayBox').addEventListener('pointerdown', e => {
+  const b = e.target.closest('.hlb'); if (!b) return; e.preventDefault(); const id = b.dataset.r, r = HE.lay.reg[id], rs = !!e.target.closest('i'), k = HE.layS, x0 = e.clientX, y0 = e.clientY, o = Object.assign({}, r); HE.laySel = id;
+  const sn = (v, arr) => { for (const a of arr) if (Math.abs(a - v) < 8) return a; return v; };
+  const mv = q => {
+    const dx = (q.clientX - x0) / k, dy = (q.clientY - y0) / k, ed = ['A', 'B', 'F', 'S'].filter(z => z !== id).flatMap(z => [HE.lay.reg[z].x, HE.lay.reg[z].x + HE.lay.reg[z].w]).concat([0, 1920]), ey = ['A', 'B', 'F', 'S'].filter(z => z !== id).flatMap(z => [HE.lay.reg[z].y, HE.lay.reg[z].y + HE.lay.reg[z].h]).concat([0, 1080]);
+    if (rs) { r.w = Math.max(20, Math.round(sn(o.x + o.w + dx, ed) - o.x)); r.h = Math.max(20, Math.round(sn(o.y + o.h + dy, ey) - o.y)); }
+    else { let nx = o.x + dx, ny = o.y + dy; nx = sn(nx, ed); nx = sn(nx + o.w, ed) - o.w; ny = sn(ny, ey); ny = sn(ny + o.h, ey) - o.h; r.x = Math.round(nx); r.y = Math.round(ny); }
+    heLayDraw();
+  };
+  const up = () => { document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', up); };
+  document.addEventListener('pointermove', mv); document.addEventListener('pointerup', up); heLayDraw();
+});
+function heLaySave() { try { localStorage.setItem('bs-he-lay', JSON.stringify({ w: HE.lay.w, h: HE.lay.h, reg: HE.lay.reg, hs: HE.hs })); } catch (e) { } }
+function heLayLoad() { try { const a = JSON.parse(localStorage.getItem('bs-he-lay') || 'null'); if (a && a.reg) { HE.lay.w = a.w; HE.lay.h = a.h; HE.lay.reg = a.reg; HE.hs = a.hs || 0.57; } } catch (e) { } }
+HE.hs = 0.57; heLayLoad();
+$('heExpBtn').onclick = () => { $('heR0').value = ((HE.inT || 0) / 1000).toFixed(3); $('heR1').value = ((HE.outT != null ? HE.outT : HE.ops.reduce((m, o) => Math.max(m, o.t), 0) + 1000) / 1000).toFixed(3); $('heExp').hidden = false; };
 $('heExpClose').onclick = () => { $('heExp').hidden = true; };
 $('heGo').onclick = heExport;
 const heCrcT = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -7044,6 +7511,19 @@ function heZip(files) {
   const e = new DataView(new ArrayBuffer(22)); e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cs, true); e.setUint32(16, off, true);
   return new Blob([...parts, ...cen, e.buffer], { type: 'application/zip' });
 }
+try { $('admNcK').value = localStorage.getItem('bs-adm-key') || ''; } catch (e) { }
+$('admNcS').onclick = () => { $('admNcT').value = '【お知らせ】アプリのURLが新しくなりました。保存したデッキ・設定・リプレイは新しいURLに自動では引き継がれないため、今のうちに「デッキを書き出す」で文字を保存し、新しいURLで読み込んでください(ホーム画面のアプリも入れ直しが必要です)。'; };
+async function admNotice(on) {
+  const key = $('admNcK').value.trim(); if (!key) { toast('合言葉を入力してください'); return; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
+  try { const r = await fetch(API + '/admin/notice', { method: 'PUT', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: JSON.stringify({ on, text: $('admNcT').value, url: $('admNcU').value.trim(), label: $('admNcL').value.trim() }) }); const j = await r.json().catch(() => ({})); if (!r.ok) { toast(r.status === 401 ? '合言葉が違います' : 'うまくいきませんでした'); return; } toast(on ? 'お知らせを表示しました' : 'お知らせを消しました'); try { localStorage.removeItem('bs-notice-x'); } catch (e) { } showNotice(on ? j.v : null); } catch (e) { toast('通信できませんでした'); }
+}
+$('admNcP').onclick = () => admNotice(true); $('admNcD').onclick = () => admNotice(false);
+function admNtFill() { const t = ntTpl(); $('admNtT').value = t.title; $('admNtB').value = t.body; $('admNtO').value = ntOnly().join('\n'); }
+const admNtOnlyVal = () => $('admNtO').value.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+$('admNtS').onclick = () => { try { localStorage.setItem('bs-nt-tpl', JSON.stringify({ title: $('admNtT').value || NT_DEF.title, body: $('admNtB').value, only: admNtOnlyVal() })); } catch (e) { } toast('通知文を保存しました'); };
+$('admNtR').onclick = () => { try { localStorage.removeItem('bs-nt-tpl'); } catch (e) { } window.__ntFile = null; admNtFill(); toast('初期に戻しました'); };
+$('admNtX').onclick = () => { const b = new Blob([JSON.stringify({ title: $('admNtT').value || NT_DEF.title, body: $('admNtB').value, only: admNtOnlyVal() }, null, 2)], { type: 'application/json' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'notify.json'; a.click(); };
+$('admNtTest').onclick = () => { $('admNtS').onclick(); const t = ntTpl(); toast(t.title.replace(/\{name\}/g, getName() || 'プレイヤー').replace(/\{msg\}/g, 'テスト')); };
 function admGateOpen() { $('admPass').value = ''; $('admMsg').textContent = ''; $('admGate').hidden = false; $('admGate').style.display = 'flex'; setTimeout(() => $('admPass').focus(), 30); }
 function admGateClose() { $('admGate').hidden = true; $('admGate').style.display = 'none'; }
 $('admCancel').onclick = admGateClose;

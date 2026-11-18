@@ -9,3 +9,17 @@ self.addEventListener('fetch', e => {
   e.respondWith(fetch(r).then(res => { if (res && res.ok) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(r, cp)).catch(() => {}); } return res; })
     .catch(() => caches.match(r).then(m => m || (r.mode === 'navigate' ? caches.match('./index.html') : Response.error()))));
 });
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => { for (const c of cs) { if ('focus' in c) return c.focus(); } return self.clients.openWindow('./'); }));
+});
+// サーバーからのプッシュ通知(アプリを閉じていても届く)。アプリが開いて見えているときは、画面内のメッセージで知らせる
+self.addEventListener('push', e => {
+  let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) { d = { title: e.data ? e.data.text() : '' }; }
+  const title = d.title || 'BATTLE SPIRITS PRACTICE';
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
+    const vis = cs.find(c => c.visibilityState === 'visible');
+    if (vis) { vis.postMessage({ t: 'push', title }); return; }
+    return self.registration.showNotification(title, { body: d.body || '', tag: d.tag || 'bs-room', renotify: true, icon: 'icons/icon-192.png', data: { url: d.url || './' } });
+  }));
+});
