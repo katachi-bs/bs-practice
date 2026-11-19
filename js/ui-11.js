@@ -53,20 +53,42 @@ function setH(el, html) {
 }
 function render() { render0(); if (BC.on) { bcTop(); bcFit(); applyHandFlip(); } }
 /* 対戦の画像を先に読み込んでおく(使うときに読み込みが間に合わず、黒く見えるのを防ぐ)。ソーディッシュを出すカードがあるときは、その画像も用意する */
-let _preG = null, _preQ = [], _preT = 0;
+let _preG = null, _preMyD = null, _preRun = 0;
 function preloadGameArt() {
   try {
-    const ids = new Set(), addD = d => { if (!d || !d.id) return; ids.add(String(d.id)); if ((d.effects || []).some(e => (e.ops || []).some(o => o && o.op === 'token'))) Object.keys(TOKEN_STATS).forEach(n => ids.add('TOKEN-' + n)); };
-    if (G && G.p) G.p.forEach(P => Object.values(P).forEach(v => { if (Array.isArray(v)) v.forEach(k => k && k.def && addD(k.def)); }));
+    const ids = new Set(), addD = d => {
+      if (!d || !d.id) return; ids.add(String(d.id));
+      let tk = false; try { tk = JSON.stringify(d).indexOf('ソーディッシュ') >= 0; } catch (e) { }   // 効果や文面に「ソーディッシュ」があるカードは、トークンの画像も用意する
+      if (tk || (d.effects || []).some(e => (e.ops || []).some(o => o && o.op === 'token'))) Object.keys(TOKEN_STATS).forEach(n => ids.add('TOKEN-' + n));
+    };
+    if (G && G.p) G.p.forEach(P => Object.values(P).forEach(v => { if (Array.isArray(v)) v.forEach(k => k && k.def && addD(k.def)); }));   // 自分と相手の、両方のデッキ
     (myDefs || []).forEach(d => addD(d && d.def ? d.def : d));
-    _preQ = _preQ.concat([...ids]);
-    const tick = () => { _preT = 0; const n = _preQ.splice(0, 4); n.forEach(id => { try { artSm(id); } catch (e) { } }); if (_preQ.length) _preT = setTimeout(tick, 80); };
-    if (!_preT) _preT = setTimeout(tick, 0);
+    const list = [...ids], run = ++_preRun, t0 = Date.now(), g0 = gateUntil;
+    const us = list.map(id => { try { return artSm(id); } catch (e) { return ''; } }).filter(Boolean);   // 小さい画像(対戦中に使う画像)を、すべて読み込む
+    const left = () => us.filter(u => !_artOk.has(u) && !_artBad.has(u));
+    if (left().length) {
+      gateUntil = Math.max(gateUntil, t0 + 8000);   // 読み込みが終わるまで、対戦を始めない(最大8秒。それでも読み込みは続ける)
+      let shown = false;
+      const chk = () => {
+        if (run !== _preRun) return;
+        const n = left().length;
+        if (!n || Date.now() - t0 > 8000) { gateUntil = Math.max(g0, Date.now()); if (shown) toast('カード画像の読み込みが終わりました'); warmBig(list); return; }
+        if (!shown && Date.now() - t0 > 900) { shown = true; toast('カード画像を読み込み中… (' + us.length + '枚)'); }
+        setTimeout(chk, 100);
+      };
+      chk();
+    } else warmBig(list);
   } catch (e) { }
+}
+/* 大きい元画像(拡大表示・カットイン用)は、対戦が始まってから、じゃまにならないようにゆっくり先に読み込んでおく(端末に保存されるだけで、メモリには置かない) */
+function warmBig(ids) {
+  const q = ids.map(id => { try { return artQ(id); } catch (e) { return ''; } }).filter(u => u && u.slice(0, 5) !== 'blob:' && u.slice(0, 5) !== 'data:');
+  const next = () => { const u = q.shift(); if (!u) return; const im = new Image(); im.onload = im.onerror = () => setTimeout(next, 150); im.src = u; };
+  next(); next();
 }
 function render0() {
   if (!V) return;
-  if (G && G !== _preG) { _preG = G; preloadGameArt(); }
+  if (G && G !== _preG) { _preG = G; preloadGameArt(); } else if (!G && myDefs && myDefs !== _preMyD && V && V.me != null) { _preMyD = myDefs; preloadGameArt(); }
   { const pd = V.pending, b0 = V.battle;   // カードを選ぶ場面(対象の指定・ブロック宣言)では、カード上のコアの判定をなくして、カードを選びやすくする
     const selCard = !!(pd && pd.pi === V.me && pd.cands && pd.cands.length && !['coreSel', 'colorPick', 'order', 'reveal'].includes(pd.kind) && !pd.camo && !pd.place) || !!(b0 && b0.phase === 'block' && b0.prio === V.me);
     document.body.classList.toggle('selcard', selCard && !pay); }
