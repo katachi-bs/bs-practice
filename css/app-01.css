@@ -88,6 +88,7 @@ body.ingame main{max-width:none;padding:6px}
 body.ingame h1{display:none}
 h1{font-size:18px;margin:4px 0 10px}
 .adm-only{display:none!important}
+#instBox:not([hidden]){display:flex;flex-direction:column;gap:8px}
 html.admed #admEnd{display:none!important}#tkLock{display:none}html.tklock #tkLock{display:flex}
 
 body.ingame #appFoot,body.bc #appFoot,body.ingame #noticeBar,body.bc #noticeBar{display:none}

@@ -92,6 +92,30 @@ $('admDkGet').onclick = () => admDkGet(); $('admDkPut').onclick = admDkPut;
 try { $('admDkAuto').checked = localStorage.getItem('bs-dk-auto') !== '0'; } catch (e) { }
 $('admDkAuto').onchange = () => { try { localStorage.setItem('bs-dk-auto', $('admDkAuto').checked ? '1' : '0'); } catch (e) { } };
 setTimeout(() => { try { if (window.ADMIN_ED && $('admDkAuto').checked && ($('admNcK').value || '').trim()) admDkGet(true); } catch (e) { } }, 2500);
+/* 初回画面: アプリとして入れることをすすめる(入れていない端末だけ。「あとで」で14日間は出さない) */
+(function () {
+  const box = $('instBox'); if (!box) return;
+  const KEY = 'bs-inst-later'; let dp = null;
+  const standalone = () => { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
+  const later = () => { try { const t = +localStorage.getItem(KEY) || 0; return t > 0 && Date.now() - t < 14 * 864e5; } catch (e) { return false; } };
+  const ua = navigator.userAgent, ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const inApp = /Line\/|FBAN|FBAV|Instagram|Twitter|MicroMessenger/i.test(ua);
+  const why = '部屋ができたときの通知が届き、全画面で遊べます。';
+  function render() {
+    if (standalone() || later()) { box.hidden = true; return; }
+    $('instGo').hidden = !dp;
+    $('instTx').textContent = dp ? why
+      : inApp ? 'いま開いているのはアプリ内のブラウザです。SafariかChromeで開き直して、「ホーム画面に追加」をしてください。' + why
+      : ios ? 'Safariの共有ボタン(四角から矢印が出ているマーク)を押して、「ホーム画面に追加」を選んでください。iPhoneでは、ホーム画面に追加しないと、通知が届きません。'
+      : 'ブラウザのメニュー(︙)から、「アプリをインストール」または「ホーム画面に追加」を選んでください。' + why;
+    box.hidden = false;
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); dp = e; render(); });
+  window.addEventListener('appinstalled', () => { dp = null; box.hidden = true; });
+  $('instGo').onclick = async () => { if (!dp) return; try { dp.prompt(); await dp.userChoice; } catch (e) { } dp = null; render(); };
+  $('instLater').onclick = () => { try { localStorage.setItem(KEY, String(Date.now())); } catch (e) { } box.hidden = true; };
+  render();
+})();
 /* BSP ADMIN: 合言葉の確認(サーバーの合言葉と合うまで、全体をロックする)。見た目のロックなので、サーバー側の確認(401)が本当の守り */
 (function () {
   if (!window.ADMIN_ED) return;
