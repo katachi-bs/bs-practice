@@ -281,3 +281,5 @@ body:has(#builder:not([hidden])) h1{display:none}
 .bc .bcost{align-self:flex-start;background:var(--cc,#6a7499);color:#0b1020;border-radius:50%;min-width:1.7em;height:1.7em;display:grid;place-items:center;font-weight:800}
 .bc.hasimg .bn,.bc.hasimg .bcost,.bc.hasimg .bid{display:none}
 .bc .bcnt{position:absolute;right:3px;top:3px;background:var(--ok);color:#06210f;font-weight:900;border-radius:999px;min-width:1.7em;height:1.7em;display:grid;place-items:center;font-size:12px;box-shadow:0 1px 4px #000a}
+.bc .bsplit{position:absolute;left:50%;top:3px;transform:translateX(-50%);z-index:3;background:#000c;color:#9fe0ff;border:1px solid #9fe0ff99;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:800;cursor:pointer}
+.bc .bflp{position:absolute;right:3px;top:3px;z-index:3;background:#000c;color:#ffd45a;border:1px solid #ffd45a99;border-radius:50%;width:2em;height:2em;display:grid;place-items:center;font-size:13px;font-weight:800;cursor:pointer}

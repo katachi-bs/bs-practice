@@ -376,6 +376,27 @@ const VARIANTS = [   // イラスト違い(カード番号は仮。正式な番�
   { id: '26RSD05-014-P02', of: '26RSD05-014', set: '26RSD05 煌陽ノ雷竜', fx: 1 },   // トリプルサンダー(プロモ・完全新規絵・金枠・星の演出(段階1))
   { id: '26RSD06-013-P01', of: '26RSD06-013', set: '26RSD06 蒼淵ノ凶獣', fx: 1 },   // ステムランス(プロモ・完全新規絵・金枠・星の演出(段階1))
   { id: '26RSD01-014-P03', of: '26RSD01-014', set: '26RSD01 赫焔ノ風牙', fx: 'L1' },   // フレイムハリケーン(プロモ・完全新規絵・演出L1)
+  { id: '26RBS01-X03-P01', of: '26RBS01-X03', set: '26RBS01 創世の鼓動', fx: 'L2' },   // 轟風ヴァルディガイヤー(新規絵・Xレア・演出L2)
+  { id: '26RBS02-X05-P01', of: '26RBS02-X05', set: '26RBS02 幻惑の翔風', fx: 'L2' },   // 悠々たるムルナー(新規絵・Xレア・演出L2)
+  { id: '26RBS02-X07-P01', of: '26RBS02-X07', set: '26RBS02 幻惑の翔風', fx: 'L2' },   // 偉大なるエイペラン(新規絵・Xレア・演出L2)
+  { id: '26RSD09-X02-P01', of: '26RSD09-X02', set: '26RSD09', fx: 'L2' },   // 煉凰ゼクーガ・イグネイト(新規絵・Xレア・演出L2)
+  { id: '26RBS03-X03-P01', of: '26RBS03-X03', set: '26RBS03 絶界の覇者', fx: 'L2' },   // 煉凰ゼクーガ(新規絵・Xレア・演出L2)
+  { id: '26RBS03-097-P01', of: '26RBS03-097', set: '26RBS03 絶界の覇者', fx: 'L2' },   // シャープソーン(新規絵・Rレア・演出L2)
+  { id: '26RBS03-087-P01', of: '26RBS03-087', set: '26RBS03 絶界の覇者', fx: 'L2' },   // フレイムストーム(新規絵・Rレア・演出L2)
+  { id: '26RBS02-X09-P01', of: '26RBS02-X09', set: '26RBS02 幻惑の翔風', fx: 'L2' },   // 海神レヴィアクラン(新規絵・Xレア・演出L2)
+  { id: '26RBS02-X01-P01', of: '26RBS02-X01', set: '26RBS02 幻惑の翔風', fx: 'L2' },   // ジーン・ローズ(新規絵・Xレア・演出L2)
+  { id: '26RBS02-059-P01', of: '26RBS02-059', set: '26RBS02 幻惑の翔風', fx: 'L2' },   // 五寸杭ビスキュラー(新規絵・Mレア・演出L2)
+  { id: '26RBS01-X08-P01', of: '26RBS01-X08', set: '26RBS01 創世の鼓動', fx: 'L2' },   // マーメイディア・プリンセス(新規絵・Xレア・演出L2)
+  { id: '26RBS01-055-P01', of: '26RBS01-055', set: '26RBS01 創世の鼓動', fx: 'L2' },   // 流銀フランシル(新規絵・Mレア・演出L2)
+  { id: '26RBS01-X06-P01', of: '26RBS01-X06', set: '26RBS01 創世の鼓動', fx: 'L2' },   // ダンピリオン公(新規絵・Xレア・演出L2)
+  { id: '26RBS01-088-P01', of: '26RBS01-088', set: '26RBS01 創世の鼓動', fx: 'L2' },   // 誉あるセントア(新規絵・Mレア・演出L2)
+  { id: '26RBS01-126-P01', of: '26RBS01-126', set: '26RBS01 創世の鼓動' },   // マーシレスブロウ(プロモ・演出なし)
+  { id: '26RSD01-014-S01', of: '26RSD01-014', set: '26RSD01 赫焔ノ風牙', sec: 1 },   // フレイムハリケーン(シークレット)
+  { id: '26RSD02-014-S01', of: '26RSD02-014', set: '26RSD02 紫幻ノ血醒', sec: 1 },   // ソウルバイト(シークレット)
+  { id: '26RSD03-014-S01', of: '26RSD03-014', set: '26RSD03 翆海ノ甲魚', sec: 1 },   // テンタクルアタック(シークレット)
+  { id: '26RSD04-014-S01', of: '26RSD04-014', set: '26RSD04 白命ノ鉱人', sec: 1 },   // ディフェンシブゲート(シークレット)
+  { id: '26RSD05-014-S01', of: '26RSD05-014', set: '26RSD05 煌陽ノ雷竜', sec: 1 },   // トリプルサンダー(シークレット)
+  { id: '26RSD06-013-S01', of: '26RSD06-013', set: '26RSD06 蒼淵ノ凶獣', sec: 1 },   // ステムランス(シークレット)
   { id: '26RSD02-014-P02', of: '26RSD02-014', set: '26RSD02 紫幻ノ血醒', fx: 'L1' },   // ソウルバイト(プロモ・完全新規絵・演出L1)
   { id: '26RSD03-014-P02', of: '26RSD03-014', set: '26RSD03 翆海ノ甲魚', fx: 'L1' },   // テンタクルアタック(プロモ・完全新規絵・演出L1)
   { id: '26RSD04-014-P02', of: '26RSD04-014', set: '26RSD04 白命ノ鉱人', fx: 'L1' },   // ディフェンシブゲート(プロモ・完全新規絵・演出L1)
@@ -590,7 +611,7 @@ const TIER_FX = {
   L1: { foil: true, stars: 0, mist: false, hold: 1500 },   // プロモ R・マジック: 色の縁の光と、やわらかい光の筋だけ(軽め)
   L2: { foil: true, stars: 10, mist: true, hold: 2600 }   // プロモ X: L1 に、小さな粒とカード色のモヤを足す
 };
-const fxTierOf = id => { const v = VARIANTS.find(x => x.id === id); if (!v || !v.sec) return 0; return Math.min(v.tier || 1, Math.max(...Object.keys(TIER_FX).map(Number))); };
+const fxTierOf = id => { const v = VARIANTS.find(x => x.id === id); if (!v || !v.sec) return 0; return Math.min(v.tier || 1, Math.max(...Object.keys(TIER_FX).map(Number).filter(n => n > 0))); };
 const RAINBOW = ['#ff6ec7', '#ffe27a', '#7fffd4', '#6ea8ff', '#c79bff', '#ff9a5a'];
 function shineAt(r, id) {   // カードの上に、色違いのような光の演出を重ねる(id があれば、そのカードの段階に合わせる)
   try {
@@ -627,7 +648,7 @@ function bSwap(id, nx) {   // デッキ内の id を nx に入れ替える(同�
   if (isSecretId(nx)) setTimeout(() => { const t = document.querySelector('.bc[data-bid="' + String(nx).replace(/"/g, '') + '"]'); if (t) shineAt(t.getBoundingClientRect(), nx); }, 120);
 }
 const ART_POP_MIN = 6;   // イラスト違いがこれ以上あるカードは、1回切り替えたあとに、選べる一覧を出す
-function artPop(id) {
+function artPop(id, poolBase) {
   const g = artGroup(id); if (g.length < 2) return; let cur = id;
   let ov = document.getElementById('artPop'); if (ov) ov.remove();
   ov = document.createElement('div'); ov.id = 'artPop'; ov.style.cssText = 'position:fixed;inset:0;z-index:9000;background:rgba(5,8,20,.82);display:flex;align-items:center;justify-content:center;padding:12px';
@@ -635,18 +656,39 @@ function artPop(id) {
   ov.innerHTML = '<div style="background:#141a30;border:1px solid #3a4470;border-radius:12px;max-width:760px;width:100%;max-height:92vh;display:flex;flex-direction:column;color:#e8ecff"><div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px"><b>' + esc(nm) + '　イラストを選ぶ(' + g.length + '種)</b><button type="button" data-apx style="font-size:18px;background:none;border:0;color:#e8ecff;cursor:pointer">✕</button></div><div data-apg style="overflow:auto;padding:0 14px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px"></div></div>';
   document.body.appendChild(ov);
   const gr = ov.querySelector('[data-apg]');
-  const draw = () => { gr.innerHTML = g.map((x, i) => { const u = thumbOf(x) || artQ(x) || ''; return '<div data-apc="' + esc(x) + '" style="cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid ' + (x === cur ? '#ffd45a' : 'transparent') + ';background:#0c1020;aspect-ratio:675/984;background-image:url(' + u + ');background-size:cover;position:relative" title="' + (i ? (isSecretId(x) ? 'シークレット系 ' : '別絵 ') + i : '元のカード') + '"><span style="position:absolute;left:3px;bottom:3px;font-size:11px;background:rgba(0,0,0,.65);padding:1px 5px;border-radius:6px">' + (i ? i : '元') + '</span></div>'; }).join(''); };
+  const draw = () => { gr.innerHTML = g.map((x, i) => { if (!poolBase && g.length >= 3 && x !== cur && B.deck.has(x)) return ''; const u = thumbOf(x) || artQ(x) || ''; return '<div data-apc="' + esc(x) + '" style="cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid ' + (x === cur ? '#ffd45a' : 'transparent') + ';background:#0c1020;aspect-ratio:675/984;background-image:url(' + u + ');background-size:cover;position:relative" title="' + (i ? (isSecretId(x) ? 'シークレット系 ' : '別絵 ') + i : '元のカード') + '"><span style="position:absolute;left:3px;bottom:3px;font-size:11px;background:rgba(0,0,0,.65);padding:1px 5px;border-radius:6px">' + (i ? i : '元') + '</span></div>'; }).join(''); };
   draw();
   ov.addEventListener('click', e => {
     if (e.target === ov || e.target.closest('[data-apx]')) { ov.remove(); return; }
     const c = e.target.closest('[data-apc]'); if (!c) return; const nx = c.dataset.apc;
-    if (nx !== cur) { if (B.deck.has(cur)) bSwap(cur, nx); cur = nx; draw(); }
+    if (nx !== cur) { if (poolBase) { bPoolSet(poolBase, nx); } else if (B.deck.has(cur)) bSwap(cur, nx); cur = nx; draw(); }
     if (isSecretId(nx)) shineAt(c.getBoundingClientRect(), nx);
   });
 }
+function bSplit(id) {   // イラスト違いのカードをまとめて入れていたとき、1枚だけそのイラストを残して、ほかはデフォルトの絵に戻す(同じカードのイラスト違いを混ぜて入れられる)
+  const g = artGroup(id), base = g[0], n = B.deck.get(id) || 0; if (g.length < 2 || id === base || n < 2) return;
+  const m = new Map(); [...B.deck].forEach(([k, v]) => { if (k === id) { m.set(id, 1); m.set(base, (m.get(base) || 0) + n - 1); } else m.set(k, (m.get(k) || 0) + v); });
+  B.deck = m; _bFlipId = base; bRender(); setTimeout(() => { _bFlipId = ''; }, 400);
+}
+const nextFreeArt = (g, id) => {   // 3種以上あるカードは、すでにデッキに入っているイラストを飛ばす
+  const i = g.indexOf(id); for (let st = 1; st < g.length; st++) { const c = g[(i + st) % g.length]; if (g.length < 3 || !B.deck.has(c)) return c; } return null;
+};
+function bPoolSet(base, nx) {   // 一覧のカードの絵を、nx に切り替える(その場で、そのカードだけ描き直す)
+  B.pv = B.pv || {}; const cur = B.pv[base] || base; if (cur === nx) return;
+  if (nx === base) delete B.pv[base]; else B.pv[base] = nx;
+  const t = document.querySelector('#bGrid .bc[data-badd="' + String(cur).replace(/"/g, '') + '"]'), c = cardById(nx); if (!t || !c) return;
+  const w = document.createElement('div'); w.innerHTML = thumbHTML(c, 'pool'); const n = w.firstElementChild; if (!n) return;
+  const u = n.dataset.bg; if (u) { n.style.backgroundImage = 'url(' + u + ')'; n.removeAttribute('data-bg'); }
+  t.replaceWith(n); if (isSecretId(nx)) setTimeout(() => shineAt(n.getBoundingClientRect(), nx), 80);
+}
+function bPoolFlip(base) {
+  const g = artGroup(base); if (g.length < 2) return; B.pv = B.pv || {}; const cur = B.pv[base] || base;
+  const nx = g[(g.indexOf(cur) + 1) % g.length]; bPoolSet(base, nx);
+  if (g.length >= ART_POP_MIN) setTimeout(() => artPop(nx, base), 300);
+}
 function bFlip(id, el) {
   const g = artGroup(id); if (g.length < 2 || !B.deck.has(id)) return;
-  const nx = g[(g.indexOf(id) + 1) % g.length]; if (nx === id) return;
+  const nx = nextFreeArt(g, id); if (!nx || nx === id) return;
   const go = () => { bSwap(id, nx); if (g.length >= ART_POP_MIN) setTimeout(() => artPop(nx), 450); };
   if (el && el.animate && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
     el.style.pointerEvents = 'none';
@@ -656,11 +698,12 @@ function bFlip(id, el) {
 }
 function thumbHTML(c, mode, nOverride) {
   const id = String(c.raw.id), art = artQ(id), au = art ? (thumbOf(id) || art) : '', n = nOverride != null ? nOverride : (B.deck.get(id) || 0), d = c.def;
-  const act = mode === 'view' ? '' : mode === 'deck' ? ' data-bid="' + esc(id) + '" data-bdrag="' + esc(id) + '"' : ' draggable="true" data-badd="' + esc(id) + '"';
+  const act = mode === 'view' ? '' : mode === 'deck' ? ' draggable="true" data-bid="' + esc(id) + '" data-bdrag="' + esc(id) + '"' : ' draggable="true" data-badd="' + esc(id) + '"';
   return '<div class="bc' + (art ? ' hasimg' : '') + (mode === 'deck' && nameCount(d.name) > 3 ? ' over' : '') + (mode === 'deck' && _bFlipId === id ? ' flipin' : '') + '"' + act + (mode === 'view' ? ' data-vinfo="' + esc(id) + '"' : '') + ' style="--cc:' + (COLOR_HEX[d.color] || '#6a7499') + (art && mode !== 'pool' ? ';background-image:url(' + au + ')' : '') + '"' + (art && mode === 'pool' ? ' data-bg="' + au + '"' : '') + '>' +
     '<span class="bcost">' + d.cost + '</span><span class="bn">' + esc(d.name) + '</span><span class="bid">' + esc(c.raw.altOf || d.id) + ' / ' + TYPE_JP[d.type] + (c.raw.altOf ? ' <b class="balt">別絵</b>' : '') + '</span>' +
-    (n ? (mode === 'deck' ? '<span class="bcnt bstep"><b data-bdec="' + esc(id) + '" title="1枚減らす">－</b><i>' + n + '</i><b data-binc="' + esc(id) + '" title="1枚増やす">＋</b></span>' : '<span class="bcnt">' + n + '</span>') : '') + (mode === 'deck' ? '<span class="bstar' + (B.cover === id ? ' on' : '') + '" data-bcover="' + esc(id) + '" title="表紙にする">' + (B.cover === id ? '★表紙' : '☆') + '</span>' : '') + (mode === 'view' ? '' : '<span class="bi" data-binfo="' + esc(id) + '">i</span>' + (n ? '<span class="bdel" data-bdelall="' + esc(id) + '">削除</span>' : '')) + '</div>';
+    (n ? (mode === 'deck' ? '<span class="bcnt bstep"><b data-bdec="' + esc(id) + '" title="1枚減らす">－</b><i>' + n + '</i><b data-binc="' + esc(id) + '" title="1枚増やす">＋</b></span>' : '<span class="bcnt">' + n + '</span>') : '') + (mode === 'deck' && n >= 2 && c.raw.altOf ? '<span class="bsplit" data-bsplit="' + esc(id) + '" title="1枚だけ残して、ほかはデフォルトの絵に戻す">分離</span>' : '') + (mode === 'deck' ? '<span class="bstar' + (B.cover === id ? ' on' : '') + '" data-bcover="' + esc(id) + '" title="表紙にする">' + (B.cover === id ? '★表紙' : '☆') + '</span>' : '') + (mode === 'pool' && artGroup(id).length > 1 ? '<span class="bflp" data-bpflip="' + esc(c.raw.altOf || id) + '" title="イラストを切り替える">⟳</span>' : '') + (mode === 'view' ? '' : '<span class="bi" data-binfo="' + esc(id) + '">i</span>' + (n ? '<span class="bdel" data-bdelall="' + esc(id) + '">削除</span>' : '')) + '</div>';
 }
+const poolCard = c => { const v = !c.raw.altOf && B.pv && B.pv[String(c.raw.id)]; return v ? (cardById(v) || c) : c; };   // 一覧で選んでいるイラスト
 function bFiltered() {
   const q = B.q.trim().toLowerCase();
   return CARD_LIST.filter(c => {
@@ -668,6 +711,7 @@ function bFiltered() {
     if (B.color && d.color !== B.color) return false;
     if (B.type && d.type !== B.type) return false;
     if (B.set && c.set !== B.set) return false;
+    if (c.raw.altOf && !/別絵|イラスト違い/.test(q)) { const bc = cardById(String(c.raw.altOf)); if (bc && bc.set === c.set) return false; }   // 別絵は、元のカードの ⟳ で切り替える(収録を選ぶか、「別絵」で検索すると、並べて出る)
     if (B.ex && !(d.symbols && d.symbols.ex)) return false;
     if (B.cost !== '') { if (B.cost === '9') { if (d.cost < 9) return false; } else if (d.cost !== +B.cost) return false; }
     if (q) { const hay = (d.name + ' ' + d.id + ' ' + (c.raw.altOf || '') + ' ' + (c.raw.altOf ? '別絵 イラスト違い ' : '') + ' ' + (d.reading || '') + ' ' + d.family.join(' ') + ' ' + (d.text || '') + ' ' + d.effects.map(e => e.text).join(' ')).toLowerCase(); if (!hay.includes(q)) return false; }
@@ -690,5 +734,5 @@ function bMore() {
   const g = $('bGrid'); if (!g || _bShown >= _bPool.length) return;
   const from = _bShown; _bShown = Math.min(_bPool.length, _bShown + B_CHUNK);
   const old = g.querySelector('.bsent'); if (old) old.remove();
-  g.insertAdjacentHTML('beforeend', _bPool.slice(from, _bShown).map(c => thumbHTML(c, 'pool')).join('')); lazyBg(); bSentinel();
+  g.insertAdjacentHTML('beforeend', _bPool.slice(from, _bShown).map(c => thumbHTML(poolCard(c), 'pool')).join('')); lazyBg(); bSentinel();
 }

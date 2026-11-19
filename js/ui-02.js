@@ -2,7 +2,8 @@ function bRender() {
   const list = bFiltered(), key = list.length + ':' + (list[0] ? list[0].raw.id : '');
   if (key !== _bKey) { _bKey = key; _bShown = B_CHUNK; }   // 絞り込みが変わったら先頭から。カードを足しただけなら、今の位置のまま
   _bPool = list;
-  $('bGrid').innerHTML = list.length ? list.slice(0, _bShown).map(c => thumbHTML(c, 'pool')).join('') : '<span class="note">該当するカードがありません</span>';
+  const _keepBg = {}; document.querySelectorAll('#bGrid .bc[data-badd]').forEach(e => { if (e.style.backgroundImage) _keepBg[e.dataset.badd] = e.style.backgroundImage; });   // 描き直しても、すでに読み込んだ画像は、そのまま出す(一瞬消えるのを防ぐ)
+  $('bGrid').innerHTML = list.length ? list.slice(0, _bShown).map(c => thumbHTML(poolCard(c), 'pool')).join('') : '<span class="note">該当するカードがありません</span>';
   const rows = [...B.deck].map(([id, n]) => ({ c: cardById(id), id, n })).filter(x => x.c);
   $('bList').innerHTML = rows.length ? rows.map(({ c, n }) => thumbHTML(c, 'deck', n)).join('') : '<span class="note">左のカードをクリックで追加(同名3枚まで)。ここのカードの「－」で1枚減らし、右下の「削除」で全部抜きます。長押ししてドラッグすると並べ替えできます。</span>';
   const tot = deckTotal(), by = { spirit: 0, nexus: 0, magic: 0 }, curve = new Array(10).fill(0);
@@ -13,6 +14,7 @@ function bRender() {
   $('bCount2').textContent = tot;
   { const cc = coverOf({ cover: B.cover, cards: [...B.deck] }); const ce = $('bCover'); ce.setAttribute('style', coverStyle(cc)); ce.textContent = cc && artOf(String(cc.raw.id)) ? '' : (cc ? cc.def.name.slice(0, 5) : '表紙'); }
   $('bPackInfo').textContent = '';
+  document.querySelectorAll('#bGrid .bc[data-bg]').forEach(e => { const u = _keepBg[e.dataset.badd]; if (u) { e.style.backgroundImage = u; e.removeAttribute('data-bg'); } });
   lazyBg(); bSentinel();
 }
 /* 画像の読み込み順: ①使うデッキ ②保存済みのデッキ ③デッキ作成の一覧は、画面に見えているカードだけ */
@@ -157,8 +159,10 @@ $('builder').addEventListener('click', e => {
   const inf = t.closest('[data-binfo]'); if (inf) { const c = cardById(inf.dataset.binfo); if (c) showSheet(detailHTML({ def: c.def, cores: [], iid: '' }) + '<div class="acts"><button data-bpick="' + esc(c.raw.id) + '">デッキに入れる</button><button class="sub" data-close="1">閉じる</button></div>'); return; }
   const del = t.closest('[data-bdelall]'); if (del) { B.deck.delete(del.dataset.bdelall); bRender(); return; }
   const inc = t.closest('[data-binc]'); if (inc) { bAdd(inc.dataset.binc, 1); return; }
-  { const tile = t.closest('#bList .bc'); if (tile && tile.dataset.bid && !t.closest('.bstep,[data-bcover],[data-bdelall],[data-binfo]')) { bFlip(tile.dataset.bid, tile); return; } }   // カードそのものを押すと、別のイラストがあれば順に切り替わる(ボタンは出さない隠し操作。なければ何も起きない)
+  { const tile = t.closest('#bList .bc'); if (tile && tile.dataset.bid && !t.closest('.bstep,[data-bcover],[data-bdelall],[data-binfo],[data-bsplit]')) { bFlip(tile.dataset.bid, tile); return; } }   // カードそのものを押すと、別のイラストがあれば順に切り替わる(ボタンは出さない隠し操作。なければ何も起きない)
   const dec = t.closest('[data-bdec]'); if (dec) { bAdd(dec.dataset.bdec, -1); return; }
+  const sp = t.closest('[data-bsplit]'); if (sp) { bSplit(sp.dataset.bsplit); return; }
+  const pf = t.closest('[data-bpflip]'); if (pf) { bPoolFlip(pf.dataset.bpflip); return; }
   const add = t.closest('[data-badd]'); if (add) bAdd(add.dataset.badd, 1);
 });
 document.addEventListener('click', e => { const p = e.target.closest && e.target.closest('[data-bpick]'); if (p) { bAdd(p.dataset.bpick, 1); hideSheet(); } });
@@ -189,10 +193,11 @@ document.addEventListener('click', e => { const p = e.target.closest && e.target
 })();
 // ドラッグ(PC): 一覧→デッキで追加 / デッキ→一覧で削除
 let bDragId = null, bDragFrom = '';
+const bDragSplittable = () => { if (bDragFrom !== 'deck' || !bDragId) return false; const g = artGroup(bDragId); return g.length > 1 && g[0] !== bDragId && (B.deck.get(bDragId) || 0) >= 2; };
 $('builder').addEventListener('dragstart', e => { const a = e.target.closest('[data-badd],[data-bdrag]'); if (!a) return; bDragId = a.dataset.badd || a.dataset.bdrag; bDragFrom = a.dataset.badd ? 'pool' : 'deck'; try { e.dataTransfer.setData('text/plain', bDragId); e.dataTransfer.effectAllowed = 'copyMove'; } catch (x) { } });
-$('builder').addEventListener('dragover', e => { if (!bDragId) return; const over = e.target.closest('.bdeck,.bpool'); if (over && ((over.classList.contains('bdeck') && bDragFrom === 'pool') || (over.classList.contains('bpool') && bDragFrom === 'deck'))) { e.preventDefault(); over.classList.add('drop'); } });
+$('builder').addEventListener('dragover', e => { if (!bDragId) return; const over = e.target.closest('.bdeck,.bpool'); if (over && ((over.classList.contains('bdeck') && (bDragFrom === 'pool' || bDragSplittable())) || (over.classList.contains('bpool') && bDragFrom === 'deck'))) { e.preventDefault(); over.classList.add('drop'); } });
 $('builder').addEventListener('dragleave', e => { const o = e.target.closest('.bdeck,.bpool'); if (o) o.classList.remove('drop'); });
-$('builder').addEventListener('drop', e => { document.querySelectorAll('.bdeck.drop,.bpool.drop').forEach(x => x.classList.remove('drop')); const over = e.target.closest('.bdeck,.bpool'); if (!over || !bDragId) return; e.preventDefault(); if (over.classList.contains('bdeck') && bDragFrom === 'pool') bAdd(bDragId, 1); else if (over.classList.contains('bpool') && bDragFrom === 'deck') bAdd(bDragId, -1); bDragId = null; });
+$('builder').addEventListener('drop', e => { document.querySelectorAll('.bdeck.drop,.bpool.drop').forEach(x => x.classList.remove('drop')); const over = e.target.closest('.bdeck,.bpool'); if (!over || !bDragId) return; e.preventDefault(); if (over.classList.contains('bdeck') && bDragFrom === 'pool') bAdd(bDragId, 1); else if (over.classList.contains('bdeck') && bDragFrom === 'deck') bSplit(bDragId); else if (over.classList.contains('bpool') && bDragFrom === 'deck') bAdd(bDragId, -1); bDragId = null; });
 $('builder').addEventListener('dragend', () => { bDragId = null; document.querySelectorAll('.bdeck.drop,.bpool.drop').forEach(x => x.classList.remove('drop')); });
 try { const s = localStorage.getItem('bs-deck'); if (s) $('deckText').value = s; } catch (e) { }
 setTimeout(() => { try { renderLobbyList(); } catch (e) { } }, 0);
