@@ -88,6 +88,8 @@ body.ingame main{max-width:none;padding:6px}
 body.ingame h1{display:none}
 h1{font-size:18px;margin:4px 0 10px}
 .adm-only{display:none!important}
+html.admed #admEnd{display:none!important}#tkLock{display:none}html.tklock #tkLock{display:flex}
+
 body.ingame #appFoot,body.bc #appFoot,body.ingame #noticeBar,body.bc #noticeBar{display:none}
 #noticeBar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0;padding:10px 12px;border-radius:10px;background:#3a2f0a;border:1px solid #ffd36e;color:#ffe9a8;font-size:13px;line-height:1.5}#noticeBar[hidden]{display:none}#noticeBar span{flex:1;min-width:200px}#noticeBar a{background:#ffd36e;color:#1a1200;font-weight:800;border-radius:8px;padding:6px 12px;text-decoration:none;white-space:nowrap}#noticeBar button{background:none;border:0;color:#ffe9a8;font-size:20px;cursor:pointer;padding:0 4px}
 #appFoot{margin:24px 0 12px;padding-top:10px;border-top:1px solid var(--line)}#appFoot summary{cursor:pointer;font-size:13px;font-weight:700;list-style:none;padding:6px 0}#appFoot summary::-webkit-details-marker{display:none}#appFoot[open] summary{color:var(--accent,#ffd36e)}#appFoot .terms h4{margin:10px 0 2px;font-size:13px}#appFoot .terms p{margin:0;font-size:12.5px;line-height:1.6}body.adm .adm-only{display:inline-block!important}.admtag{font-size:12px;font-weight:800;color:#1a1200;background:#ffd36e;border-radius:6px;padding:2px 8px;vertical-align:middle;margin-left:6px;letter-spacing:.05em}

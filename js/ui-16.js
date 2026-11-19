@@ -92,6 +92,32 @@ $('admDkGet').onclick = () => admDkGet(); $('admDkPut').onclick = admDkPut;
 try { $('admDkAuto').checked = localStorage.getItem('bs-dk-auto') !== '0'; } catch (e) { }
 $('admDkAuto').onchange = () => { try { localStorage.setItem('bs-dk-auto', $('admDkAuto').checked ? '1' : '0'); } catch (e) { } };
 setTimeout(() => { try { if (window.ADMIN_ED && $('admDkAuto').checked && ($('admNcK').value || '').trim()) admDkGet(true); } catch (e) { } }, 2500);
+/* BSP ADMIN: 合言葉の確認(サーバーの合言葉と合うまで、全体をロックする)。見た目のロックなので、サーバー側の確認(401)が本当の守り */
+(function () {
+  if (!window.ADMIN_ED) return;
+  const root = document.documentElement; let busy = false, lastOk = 0;
+  const msg = t => { $('tkMsg').textContent = t; };
+  async function verify(key, quiet) {
+    if (busy) return; busy = true;
+    try {
+      if (!quiet) msg('確認しています…');
+      const r = await fetch(API + '/admin/notify', { headers: { authorization: 'Bearer ' + key }, cache: 'no-store' });
+      if (r.ok) { lastOk = Date.now(); try { localStorage.setItem('bs-adm-key', key); } catch (e) { } $('admNcK').value = key; root.classList.remove('tklock'); $('tkIn').value = ''; return; }
+      root.classList.add('tklock');
+      if (r.status === 401) { try { localStorage.removeItem('bs-adm-key'); } catch (e) { } $('admNcK').value = ''; msg('合言葉が違います。'); }
+      else if (r.status === 429) msg('間違いが続いたため、しばらく入力できません(約10分)。');
+      else msg('確認に失敗しました(' + r.status + ')。もう一度試してください。');
+    } catch (e) { root.classList.add('tklock'); msg('サーバーに接続できません。通信を確認して、もう一度「開く」を押してください。'); }
+    finally { busy = false; }
+  }
+  const go = () => { const k = $('tkIn').value.trim(); if (!k) { msg('合言葉を入力してください。'); return; } verify(k); };
+  $('tkGo').onclick = go; $('tkIn').onkeydown = e => { if (e.key === 'Enter') go(); };
+  let saved = ''; try { saved = localStorage.getItem('bs-adm-key') || ''; } catch (e) { }
+  if (saved) verify(saved); else msg('合言葉を入力してください。サーバーの合言葉と合わないと、使えません。');
+  const again = () => { let k = ''; try { k = localStorage.getItem('bs-adm-key') || ''; } catch (e) { } if (k && !root.classList.contains('tklock')) verify(k, true); };
+  setInterval(again, 10 * 60 * 1000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastOk > 2 * 60 * 1000) again(); });
+})();
 $('admSeenGo').onclick = async (quiet) => {
   const key = ($('admNcK').value || '').trim(), box = $('admSeenList'), msg = $('admSeenMsg');
   if (!key) { toast('「① 管理用の合言葉」を入力してください'); return; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }

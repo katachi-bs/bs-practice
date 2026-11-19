@@ -6,6 +6,7 @@
 <script>
 /* BSP ADMIN(管理者用の版): 同じアプリを、URLが bsp-admin で始まる2つ目のサイトにも置く。そのときだけ管理者モードが最初から入る(入口の鍵は、Cloudflare Accessのログイン) */
 window.ADMIN_ED = /^bsp-admin(\.|-)/.test(location.hostname) || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && /[?&]edition=admin\b/.test(location.search));
+if (window.ADMIN_ED) document.documentElement.classList.add('admed', 'tklock');   // BSP ADMIN: 合言葉の確認が済むまで、全体をロックする
 </script>
 <link rel="manifest" href="manifest.webmanifest" id="mfLink">
 <meta name="theme-color" content="#0d1220">
@@ -264,6 +265,14 @@ window.ADMIN_ED = /^bsp-admin(\.|-)/.test(location.hostname) || (/^(localhost|12
 <label class="ck" style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="shareRec"> 対戦記録をCPUの学習に使う(匿名)</label>
 </div><p class="note" style="margin-top:8px">BATTLE SPIRITS PRACTICE 非公式ファンツール</p></details>
 </main>
+<div id="tkLock" style="position:fixed;left:0;right:0;top:0;bottom:0;z-index:500;background:#0b1020;color:#e8ecf8;align-items:center;justify-content:center;padding:16px">
+  <div style="width:min(360px,100%);display:flex;flex-direction:column;gap:12px">
+    <div style="font-size:22px;font-weight:800;letter-spacing:.04em">BSP ADMIN</div>
+    <div id="tkMsg" style="font-size:13px;opacity:.85">合言葉を入力してください。サーバーの合言葉と合わないと、使えません。</div>
+    <input id="tkIn" type="password" autocomplete="off" placeholder="合言葉" style="font-size:16px;padding:10px 12px;border-radius:8px;border:1px solid #3b4a7a;background:#141c3a;color:#fff">
+    <button id="tkGo" type="button" style="font-size:15px;padding:10px;border-radius:8px;border:0;background:#2563eb;color:#fff;font-weight:700">開く</button>
+  </div>
+</div>
 <div id="admGate" hidden style="position:fixed;left:0;right:0;top:0;bottom:0;z-index:300;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center"><div class="box" style="min-width:260px;margin:0"><div class="row"><input id="admPass" type="password" placeholder="パスワード" autocomplete="off" style="width:170px"><button id="admGo">OK</button><button id="admCancel" class="sub">閉じる</button></div><p class="note" id="admMsg" style="margin:6px 0 0"></p></div></div>
 <div id="hedit" hidden>
   <div class="hehd"><b>盤面動画編集エディタ</b><span class="sp"></span>
