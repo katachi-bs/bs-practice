@@ -13,6 +13,7 @@ function mgPlace(it, def) {   // マジック: 使った人の盤面の真ん中
   const h = Math.max(110, r.height * (BC.on ? .62 : .5)), w = h * .69, art = artOf(String(def.id));
   const el = document.createElement('div'); el.className = 'mgp'; el.style.cssText = 'left:' + (r.left + r.width / 2 - w / 2) + 'px;top:' + (r.top + r.height / 2 - h / 2) + 'px;width:' + w + 'px;height:' + h + 'px;--tint:' + (COLOR_HEX[def.color] || '#6a7499') + (art ? ';background-image:url(' + art + ')' : '');
   if (!art) el.textContent = def.name; document.body.appendChild(el);
+  if (isSecretId(String(def.id)) && !fxOff) setTimeout(() => shineAt(el.getBoundingClientRect()), 300 / sp);
   const rot = !BC.on && key === 'opp' ? ' rotate(180deg)' : '';
   el.animate([{ transform: 'scale(.4)' + rot, opacity: 0 }, { transform: 'scale(1.06)' + rot, opacity: 1, offset: .7 }, { transform: 'scale(1)' + rot, opacity: 1 }], { duration: 300 / sp, easing: 'ease-out', fill: 'both' });
   setTimeout(() => { const tp = trashPt(key), rc = el.getBoundingClientRect(); if (!tp) { el.remove(); return; } el.animate([{ transform: 'none' + rot, opacity: 1 }, { transform: 'translate(' + (tp.x - rc.left - rc.width / 2) + 'px,' + (tp.y - rc.top - rc.height / 2) + 'px) scale(.18)' + rot, opacity: .25 }], { duration: 650 / sp, easing: 'ease-in', fill: 'forwards' }); }, 1500 / sp);

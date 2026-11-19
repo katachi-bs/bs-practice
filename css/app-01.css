@@ -88,7 +88,15 @@ body.ingame main{max-width:none;padding:6px}
 body.ingame h1{display:none}
 h1{font-size:18px;margin:4px 0 10px}
 .adm-only{display:none!important}
+.shn{position:fixed;pointer-events:none;overflow:hidden;border-radius:8px;z-index:450}
+.shn::before{content:"";position:absolute;top:-25%;bottom:-25%;left:-60%;width:42%;transform:skewX(-18deg);background:linear-gradient(100deg,transparent,rgba(255,255,255,.95) 50%,transparent);animation:shnsweep .85s ease-out both}
+.shn::after{content:"";position:absolute;left:0;right:0;top:0;bottom:0;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.55),rgba(255,226,120,.28) 45%,transparent 72%);animation:shnflash .85s ease-out both}
+.shn i{position:absolute;width:15px;height:15px;margin:-7px 0 0 -7px;background:#fff;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 5px #ffe68a);opacity:0;animation:shnstar .8s ease-out both}
+@keyframes shnsweep{from{left:-60%}to{left:125%}}
+@keyframes shnflash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+@keyframes shnstar{0%{opacity:0;transform:scale(0) rotate(0)}35%{opacity:1;transform:scale(1.25) rotate(45deg)}100%{opacity:0;transform:scale(.3) rotate(100deg)}}
 #instBox:not([hidden]){display:flex;flex-direction:column;gap:8px}
+#instBox:has(+ #lobby[hidden]){display:none!important}   /* ホーム画面が出ているときだけ見せる */
 html.admed #admEnd{display:none!important}#tkLock{display:none}html.tklock #tkLock{display:flex}
 
 body.ingame #appFoot,body.bc #appFoot,body.ingame #noticeBar,body.bc #noticeBar{display:none}

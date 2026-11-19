@@ -26,7 +26,7 @@ let CARD_LIST = [], SET_NAMES = [];
 const PACKS = {};              // 読み込んだ収録弾(IndexedDB): name -> {name, cards, images:{id:Blob}}
 const BLOB_URLS = [];
 const VARIANTS = [   // イラスト違い(カード番号は仮。正式な番号と画像が分かったら差し替え)
-  { id: '26RBS01-004-S01', of: '26RBS01-004', set: '26RBS01 創世の鼓動' },   // ククルアカトル(シークレット) 画像は 26RBS01-004-S01.jpg
+  { id: '26RBS01-004-S01', of: '26RBS01-004', set: '26RBS01 創世の鼓動', sec: 1 },   // ククルアカトル(シークレット) 画像は 26RBS01-004-S01.jpg
   { id: '26RSD09-V01', of: '26RSD01-014', set: '26RSD09' },   // フレイムハリケーン(RSD09) 画像は 26RSD09-V01.png
   { id: '26RSD10-V01', of: '26RSD03-014', set: '26RSD10' },   // テンタクルアタック(RSD10)
   { id: '26RBS02-CP01-V01', of: '26RBS02-CP01', set: 'プロモカード' },
@@ -42,6 +42,7 @@ const VARIANTS = [   // イラスト違い(カード番号は仮。正式な番�
   { id: '26RBS02-CP01-V11', of: '26RBS02-CP01', set: 'プロモカード' },
   { id: '26RBS02-CP01-V12', of: '26RBS02-CP01', set: 'プロモカード' }   // ゲートオープン、界放(プロモ・別絵)
 ];
+const isSecretId = id => { const v = VARIANTS.find(x => x.id === id); return !!(v && v.sec); };   // シークレット版(イラストは同じで、枠などが違う): 切り替えたとき・出したときだけ、光る演出をつける
 const SET_TITLE = { '26RSD01': 'エントリーデッキ【赫焔ノ風牙】', '26RSD02': 'エントリーデッキ【紫幻ノ血醒】', '26RSD03': 'エントリーデッキ【翆海ノ甲魚】', '26RSD04': 'エントリーデッキ【白命ノ鉱人】', '26RSD05': 'エントリーデッキ【煌陽ノ雷竜】', '26RSD06': 'エントリーデッキ【蒼淵ノ凶獣】', '26RSD09': 'アニメスターター【覚醒の煉凰】', '26RSD10': 'アニメスターター【深淵の怪鯨】', '26RSD11': 'アニメスターター【蒼風ノ剣豪】', '26RBS01': 'ブースター【創世の鼓動】', '26RBS02': 'ブースター【幻惑の翔風】', '26RBS03': 'ブースター【絶界の覇者】' };
 const setLabel = n => { n = String(n); { const m = n.match(/^(26R[A-Z]{2}\d{2})/); if (m && SET_TITLE[m[1]]) return m[1] + ' ' + SET_TITLE[m[1]]; } if (/^BS0[13]/.test(n)) return SET_RBS02(); return n; };
 let _rbs02 = '26RBS02 ブースター【幻惑の翔風】';
@@ -184,12 +185,27 @@ function artGroup(id) {
   return [base].concat(VARIANTS.filter(v => v.of === base).map(v => v.id)).filter(x => cardById(x));
 }
 let _bFlipId = '';
+function shineAt(r) {   // カードの上に、色違いのような光の演出を、一瞬だけ重ねる
+  try {
+    if (!r || !r.width || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    const el = document.createElement('div'); el.className = 'shn'; el.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px';
+    el.innerHTML = [[18, 22, 0], [78, 16, 90], [58, 52, 160], [26, 74, 230], [84, 80, 300], [48, 30, 380]].map(a => '<i style="left:' + a[0] + '%;top:' + a[1] + '%;animation-delay:' + a[2] + 'ms"></i>').join('');
+    document.body.appendChild(el); setTimeout(() => { try { el.remove(); } catch (e) { } }, 1300);
+  } catch (e) { }
+}
+function secShineSlot(sl) {   // 対戦中、シークレット版のカードが場に出たとき
+  if (fxOff || !V) return; const id = sl.dataset.slot; let cid = '';
+  [V.you, V.opp].forEach(P => { const f = ((P && P.field) || []).find(x => x.iid === id); if (f && f.def) cid = String(f.def.id); });
+  if (!isSecretId(cid)) return;
+  setTimeout(() => { const c = sl.querySelector('[data-card]') || sl; shineAt(c.getBoundingClientRect()); }, 520);
+}
 function bFlip(id, el) {
   const g = artGroup(id); if (g.length < 2 || !B.deck.has(id)) return;
   const nx = g[(g.indexOf(id) + 1) % g.length]; if (nx === id) return;
   const go = () => {
     const m = new Map(); [...B.deck].forEach(([k, n]) => { if (k === id) m.set(nx, (m.get(nx) || 0) + n); else m.set(k, (m.get(k) || 0) + n); });   // 同じ位置で入れ替え(すでに入っていれば、まとめる)
     B.deck = m; if (B.cover === id) B.cover = nx; _bFlipId = nx; bRender(); setTimeout(() => { _bFlipId = ''; }, 400);
+    if (isSecretId(nx)) setTimeout(() => { const t = document.querySelector('.bc[data-bid="' + String(nx).replace(/"/g, '') + '"]'); if (t) shineAt(t.getBoundingClientRect()); }, 120);
   };
   if (el && el.animate && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
     el.style.pointerEvents = 'none';

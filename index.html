@@ -52,11 +52,6 @@ if (window.ADMIN_ED) document.documentElement.classList.add('admed', 'tklock'); 
 
 <main>
 <div class="hrow"><h1>BATTLE SPIRITS PRACTICE <span class="admtag adm-only">管理者モード</span></h1><button id="admEnd" class="sub adm-only" type="button" style="margin-left:auto;padding:5px 12px;font-size:12px">管理者モードを終了</button><button id="pwaBtn" class="pwabtn" type="button" hidden>アプリとして入れる</button></div>
-<div id="instBox" class="box" hidden>
-  <div style="font-weight:700">アプリとして入れて使うのがおすすめです</div>
-  <div id="instTx" style="font-size:13px;line-height:1.6"></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="instGo" type="button" hidden>アプリとして入れる</button><button id="instLater" type="button" class="sub">あとで</button></div>
-</div>
 <div id="noticeBar" hidden><span id="noticeTx"></span><a id="noticeGo" target="_blank" rel="noopener" hidden></a><button type="button" id="noticeX" aria-label="閉じる">×</button></div>
 <div id="pwaBox" hidden><div class="pwaback" data-pwaclose="1"></div><div class="pwapanel" role="dialog" aria-label="アプリとして入れる方法">
   <div class="pwahd"><b>アプリとして入れる方法</b><button type="button" class="pwax" data-pwaclose="1" aria-label="閉じる">✕</button></div>
@@ -69,6 +64,11 @@ if (window.ADMIN_ED) document.documentElement.classList.add('admed', 'tklock'); 
   <p class="note">※ 更新は自動です(次に開いたときに新しい版になります)。対戦にはインターネットが必要です。入れたあとも、ブラウザ版は今までどおり使えます。</p>
 </div></div>
 
+<div id="instBox" class="box" hidden>
+  <div style="font-weight:700">アプリとして入れて使うのがおすすめです</div>
+  <div id="instTx" style="font-size:13px;line-height:1.6"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button id="instGo" type="button" hidden>アプリとして入れる</button><button id="instLater" type="button" class="sub">あとで</button></div>
+</div>
 <section id="lobby">
   <select id="first" hidden><option value="choose" selected>choose</option><option value="random">random</option><option value="host">host</option><option value="guest">guest</option></select>
   <input type="checkbox" id="mullOn" checked hidden>
