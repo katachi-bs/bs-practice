@@ -66,11 +66,28 @@ function pushState() {
   scheduleCpu();
 }
 let cpuT = null, gateUntil = 0;
+/* 演出つき進行: スタート → コア → ドロー → リフレッシュ → メイン を1ステップずつ進める。
+   各ステップの演出(コアが増える・カードが手札に入る・回復する)が終わってから次へ。エンドステップの効果の演出が終わるまでは、相手のターンを始めない */
+const PACE_BEAT = 700, PACE_STEPS = ['start', 'core', 'draw', 'refresh'];
+let paceT = 0, paceFloor = 0;
+function paceHold(ms) { paceFloor = Math.max(paceFloor, Date.now() + ms); }
+function paceKick() {
+  clearTimeout(paceT);
+  if (!G || !G.settings.paced || G.winner != null || !paceReady(G)) return;
+  const tick = () => {
+    if (!G || !G.settings.paced || !paceReady(G)) return;
+    const now = Date.now();
+    if (!document.hidden && (now < paceFloor || now < gateUntil || fxBusy || animStep || uiBusy() || pay)) { paceT = setTimeout(tick, 120); return; }
+    act(G, G.turn, { k: 'pace' }); pushState();
+  };
+  paceT = setTimeout(tick, 80);
+}
 function scheduleCpu() {
   clearTimeout(cpuT);
   if (!cpu || !G || G.winner != null) return;
   cpuT = setTimeout(() => {
     if (!cpu || !G) return;
+    if (paceReady(G)) { paceKick(); return; }   // スタート〜リフレッシュなどは、演出に合わせて画面側が進める
     if (Date.now() < gateUntil || fxBusy || animStep || uiBusy()) { scheduleCpu(); return; }
     const a = cpuDecide(G); if (!a) return;
     const n = G.log.length; act(G, 1, a);

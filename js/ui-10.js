@@ -123,7 +123,7 @@ function ctlHTML() {
   const my = V.turn === V.me, curS = animStep || V.step, idx = STEPS.indexOf(curS);
   const stepsHTML = '<div class="vsteps">' + STEPS.map((s, i) => '<div class="vs' + (i === idx ? ' on' : i < idx ? ' done' : '') + (V.noAttack && (s === 'attack' || s === 'main2') ? ' skip' : '') + '"><span class="n">' + STEP_NUM[s] + '</span>' + STEP_SHORT[s] + (V.noAttack && (s === 'attack' || s === 'main2') ? '(省略)' : '') + (i === idx ? '<span class="ar">◀</span>' : '') + '</div>').join('') +
     '<div class="vs nxt">↓ ' + (my ? pn(1 - V.me) : 'あなた') + 'のターンへ</div>' +
-    (my && !(V.battle || V.pending || V.mull || V.pick || V.winner != null) && !pay ? '<button class="endtop" data-next="1">' + STEP_SHORT[V.step] + '終了 ▶</button>' : '') + '</div>';
+    (my && !(V.battle || V.pending || V.mull || V.pick || V.winner != null || (!V.pause && PACE_STEPS.includes(V.step))) && !pay ? '<button class="endtop" data-next="1">' + STEP_SHORT[V.step] + '終了 ▶</button>' : '') + '</div>';
   const head = vsLine() + '<div class="turnbox"><b>' + V.turnNo + 'ターン目</b><span class="who">' + (my ? 'あなたの番' : pn(1 - V.me) + 'の番') + '</span></div>' + (pay ? stepsHTML.replace('class="vsteps"', 'class="vsteps pv2"') : '') + '<button class="sub sidetog" data-sidetog="1">' + (sideOpen ? '▲' : '▼') + '</button>';
   const warns = (V.noAttack ? '<div class="tag">先攻1ターン目: アタック不可</div>' : '') +
     '';
@@ -140,7 +140,7 @@ function ctlHTML() {
   let h = head + warns;
   h += stepsHTML;
   if (animStep) h += '<div class="ticker">▶ ' + esc(animMsg) + '</div>';
-  const busy = !!(V.battle || V.pending || V.mull || V.pick || V.winner != null);
+  const busy = !!(V.battle || V.pending || V.mull || V.pick || V.winner != null || (!V.pause && PACE_STEPS.includes(V.step)));
   h += '<button class="big" data-next="1"' + (my && !busy ? '' : ' disabled') + '>' + STEP_JP[V.step] + 'ステップを終了</button>';
   h += '<div class="row r1">' + (V.test ? '<button class="sub" data-draw="1">ドロー</button><button class="sub" data-addcore="1">コア+1</button>' : '') + menuBtns1 + '</div>';
   if (sel.size) h += '<div class="note" style="color:var(--ok)"><b>コア' + sel.size + '個を選択中</b> 移動先をタップ(他をクリックで解除)</div>';

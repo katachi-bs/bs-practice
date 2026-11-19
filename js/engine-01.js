@@ -108,7 +108,7 @@ function lg(G, p, m) { G.log.push({ p, m }); if (G.log.length > 120) G.log.shift
 function draw(P, n) { let c = 0; while (n-- > 0 && P.deck.length) { P.hand.push(P.deck.pop()); c++; } return c; }
 
 function newGame(defs0, defs1, settings) {
-  const s = Object.assign({ first: 'random', pause: false, test: false, lifeManual: false, autoEnd: true }, settings);
+  const s = Object.assign({ first: 'random', pause: false, test: false, lifeManual: false, autoEnd: true, paced: false }, settings);
   const choose = s.first === 'choose';
   const seed = s.seed != null ? s.seed >>> 0 : (Math.random() * 4294967296) >>> 0;
   seedRng(seed); _id = 1;
@@ -164,11 +164,17 @@ function enterStep(G, s) {
   G.trace.push({ s, t: G.turn, m: G.log[G.log.length - 1].m });
   if (s === 'main' && G.queue.length && G.winner == null) runQueue(G);
   if (s === 'end' && G.endLeft && G.endLeft.length && G.winner == null) runQueue(G);
-  if (s === 'end' && G.winner == null && !G.settings.pause && G.settings.autoEnd) { if (!G.pending && !G.queue.length && !(G.endLeft && G.endLeft.length) && !G.battle && G.step === 'end') { nextStep(G); return; } G.autoEnd = G.turnNo; }
+  if (s === 'end' && G.winner == null && !G.settings.pause && !G.settings.paced && G.settings.autoEnd) { if (!G.pending && !G.queue.length && !(G.endLeft && G.endLeft.length) && !G.battle && G.step === 'end') { nextStep(G); return; } G.autoEnd = G.turnNo; }
   // 自動ステップは一時停止が無効なら続けて進める(効果の発動窓はここに入る)
-  if (G.winner == null && AUTO.has(s) && !G.settings.pause) { if (s === 'draw' && (G.pending || G.queue.length)) G.autoAfter = G.turnNo; else nextStep(G); }
+  if (G.winner == null && AUTO.has(s) && !G.settings.pause && !G.settings.paced) { if (s === 'draw' && (G.pending || G.queue.length)) G.autoAfter = G.turnNo; else nextStep(G); }
 }
 
+// 演出つき進行(paced): スタート〜リフレッシュ、オートエンドを、ここでは進めない。画面側が演出の終わりを待ってから、1ステップずつ進める
+function paceReady(G) {
+  if (!G.settings.paced || G.settings.pause || G.winner != null || G.pending || G.queue.length || G.battle || G.mull || G.pick) return false;
+  if (AUTO.has(G.step)) return true;
+  return G.step === 'end' && !!G.settings.autoEnd && !(G.endLeft && G.endLeft.length);
+}
 function nextStep(G) {
   const i = STEPS.indexOf(G.step);
   G.battle = null; nxCleanup(G, 'step'); nxCleanup(G, 'battle');
@@ -255,7 +261,7 @@ function moveCard(G, pi, iid, to) {
 /* --- 操作の受付(ホストが全員分を検証して実行) --- */
 const STAMPS = ['😃', '😭', '😤', '😅'];
 function act(G, pi, a) {
-  if (_actDepth === 0 && G.rid && RECDB[G.rid] && G.winner == null && a && typeof a === 'object' && a.k !== 'stamp') { try { RECDB[G.rid].acts.push([pi, JSON.parse(JSON.stringify(a))]); } catch (e) { } }
+  if (_actDepth === 0 && G.rid && RECDB[G.rid] && G.winner == null && a && typeof a === 'object' && a.k !== 'stamp' && a.k !== 'pace') { try { RECDB[G.rid].acts.push([pi, JSON.parse(JSON.stringify(a))]); } catch (e) { } }
   _actDepth++; try { act1(G, pi, a); } finally { _actDepth--; }
 }
 function act1(G, pi, a) {
@@ -411,7 +417,8 @@ function actInner(G, pi, a) {
       break;
     }
     case 'addCore': if (!G.settings.test) break; P.reserve.push(mkCore(false)); lg(G, pi, 'リザーブにコア+1'); break;
-    case 'next': if (G.turn === pi && !G.battle && !G.pending) nextStep(G); break;
+    case 'next': if (G.settings.paced && !G.settings.pause && AUTO.has(G.step)) break; if (G.turn === pi && !G.battle && !G.pending) nextStep(G); break;
+    case 'pace': if (paceReady(G)) nextStep(G); break;
     case 'setPause': G.settings.pause = !!a.v; lg(G, pi, 'ステップ1〜4の一時停止: ' + (a.v ? 'ON' : 'OFF')); break;
   }
 }

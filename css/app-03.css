@@ -115,6 +115,8 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 @keyframes coreupg{0%{filter:drop-shadow(0 0 0 rgba(120,255,200,0))}25%{filter:drop-shadow(0 0 10px rgba(120,255,200,.95)) drop-shadow(0 0 18px rgba(120,255,200,.8))}100%{filter:drop-shadow(0 0 0 rgba(120,255,200,0))}}
 .card.hasart{background-size:cover;background-position:center;padding:0}
 .card.hasart .cost,.card.hasart .nm{display:none}
+/* 画像が2秒以内に出ないときは、カード名を代わりに出す(画像の読み込みは続けていて、届いたら画像に切り替わる) */
+.card.hasart.artwait{background-color:#1b2233}.card.hasart.artwait .cost,.card.hasart.artwait .nm{display:block}.card.hasart.artwait .nm{position:absolute;left:3px;right:3px;top:22%;text-align:center;font-weight:800;line-height:1.15;word-break:break-all;color:#fff;font-size:.9em;text-shadow:0 1px 2px #000}
 .card.hasart .lw{position:absolute;left:0;right:0;bottom:0;background:#000b;color:var(--gold);padding:0 2px;text-align:center;font-size:.95em}
 
 .cardbox.blking::after{content:'BLOCK';position:absolute;left:50%;top:-4px;transform:translateX(-50%);background:#3b7be0;color:#fff;font-size:9px;font-weight:800;padding:0 5px;border-radius:6px;z-index:2}
@@ -170,6 +172,8 @@ body.bc #fx.out .fxc{animation:bcfxout .26s cubic-bezier(.5,0,.8,.4) both}
 .cardbox .card.tapin{animation:tapin .6s ease-in-out both !important}.cardbox.tapping{animation:none !important}
 @keyframes untap{from{transform:translate(-50%,-50%) rotate(90deg)}to{transform:translate(-50%,-50%) rotate(0)}}
 .cardbox .card.untap{animation:untap 1s ease-in-out both !important}
+@keyframes hvrel{from{transform:translate(-50%,-50%) rotate(180deg)}to{transform:translate(-50%,-50%) rotate(90deg)}}
+.cardbox .card.hvrel{animation:hvrel 1s ease-in-out both !important}
 @keyframes popc{50%{transform:scale(1.35);filter:brightness(1.5)}}
 .cores.pop{animation:popc .5s ease-out both}
 .fly{position:fixed;z-index:60;width:24px;height:26px;background:var(--hex) center/100% 100% no-repeat;pointer-events:none;left:0;top:0}.fly.soul{width:30px;height:30px;background-image:var(--pent)}

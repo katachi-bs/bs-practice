@@ -153,7 +153,7 @@ $('bCpu').onclick = () => {
   const d = getDeck(); if (!d) return;
   cpu = true; solo = false; isHost = true; myDefs = d.defs; cpuSkip.clear(); oppD = oppDefsFor($('cpuDeck').value, d.defs);
   showGame();
-  G = newGame(d.defs, oppD, { first: $('first').value, test: DEV && $('testModeCpu').checked, mulligan: $('mullOn').checked });
+  G = newGame(d.defs, oppD, { first: $('first').value, test: DEV && $('testModeCpu').checked, mulligan: $('mullOn').checked, paced: true });
   G.cpuLv = 'strong'; G.names = [getName(), 'CPU'];
   pushState();
 };
@@ -162,7 +162,7 @@ $('bSolo').onclick = () => {
   const d = getDeck(); if (!d) return;
   solo = true; isHost = true; myDefs = d.defs; HIST.length = 0; oppD = oppDefsFor($('soloDeck').value, d.defs);
   showGame();
-  G = newGame(d.defs, oppD, { first: $('first').value, test: DEV && $('testMode').checked, mulligan: $('mullOn').checked });
+  G = newGame(d.defs, oppD, { first: $('first').value, test: DEV && $('testMode').checked, mulligan: $('mullOn').checked, paced: true });
   G.names = [getName(), '相手'];
   viewer = focusP() !== null ? focusP() : G.turn; pushState();
 };
@@ -206,8 +206,8 @@ function resetForNew() {
 function doRematch() {
   if (cpu || solo) {
     resetForNew();
-    if (cpu) { G = newGame(myDefs, oppD || myDefs.slice(), { first: $('first').value, test: DEV && $('testModeCpu').checked, mulligan: $('mullOn').checked }); G.cpuLv = 'strong'; G.names = [getName(), 'CPU']; }
-    else { HIST.length = 0; G = newGame(myDefs, oppD || myDefs, { first: $('first').value, test: DEV && $('testMode').checked, mulligan: $('mullOn').checked }); G.names = [getName(), '相手']; viewer = focusP() !== null ? focusP() : G.turn; }
+    if (cpu) { G = newGame(myDefs, oppD || myDefs.slice(), { first: $('first').value, test: DEV && $('testModeCpu').checked, mulligan: $('mullOn').checked, paced: true }); G.cpuLv = 'strong'; G.names = [getName(), 'CPU']; }
+    else { HIST.length = 0; G = newGame(myDefs, oppD || myDefs, { first: $('first').value, test: DEV && $('testMode').checked, mulligan: $('mullOn').checked, paced: true }); G.names = [getName(), '相手']; viewer = focusP() !== null ? focusP() : G.turn; }
     pushState(); return;
   }
   rematchMine = true;
@@ -235,7 +235,7 @@ function resetToHome(msg) {
   oldSiteShow();
 }
 function startGame() {
-  G = newGame(myDefs, guestDefs, { first: $('first').value, test: false, mulligan: $('mullOn').checked });
+  G = newGame(myDefs, guestDefs, { first: $('first').value, test: false, mulligan: $('mullOn').checked, paced: true });
   G.names = [getName(), guestName || 'ゲスト'];
   if (free.mine) { free.mine.st = 'play'; free.mine.n2 = G.names[1]; freeReg(); }
   specBroadcast({ t: 'snew', pl: G.names.slice(0, 2) });
@@ -255,7 +255,7 @@ const FXW = 2000;   // 効果の文言が出てから、実際の動きを見せ
 const sumFxDone = new Set();
 function slotHasSummonFx(id) { let k = null; [V.you, V.opp].forEach(P => { const f = (P.field || []).find(x => x.iid === id); if (f) k = f; }); return !!(k && k.def && (k.def.effects || []).some(e => /召喚時/.test(e.text || ''))); }
 let lastHandRects = null;
-let fxQ = [], fxBusy = false, anim = { hv90: new Set(), lvchg: new Map(), until: 0, coreUp: new Map(), tap: new Map(), summon: new Map(), flip: new Map(), drawn: new Map(), untap: new Map(), pop: {}, oppN: 0, oppAt: 0 };
+let fxQ = [], fxBusy = false, anim = { hvrel: new Map(), hv90: new Set(), lvchg: new Map(), until: 0, coreUp: new Map(), tap: new Map(), summon: new Map(), flip: new Map(), drawn: new Map(), untap: new Map(), pop: {}, oppN: 0, oppAt: 0 };
 function zoneRect(root, loc) {
   const el = document.querySelector(root + ' .cores[data-zloc="' + loc + '"]'); if (!el) return null;
   const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
@@ -320,7 +320,8 @@ function setV(v) {
   const idx = s => { const i = tr.findIndex(x => x.s === s); return i < 0 ? 0 : i * TICK; };
   if (newSeq && had && oldS) {
     const now = Date.now() + gd, fxd = V.fx && V.fx.length ? FXW : (V.pending ? FXW : 0), hasDraw = tr.some(x => x.s === 'draw');
-    const dAt = now + (hasDraw ? idx('draw') : fxd), rAt = now + idx('refresh');
+    const pOff = (V.paced && tr.length <= 1 && (V.step === 'core' || V.step === 'draw' || V.step === 'refresh')) ? PACE_BEAT : 0;   // 1ステップずつ進めるときは、ステップが変わってから一拍おいて動かす
+    const dAt = now + pOff + (hasDraw ? idx('draw') : fxd), rAt = now + pOff + idx('refresh');
     snap.p.forEach((n, i) => {
       const o = oldS.p[i], mine = i === V.me, key = mine ? 'me' : 'opp';
       if (n.hand && o.hand && (mine || V.spec)) (mine ? V.you : V.opp).hand.forEach(k => { if (!o.hand.has(k.iid)) anim.drawn.set(k.iid, V.spec && revRects[k.iid] ? now + 950 : dAt); });
@@ -353,6 +354,7 @@ function setV(v) {
     (V.evs || []).forEach(ev => { if (ev.t === 'coreAdd' && !ev.soul && !ev.sum && ev.iid && ev.n > 0) { const dl = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0), h0 = coreHoldN[ev.iid], un = now + dl + 1000; coreHoldN[ev.iid] = { until: Math.max(un, h0 && h0.until > now ? h0.until : 0), n: ev.n + (h0 && h0.until > now ? h0.n : 0) }; setTimeout(() => { if (typeof render === 'function' && V) render(); }, dl + 1050); } });
     (V.evs || []).forEach(ev => { if (ev.t === 'coreAdd' && ev.soul) { const dl = V.fx && V.fx.some(f => f.quick) ? 3300 : (V.fx && V.fx.length ? FXW : 0); soulHold[ev.iid] = now + dl + 1100; setTimeout(() => { if (typeof render === 'function' && V) render(); }, dl + 1150); } });   // ソウルコアが飛んで乗るまでは、カードの上に出さない
     Object.keys(snap.tapped).forEach(id => { if (oldS.tapped[id] && !snap.tapped[id]) anim.untap.set(id, soulHold[id] > now ? soulHold[id] + 450 : rAt); });
+    Object.keys(snap.hv || {}).forEach(id => { if (oldS.hv && oldS.hv[id] && !snap.hv[id] && snap.tapped[id]) anim.hvrel.set(id, rAt); });   // 重疲労 → 疲労(リフレッシュ)も、回復と同じように動かす
     Object.keys(snap.tapped).forEach(id => { if (id in oldS.tapped && !oldS.tapped[id] && snap.tapped[id]) anim.tap.set(id, now); });
     Object.keys(snap.hv || {}).forEach(id => { if (oldS.hv && id in oldS.hv && !oldS.hv[id] && snap.hv[id]) { anim.tap.set(id, now); if (oldS.tapped[id]) anim.hv90.add(id); else anim.hv90.delete(id); } });
     Object.keys(snap.tapped).forEach(id => { if (!(id in oldS.tapped)) { anim.summon.set(id, Date.now()); try { specFxEnter(id); } catch (e) { } } });
@@ -385,7 +387,19 @@ function setV(v) {
       busyUntil = Math.max(busyUntil, Date.now() + gd + w);
       clearTimeout(busyTimer); busyTimer = setTimeout(busyCheck, Math.max(60, busyUntil - Date.now() + 60));
     } }
+  if (G && G.settings && G.settings.paced && newSeq) {   // 1ステップずつ進めるとき、次へ進むまでの最低の待ち(演出の長さ)
+    const st = V.step, hasE = !!((V.fx && V.fx.length) || (V.evs || []).length);
+    let w = 0;
+    if (st === 'start') w = 1000;
+    else if (st === 'core') w = V.turnNo === 1 && G.first === V.turn ? 900 : PACE_BEAT + 1500;
+    else if (st === 'draw') w = PACE_BEAT + 1600;
+    else if (st === 'refresh') w = PACE_BEAT + 1200 + Math.min(8, oldS && oldS.p[V.turn] ? oldS.p[V.turn].ct.size : 0) * 90;
+    else if (st === 'end') w = hasE ? 2200 : 700;
+    else w = hasE ? 600 : 0;
+    paceHold(w);
+  }
   render();
+  paceKick();
   // 場のカードが抜けたら、残りのカードが横にスライドして詰まる(効果の演出が終わってから)
   if (oldMe === V.me) {
     const nw = grabRects().cards, now2 = Date.now();

@@ -240,6 +240,7 @@ function applyAnim() {
     const c0 = cb.querySelector('[data-card]'); const cu = c0 && anim.coreUp.get(c0.dataset.card);
     if (cu && now < cu.at + 1600) { cb.classList.add('coreup'); cb.style.setProperty('animation-delay', (cu.at - now) + 'ms', 'important'); if (cu.pop && !cu.done) { cu.done = true; const r = cb.getBoundingClientRect(); setTimeout(() => popText('コア+' + cu.n, r.left + r.width / 2, r.top + r.height / 2), Math.max(0, cu.at - now)); } }
   });
+  document.querySelectorAll('.cardbox.tapped:not(.heavy)').forEach(cb => { const c = cb.querySelector('[data-card]'); if (!c) return; const t = anim.hvrel.get(c.dataset.card); if (t !== undefined && now < t + 1000) { c.classList.add('hvrel'); c.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); cb.classList.add('untapping'); cb.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); } });
   document.querySelectorAll('.cardbox').forEach(cb => {
     const c = cb.querySelector('[data-card]'); if (!c || cb.classList.contains('tapped')) return;
     const t = anim.untap.get(c.dataset.card); if (t !== undefined && now < t + 1000) { c.classList.add('untap'); c.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); cb.classList.add('untapping'); cb.style.setProperty('animation-delay', (t - now) + 'ms', 'important'); }

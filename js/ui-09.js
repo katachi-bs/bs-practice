@@ -12,7 +12,29 @@ function artBlob(id, u) {
 const _artKeep = new Map();
 function keepArt(u) {
   if (!u || _artKeep.has(u)) { if (u && _artKeep.has(u)) { const v = _artKeep.get(u); _artKeep.delete(u); _artKeep.set(u, v); } return; }
-  try { const im = new Image(); im.decoding = 'async'; im.onerror = () => { if (u.slice(0, 5) === 'blob:' || u.slice(0, 5) === 'data:') return; _artBad.add(u); _artKeep.delete(u); clearTimeout(_badT); _badT = setTimeout(() => { try { if (typeof G !== 'undefined' && G && document.body.classList.contains('ingame')) render(); } catch (e) { } }, 250); }; im.src = u; if (im.decode) im.decode().catch(() => { }); _artKeep.set(u, im); if (_artKeep.size > 600) { _artKeep.delete(_artKeep.keys().next().value); } } catch (e) { }
+  try {
+    const im = new Image(); im.decoding = 'async';
+    if (!_artSeen.has(u)) { _artSeen.set(u, Date.now()); if (u.slice(0, 5) !== 'data:') setTimeout(() => { if (!_artOk.has(u)) artRerender(); }, ART_WAIT + 60); }   // 2秒たっても出ていなければ描き直して、カード名を出す
+    im.onload = () => { const was = _artSeen.has(u) && Date.now() - _artSeen.get(u) > ART_WAIT; _artOk.add(u); if (was) artRerender(); };
+    im.onerror = () => {
+      if (u.slice(0, 5) === 'blob:' || u.slice(0, 5) === 'data:') return;
+      _artBad.add(u); _artKeep.delete(u); artRerender(); artRetry(u, 0);   // 読み込めないあいだはカード名で表示し、あきらめずに読み込み直す
+    };
+    im.src = u; if (im.decode) im.decode().catch(() => { }); _artKeep.set(u, im); if (_artKeep.size > 600) { _artKeep.delete(_artKeep.keys().next().value); }
+  } catch (e) { }
+}
+const ART_WAIT = 2000, _artSeen = new Map(), _artOk = new Set();
+const artLate = u => !!u && !_artOk.has(u) && _artSeen.has(u) && Date.now() - _artSeen.get(u) > ART_WAIT;
+let _artRT = 0;
+function artRerender() { clearTimeout(_artRT); _artRT = setTimeout(() => { try { if (typeof G !== 'undefined' && G && document.body.classList.contains('ingame')) render(); else if (typeof V !== 'undefined' && V && document.body.classList.contains('ingame')) render(); } catch (e) { } }, 250); }
+function artRetry(u, n) {
+  const wait = Math.min(30000, 2000 * Math.pow(2, n));
+  setTimeout(() => {
+    const t = new Image(); t.decoding = 'async';
+    t.onload = () => { _artBad.delete(u); _artOk.add(u); _artKeep.delete(u); keepArt(u); artRerender(); };
+    t.onerror = () => artRetry(u, n + 1);
+    t.src = u + (u.indexOf('?') < 0 ? '?' : '&') + 'r=' + Date.now();   // 失敗した結果を覚えていることがあるので、毎回別のURLで試す
+  }, wait);
 }
 const _artBad = new Set(); let _badT = 0;
 const artOf = id => { const u = artOf0(id); if (!u || _artBad.has(u)) return ''; keepArt(u); return u; };
@@ -73,7 +95,7 @@ function mkThumb(u) {
   });
 }
 const artOf0 = id => { id = TOKEN_ART[id] || id; const v = VARIANTS.find(x => x.id === id); if (ART_EMBED[id]) return artBlob(id, ART_EMBED[id]); if (ART_URL[id]) return ART_URL[id]; return v ? (ART_EMBED[v.of] ? artBlob(v.of, ART_EMBED[v.of]) : (ART_URL[v.of] || '')) : ''; };
-const artCls = k => artQ(k.def.id) ? ' hasart' : '';
+const artCls = k => { if (!artQ(k.def.id)) return ''; return artLate(artSm(k.def.id)) ? ' hasart artwait' : ' hasart'; };
 const cardAttr = (k, own, zone) => 'style="--cc:' + (COLOR_HEX[k.def.color] || '#6a7499') + (artQ(k.def.id) ? ';background-image:url(' + artSm(k.def.id) + ')' : '') + '" data-card="' + k.iid + '" data-zone="' + zone + '" data-own="' + (own ? 1 : 0) + '"';
 function cardHTML(k, own, zone) {
   return '<div class="card' + artCls(k) + '" ' + cardAttr(k, own, zone) + '>' + cardInner(k.def, '') + '</div>';
