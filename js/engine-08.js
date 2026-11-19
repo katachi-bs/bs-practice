@@ -17,7 +17,7 @@ function cpuWantMull(G, i) {
   return low === 0 || mg >= Math.max(3, h.length - 1);
 }
 /* CPUの判断に使う重み(自己対戦で調整した値)。G.cpuW[i] があればそちらを使う */
-const CPUW = { sBp: 1, sEff: 400, sFirst: 4000, sNx: 980.553, sNx0: 2500, sMg: 525.679, keepRes: 0, lvBp: 1, lvMin: 0, lvNx: 800, lvOn: 1, lvPre: 99999, aFree: 3, aLife: 2, aSwarm: 1, aRisk: 2.005, aDef: 2, aThr: 0.874, bLife: 1, bTrade: 1, bBp: 0, aPushM: 0, aBait: 0, aEarly: 0, aEarlyT: 3, aTrade: 0, sRed: 0, sCoreE: 0, sCoreT: 3, tEx: 0 };   // 追加の判断材料は標準ではオフ(従来と同じ強さ)。学習で調整される
+const CPUW = { god: 0, godMs: 1000, godV: 3, sBp: 1, sEff: 400, sFirst: 4000, sNx: 980.553, sNx0: 2500, sMg: 525.679, keepRes: 0, lvBp: 1, lvMin: 0, lvNx: 800, lvOn: 1, lvPre: 99999, aFree: 3, aLife: 2, aSwarm: 1, aRisk: 2.005, aDef: 2, aThr: 0.874, bLife: 1, bTrade: 1, bBp: 0, aPushM: 0, aBait: 0, aEarly: 0, aEarlyT: 3, aTrade: 0, sRed: 0, sCoreE: 0, sCoreT: 3, tEx: 0 };   // 追加の判断材料は標準ではオフ(従来と同じ強さ)。学習で調整される
 // カードの役割(見えている情報だけで判断): 召喚時にコアが増える/召喚した時点で仕事を終える小型/軽減の助けになる小型
 const cpuHasSumCore = d => (d.effects || []).some(e => e.timing && e.timing.kind === 'trigger' && e.timing.event === 'summon' && (e.ops || []).some(o => o.op === 'voidCore'));
 const cpuDone = d => d.type === 'spirit' && d.cost <= 2 && (d.effects || []).filter(e => e.timing.kind !== 'keyword').every(e => e.timing.kind === 'trigger' && e.timing.event === 'summon');
@@ -125,7 +125,7 @@ function cpuBlockOld(G, i, b) {
   if (P.life.length <= dmg || P.life.length <= 2) return { k: 'block', iid: weak.k.iid };
   return { k: 'block', iid: null };
 }
-function cpuDecide(G, i = 1) {
+function cpuDecideBase(G, i = 1) {
   const P = G.p[i], O = G.p[1 - i];
   if (G.winner != null) return null;
   if (G.pick) return G.pick.pi === i ? { k: 'setFirst', first: true } : null;
@@ -176,6 +176,85 @@ function cpuDecide(G, i = 1) {
     if (atk) return { k: 'attack', iid: atk.iid };
   }
   return { k: 'next' };
+}
+// ===== 先読みCPU: 候補の手を最後まで試して、いちばん勝てる手を選ぶ。盤面を丸ごと複製して試すので、手札やデッキの並びも見えている(相手の手札も)。 =====
+let GOD_ON = false;
+const GOD_VARIANTS = [{}, { old: 1 }, { aThr: -1, aFree: 4.5, aRisk: 0.8 }, { aThr: 2.2, aRisk: 3 }];
+const godSig = G => G.turnNo + '|' + G.step + '|' + G.p.map(P => P.hand.length + ',' + P.field.length + ',' + P.reserve.length + ',' + P.trash.length + ',' + P.life.length + ',' + P.deck.length).join(';') + '|' + (G.pending ? 1 : 0) + (G.battle ? G.battle.phase : '') + '|' + G.log.length + '|' + G.winner;
+function godRollout(G, cap) {   // 両方の席を、ふつうのCPUで最後まで進める
+  let key = '', stuck = 0;
+  for (let s = 0; s < cap && G.winner == null; s++) {
+    let pi; const pd = G.pending;
+    if (G.pick) pi = G.pick.pi; else if (G.mull) pi = G.mull.order[G.mull.idx]; else if (pd) pi = pd.pi; else if (G.battle) pi = G.battle.prio; else pi = G.turn;
+    let a = cpuDecideBase(G, pi);
+    if (!a) { if (G.pick) a = { k: 'setFirst', first: true }; else if (G.mull) a = { k: 'mulligan', yes: false }; else if (G.battle) a = { k: G.battle.phase === 'block' ? 'block' : 'pass', iid: null }; else if (pd) { if (++stuck > 3) break; continue; } else a = { k: 'next' }; }
+    const before = godSig(G); act(G, pi, a);
+    if (a.k === 'play' && godSig(G) === before) cpuSkip.add(a.iid);
+    const k2 = G.turnNo + ':' + G.step; if (k2 !== key) { key = k2; cpuSkip.clear(); }
+  }
+}
+function godScore(G, i) {
+  if (G.winner === i) return 1 + 0.3 * Math.max(0, 1 - G.turnNo / 30);
+  if (G.winner != null) return -1 + 0.2 * Math.min(1, G.turnNo / 30);
+  return (G.p[i].life.length - G.p[1 - i].life.length) / 10;
+}
+function godCands(G, i) {
+  const P = G.p[i], res = P.reserve, out = [], b = G.battle;
+  if (b) { const u = usableFor(G, i).block; if (!u.length) return []; u.forEach(iid => out.push({ k: 'block', iid })); out.push({ k: 'block', iid: null }); return out; }
+  if (G.step === 'attack') { usableFor(G, i).attack.forEach(iid => out.push({ k: 'attack', iid })); out.push({ k: 'next' }); return out; }
+  const ids = res.slice().sort((a, b2) => (a.soul ? 1 : 0) - (b2.soul ? 1 : 0)).map(c => c.id);
+  P.hand.forEach(k => {
+    if (cpuSkip.has(k.iid)) return;
+    const r = payRequirement(P, k.def, {}); if (!r.ok) return;
+    if (k.def.type === 'magic') { if (!r.soul && r.need <= res.length && k.def.effects.some(e => e.timing.kind === 'main')) out.push({ k: 'play', iid: k.iid, pay: ids.slice(0, r.need), place: [] }); return; }
+    const place = minPlaceOf(k.def); if (r.need + place > res.length) return;
+    const spare = res.length - r.need, lv = (k.def.levels || []).filter(l => l.core <= spare && l.core >= place).sort((a, b2) => b2.core - a.core)[0], put = lv ? lv.core : place;
+    out.push({ k: 'play', iid: k.iid, pay: ids.slice(0, r.need), place: ids.slice(r.need, r.need + put) });
+    if (put > place) out.push({ k: 'play', iid: k.iid, pay: ids.slice(0, r.need), place: ids.slice(r.need, r.need + place) });
+  });
+  P.field.forEach(k => {
+    const L = k.def.levels || []; if (!L.length || !res.length) return;
+    const n = k.cores.length, nx = L.find(l => l.core > n); if (!nx) return; const need = nx.core - n; if (need <= 0 || need > res.length) return;
+    out.push({ k: 'moveCores', ids: ids.slice(0, need), to: { zone: 'card', iid: k.iid } });
+  });
+  out.push({ k: 'next' });
+  return out;
+}
+function cpuGod(G, i) {
+  const W = cpuW(G, i);
+  if (GOD_ON || G.winner != null || G.pick || G.mull || G.pending) return null;
+  const b = G.battle;
+  if (b) { if (b.phase !== 'block' || b.prio !== i || mustBlocker(G)) return null; }
+  else if (!(G.turn === i && (G.step === 'main' || G.step === 'main2' || (G.step === 'attack' && !G.noAttack)))) return null;
+  const base = cpuDecideBase(G, i); let cands = godCands(G, i); if (cands.length < 2) return null;
+  const key = a => JSON.stringify(a); const seen = new Set(), list = [];
+  [base].concat(cands).forEach(a => { if (!a) return; const k = key(a); if (!seen.has(k)) { seen.add(k); list.push(a); } });
+  const t0 = Date.now(), budget = W.godMs || 1000, V = GOD_VARIANTS.slice(0, Math.max(1, W.godV || 3));
+  GOD_ON = true; const cp = cpSave(G), skip = [...cpuSkip]; let best = null, bestV = -9;
+  try {
+    for (let ci = 0; ci < list.length; ci++) {
+      if (ci > 0 && Date.now() - t0 > budget) break;
+      let tot = 0, n = 0, bad = false;
+      for (const v of V) {
+        const G2 = cpLoad(cp); G2.rid = null; G2.cpuLv = ['strong', 'strong'];
+        G2.cpuW = [null, null]; G2.cpuW[i] = Object.assign({}, W, { god: 0 }); G2.cpuW[1 - i] = Object.assign({}, W, v, { god: 0 });
+        cpuSkip.clear(); skip.forEach(x => cpuSkip.add(x));
+        const s0 = godSig(G2); act(G2, i, JSON.parse(JSON.stringify(list[ci]))); if (godSig(G2) === s0) { bad = true; break; }
+        godRollout(G2, 2500); tot += godScore(G2, i); n++;
+      }
+      if (bad) continue;
+      const sc = tot / n + (ci === 0 ? 0.001 : 0);   // 同じくらいなら、ふだんのCPUの手を選ぶ
+      if (sc > bestV) { bestV = sc; best = list[ci]; }
+    }
+  } finally { RNGS.a = cp.rs; _id = cp.id; cpuSkip.clear(); skip.forEach(x => cpuSkip.add(x)); GOD_ON = false; }
+  return best;
+}
+
+
+
+function cpuDecide(G, i = 1) {
+  if (cpuStrong(G, i) && cpuW(G, i).god) { const a = cpuGod(G, i); if (a) return a; }
+  return cpuDecideBase(G, i);
 }
 
 /* --- 表示用の情報(相手の手札・デッキの中身は含めない) --- */

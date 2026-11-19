@@ -6,9 +6,8 @@ const HDIR=path.dirname(HP);   // 分割版(index.html + js/engine-*.js)にも�
 const eng=(html.match(/<script id="engine">([\s\S]*?)<\/script>/)||[])[1]||[...html.matchAll(/<script src="(js\/engine-[^"]+)"><\/script>/g)].map(m=>fs.readFileSync(path.join(HDIR,m[1]),'utf8')).join('');
 if(!eng)throw new Error('エンジンのコードが見つかりません');
 const ctx={console,Math,JSON,Date,setTimeout,clearTimeout,window:{}};vm.createContext(ctx);
-vm.runInContext(eng,ctx);const GODJS=path.join(__dirname,'god.js'),HAS_T=fs.existsSync(GODJS);
-if(HAS_T)vm.runInContext(fs.readFileSync(GODJS,'utf8'),ctx);   // 追加の学習用モジュール(あれば読み込む)
-vm.runInContext(HAS_T?'this.X={newGame,cleanDef,act,cpuDecide:cpuDecideTeacher,cpuDecideNormal,cpuSkip,CPUW,RECDB};':'this.X={newGame,cleanDef,act,cpuDecide,cpuSkip,CPUW,RECDB};',ctx);const X=ctx.X;
+vm.runInContext(eng,ctx);
+vm.runInContext('this.X={newGame,cleanDef,act,cpuDecide,cpuSkip,CPUW,RECDB};',ctx);const X=ctx.X;
 const vm2=require('vm'),cx2={window:{}};vm2.createContext(cx2);vm2.runInContext(fs.readFileSync(path.join(ROOT,'cards/cards-data.js'),'utf8'),cx2);
 const RAW={};cx2.window.CARD_DB.forEach(s=>s.cards.forEach(c=>{RAW[c.id]=c}));
 const CD={};const cdef=id=>CD[id]||(CD[id]=X.cleanDef(RAW[id]));

@@ -148,6 +148,7 @@ setTimeout(bbsLoad, 800);
   } catch (e) { }
 })();
 
+CPUW.god = 1; CPUW.godMs = 400; CPUW.godV = 3;   // アプリでは、先読みCPUを使う(エンジン単体のテストでは切ってある)
 $('cpuLv').onchange = () => { try { localStorage.setItem('bs-cpulv', $('cpuLv').value); } catch (e) { } };
 $('bCpu').onclick = () => {
   const d = getDeck(); if (!d) return;
