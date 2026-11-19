@@ -285,7 +285,7 @@ $('noticeX').onclick = () => { const b = $('noticeBar'); b.hidden = true; try { 
 // このアプリの通知(プッシュ)の登録。通知がオンで許可されているときだけ、プレイヤー名と一緒にサーバーへ登録する
 async function pushSync() {
   try {
-    if (window.ADMIN_ED || !PUSH_KEY || !('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
+    if (!PUSH_KEY || !('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
     const reg = await navigator.serviceWorker.ready; let sub = await reg.pushManager.getSubscription();
     if (!(ntPref() && Notification.permission === 'granted')) { if (sub) { const ep = sub.endpoint; await sub.unsubscribe().catch(() => { }); apiPost('/sub', { endpoint: ep }, 'DELETE'); } pushOn = false; return; }
     if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(PUSH_KEY) });

@@ -346,7 +346,7 @@ if (window.ADMIN_ED) document.documentElement.classList.add('admed', 'tklock'); 
 <script src="js/ui-16.js"></script>
 <script>/* アプリ(PWA)として使うための登録。失敗しても通常のサイトとして動く */
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) {}   // デッキ・履歴などの保存データを、ブラウザが自動で消さないようにお願いする
-try { if (!window.ADMIN_ED && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); } catch (e) {}</script>
+try { if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); } catch (e) {}</script>
 <script>/* アプリとして入れる方法の案内(ホーム右上のボタン) */
 (function () {
   try {
