@@ -26,6 +26,7 @@ let CARD_LIST = [], SET_NAMES = [];
 const PACKS = {};              // 読み込んだ収録弾(IndexedDB): name -> {name, cards, images:{id:Blob}}
 const BLOB_URLS = [];
 const VARIANTS = [   // イラスト違い(カード番号は仮。正式な番号と画像が分かったら差し替え)
+  { id: '26RBS01-004-S01', of: '26RBS01-004', set: '26RBS01 創世の鼓動' },   // ククルアカトル(シークレット) 画像は 26RBS01-004-S01.jpg
   { id: '26RSD09-V01', of: '26RSD01-014', set: '26RSD09' },   // フレイムハリケーン(RSD09) 画像は 26RSD09-V01.png
   { id: '26RSD10-V01', of: '26RSD03-014', set: '26RSD10' },   // テンタクルアタック(RSD10)
   { id: '26RBS02-CP01-V01', of: '26RBS02-CP01', set: 'プロモカード' },
