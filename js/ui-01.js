@@ -197,3 +197,21 @@ function bFiltered() {
     return true;
   });
 }
+/* 一覧は100枚ずつ作る(収録を選ばずに検索しても、全件を一度に作らない)。下へスクロールすると続きを足す */
+const B_CHUNK = 100; let _bShown = B_CHUNK, _bKey = '', _bPool = [];
+let _bSentIO = null;
+const bRoot = () => { const g = $('bGrid'); return g && g.scrollHeight > g.clientHeight + 2 ? g : null; };   // 画面が狭いときは、一覧ではなく画面全体がスクロールする
+function bSentinel() {
+  const g = $('bGrid'); if (_bSentIO) { _bSentIO.disconnect(); _bSentIO = null; } if (!g) return;
+  const old = g.querySelector('.bsent'); if (old) old.remove();
+  if (_bShown >= _bPool.length || !window.IntersectionObserver) return;
+  g.insertAdjacentHTML('beforeend', '<div class="bsent" style="grid-column:1/-1;height:2px"></div>');
+  _bSentIO = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) bMore(); }, { root: bRoot(), rootMargin: '700px' });
+  _bSentIO.observe(g.querySelector('.bsent'));
+}
+function bMore() {
+  const g = $('bGrid'); if (!g || _bShown >= _bPool.length) return;
+  const from = _bShown; _bShown = Math.min(_bPool.length, _bShown + B_CHUNK);
+  const old = g.querySelector('.bsent'); if (old) old.remove();
+  g.insertAdjacentHTML('beforeend', _bPool.slice(from, _bShown).map(c => thumbHTML(c, 'pool')).join('')); lazyBg(); bSentinel();
+}

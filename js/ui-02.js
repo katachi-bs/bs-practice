@@ -1,6 +1,8 @@
 function bRender() {
-  const list = bFiltered();
-  $('bGrid').innerHTML = list.length ? list.map(c => thumbHTML(c, 'pool')).join('') : '<span class="note">該当するカードがありません</span>';
+  const list = bFiltered(), key = list.length + ':' + (list[0] ? list[0].raw.id : '');
+  if (key !== _bKey) { _bKey = key; _bShown = B_CHUNK; }   // 絞り込みが変わったら先頭から。カードを足しただけなら、今の位置のまま
+  _bPool = list;
+  $('bGrid').innerHTML = list.length ? list.slice(0, _bShown).map(c => thumbHTML(c, 'pool')).join('') : '<span class="note">該当するカードがありません</span>';
   const rows = [...B.deck].map(([id, n]) => ({ c: cardById(id), id, n })).filter(x => x.c);
   $('bList').innerHTML = rows.length ? rows.map(({ c, n }) => thumbHTML(c, 'deck', n)).join('') : '<span class="note">左のカードをクリックで追加(同名3枚まで)。ここのカードをクリックで1枚減らし、右下の「削除」で全部抜きます。長押ししてドラッグすると並べ替えできます。</span>';
   const tot = deckTotal(), by = { spirit: 0, nexus: 0, magic: 0 }, curve = new Array(10).fill(0);
@@ -11,7 +13,7 @@ function bRender() {
   $('bCount2').textContent = tot;
   { const cc = coverOf({ cover: B.cover, cards: [...B.deck] }); const ce = $('bCover'); ce.setAttribute('style', coverStyle(cc)); ce.textContent = cc && artOf(String(cc.raw.id)) ? '' : (cc ? cc.def.name.slice(0, 5) : '表紙'); }
   $('bPackInfo').textContent = '';
-  lazyBg();
+  lazyBg(); bSentinel();
 }
 /* 画像の読み込み順: ①使うデッキ ②保存済みのデッキ ③デッキ作成の一覧は、画面に見えているカードだけ */
 let _bgIO = null;
@@ -20,7 +22,7 @@ function lazyBg() {
   const set = el => { const u = el.dataset.bg; if (u) { el.style.backgroundImage = 'url(' + u + ')'; el.removeAttribute('data-bg'); } };
   if (!window.IntersectionObserver) { els.forEach(set); return; }
   if (_bgIO) _bgIO.disconnect();
-  _bgIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { set(e.target); _bgIO.unobserve(e.target); } }), { root: $('bGrid'), rootMargin: '400px' });
+  _bgIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { set(e.target); _bgIO.unobserve(e.target); } }), { root: bRoot(), rootMargin: '400px' });
   els.forEach(el => _bgIO.observe(el));
 }
 function preloadDeckArt() {
@@ -143,7 +145,8 @@ $('bImg').onclick = async () => {
 };
 $('bSave').onclick = () => bSave();
 $('bUse').onclick = () => { if (!$('bName').value.trim()) $('bName').value = '無題のデッキ'; if (!deckTotal()) { toast('カードが入っていません'); return; } if (bSave(true)) { lobbyApply(B.name); closeBuilder(); say('デッキ「' + B.name + '」を使います'); } };
-['bQ', 'bColor', 'bType', 'bCost', 'bSet'].forEach(id => { $(id).oninput = () => { B.q = $('bQ').value; B.color = $('bColor').value; B.type = $('bType').value; B.cost = $('bCost').value; B.set = $('bSet').value; bRender(); }; });
+{ let qT = 0; ['bQ', 'bColor', 'bType', 'bCost', 'bSet'].forEach(id => { $(id).oninput = () => { B.q = $('bQ').value; B.color = $('bColor').value; B.type = $('bType').value; B.cost = $('bCost').value; B.set = $('bSet').value; clearTimeout(qT); if (id === 'bQ') qT = setTimeout(bRender, 200); else bRender(); }; });   // 文字入力は、打ち終わってから検索する
+ }
 $('bEx').onchange = () => { B.ex = $('bEx').checked; bRender(); };
 $('bExport').onclick = () => { const t = JSON.stringify({ name: $('bName').value.trim() || '無題', cards: [...B.deck] }); showSheet('<h3>デッキを書き出す</h3><div class="note">下の文字をコピーして保存すれば、別の端末でも「取り込む」で復元できます。</div><textarea readonly style="height:120px" onfocus="this.select()">' + esc(t) + '</textarea><div class="acts"><button class="sub" data-close="1">閉じる</button></div>'); };
 $('bImportJson').onclick = () => { showSheet('<h3>デッキを取り込む</h3><div class="note">書き出した文字を貼り付けてください。</div><textarea id="bImpText" style="height:120px"></textarea><div class="acts"><button id="bImpOk">取り込む</button><button class="sub" data-close="1">閉じる</button></div>'); $('bImpOk').onclick = () => { try { const o = JSON.parse($('bImpText').value); if (!o || !Array.isArray(o.cards)) throw 0; B.deck = new Map(); o.cards.forEach(([id, n]) => { if (cardById(String(id)) && n > 0) B.deck.set(String(id), Math.min(3, +n | 0)); }); B.name = String(o.name || '無題'); $('bName').value = B.name; hideSheet(); bRender(); toast('取り込みました'); } catch (e) { toast('形式が正しくありません'); } }; };
