@@ -29,7 +29,7 @@ function preloadDeckArt() {
   const ids = [], seen = new Set();
   names.forEach(n => { const d = all[n], cv = coverOf(d); if (cv && !seen.has(String(cv.raw.id))) { seen.add(String(cv.raw.id)); ids.push(String(cv.raw.id)); } });
   names.forEach(n => (all[n].cards || []).forEach(([id]) => { id = String(id); if (!seen.has(id)) { seen.add(id); ids.push(id); } }));
-  const urls = ids.map(id => artOf(id)).filter(Boolean); let i = 0;
+  const urls = ids.map(id => thumbOf(id) || artQ(id)).filter(Boolean); let i = 0;
   const next = () => { if (i >= urls.length) return; const im = new Image(); im.onload = im.onerror = next; im.src = urls[i++]; };
   for (let k = 0; k < 4; k++) next();
 }
