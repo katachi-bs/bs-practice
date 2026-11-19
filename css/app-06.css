@@ -7,6 +7,9 @@
 .bc .bstep b:hover{background:#145c2e}
 .bc:hover .bstep b{display:grid}
 @media (hover:none){.bc .bstep b{display:grid;width:1.45em;font-size:12px;opacity:.9}.bc .bstep{height:1.7em}}
+.bc .bflip{position:absolute;left:3px;bottom:calc(3px + 2.2em);background:#1d4ed8;color:#fff;border-radius:50%;width:1.9em;height:1.9em;display:grid;place-items:center;font-size:12px;font-weight:800;border:1px solid #fff6;cursor:pointer}
+@keyframes bflipin{from{transform:perspective(700px) rotateY(-90deg)}to{transform:perspective(700px) rotateY(0deg)}}
+.bc.flipin{animation:bflipin .2s ease-out}
 .bc .bdel{position:absolute;right:3px;bottom:3px;background:#c93a4a;color:#fff;border-radius:6px;padding:1px 5px;font-size:10px;font-weight:800;border:1px solid #fff6}
 .bc.over{border-color:#ff6e7f;box-shadow:0 0 0 2px #ff6e7f88}
 .brow{display:flex;align-items:center;gap:6px;background:#12141c;border:1px solid var(--line);border-left:5px solid var(--cc,#6a7499);border-radius:7px;padding:3px 6px;font-size:13px;cursor:grab}

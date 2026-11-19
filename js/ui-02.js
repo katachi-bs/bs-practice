@@ -4,7 +4,7 @@ function bRender() {
   _bPool = list;
   $('bGrid').innerHTML = list.length ? list.slice(0, _bShown).map(c => thumbHTML(c, 'pool')).join('') : '<span class="note">該当するカードがありません</span>';
   const rows = [...B.deck].map(([id, n]) => ({ c: cardById(id), id, n })).filter(x => x.c);
-  $('bList').innerHTML = rows.length ? rows.map(({ c, n }) => thumbHTML(c, 'deck', n)).join('') : '<span class="note">左のカードをクリックで追加(同名3枚まで)。ここのカードをクリックで1枚減らし、右下の「削除」で全部抜きます。長押ししてドラッグすると並べ替えできます。</span>';
+  $('bList').innerHTML = rows.length ? rows.map(({ c, n }) => thumbHTML(c, 'deck', n)).join('') : '<span class="note">左のカードをクリックで追加(同名3枚まで)。ここのカードの「－」で1枚減らし、右下の「削除」で全部抜きます。長押ししてドラッグすると並べ替えできます。</span>';
   const tot = deckTotal(), by = { spirit: 0, nexus: 0, magic: 0 }, curve = new Array(10).fill(0);
   rows.forEach(({ c, n }) => { by[c.def.type] += n; curve[Math.min(9, c.def.cost)] += n; });
   const mx = Math.max(1, ...curve);
@@ -157,6 +157,7 @@ $('builder').addEventListener('click', e => {
   const inf = t.closest('[data-binfo]'); if (inf) { const c = cardById(inf.dataset.binfo); if (c) showSheet(detailHTML({ def: c.def, cores: [], iid: '' }) + '<div class="acts"><button data-bpick="' + esc(c.raw.id) + '">デッキに入れる</button><button class="sub" data-close="1">閉じる</button></div>'); return; }
   const del = t.closest('[data-bdelall]'); if (del) { B.deck.delete(del.dataset.bdelall); bRender(); return; }
   const inc = t.closest('[data-binc]'); if (inc) { bAdd(inc.dataset.binc, 1); return; }
+  const fl = t.closest('[data-bflip]'); if (fl) { bFlip(fl.dataset.bflip, fl.closest('.bc')); return; }
   const dec = t.closest('[data-bdec]'); if (dec) { bAdd(dec.dataset.bdec, -1); return; }
   const add = t.closest('[data-badd]'); if (add) bAdd(add.dataset.badd, 1);
 });
@@ -166,7 +167,7 @@ document.addEventListener('click', e => { const p = e.target.closest && e.target
   const box = () => $('bList');
   document.addEventListener('pointerdown', e => {
     const el = e.target.closest && e.target.closest('#bList .bc'); if (!el) return;
-    if (e.target.closest('[data-bcover],[data-bdelall],[data-binfo],.bstep b')) return;
+    if (e.target.closest('[data-bcover],[data-bdelall],[data-binfo],[data-bflip],.bstep b')) return;
     sx = e.clientX; sy = e.clientY; clearTimeout(tm); mouse = e.pointerType === 'mouse'; cand = el;
     if (mouse) { if (e.button !== 0) cand = null; return; }
     tm = setTimeout(() => { drag = el; el.classList.add('lift'); try { navigator.vibrate && navigator.vibrate(25); } catch (x) { } toast('ドラッグして入れ替えできます'); }, 450);
@@ -178,7 +179,7 @@ document.addEventListener('click', e => { const p = e.target.closest && e.target
   });
   const end = () => {
     clearTimeout(tm); cand = null; if (!drag) return;
-    const ids = [...box().children].map(x => x.dataset.bdec).filter(Boolean), m = new Map();
+    const ids = [...box().children].map(x => x.dataset.bid).filter(Boolean), m = new Map();
     ids.forEach(id => { if (B.deck.has(id)) m.set(id, B.deck.get(id)); }); B.deck = m;
     drag.classList.remove('lift'); drag = null; dragSuppress = true; setTimeout(() => { dragSuppress = false; }, 150); bRender();
   };

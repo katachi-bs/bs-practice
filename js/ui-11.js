@@ -78,7 +78,15 @@ function preloadGameArt() {
       };
       chk();
     } else warmBig(list);
+    if (!G) warmAllThumbs();   // 通信対戦のゲストは、相手のデッキを知らない(知らないのが正しい)ので、全カードの小さい画像を、あらかじめ端末に保存しておく
   } catch (e) { }
+}
+let _warmAll = false;
+function warmAllThumbs() {
+  if (_warmAll) return; _warmAll = true;
+  const q = (window.THUMB_IDS || []).map(k => 'cards/thumbs/' + encodeURIComponent(k) + '.jpg');
+  const next = () => { const u = q.shift(); if (!u) return; const im = new Image(); im.onload = im.onerror = () => setTimeout(next, 60); im.src = u; };
+  setTimeout(() => { next(); next(); next(); }, 1500);
 }
 /* 大きい元画像(拡大表示・カットイン用)は、対戦が始まってから、じゃまにならないようにゆっくり先に読み込んでおく(端末に保存されるだけで、メモリには置かない) */
 function warmBig(ids) {
