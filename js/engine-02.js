@@ -134,7 +134,7 @@ function matchT(G, si, qi, k, t) {
   if (t.notShinkai && isShin(k)) return false;
   return true;
 }
-function perCount(G, si, per, self) { return G.p[si].field.filter(x => x.def.type === 'spirit' && !(per.notSelf && self && x === self) && (!per.team || (x.def.team || []).includes(per.team)) && (!per.family || x.def.family.includes(per.family)) && (!per.kw || x.def.effects.some(e2 => e2.keyword === per.kw && effectActive(x, e2))) && (!per.hasEv || x.def.effects.some(e2 => e2.timing.kind === 'trigger' && e2.timing.event === per.hasEv && effectActive(x, e2)))).length; }
+function perCount(G, si, per, self) { return G.p[si].field.filter(x => x.def.type === 'spirit' && !(per.notSelf && self && x === self) && (!per.team || (x.def.team || []).includes(per.team)) && (!per.family || x.def.family.includes(per.family)) && (!per.tapped || x.tapped) && (!per.kw || x.def.effects.some(e2 => e2.keyword === per.kw && effectActive(x, e2))) && (!per.hasEv || x.def.effects.some(e2 => e2.timing.kind === 'trigger' && e2.timing.event === per.hasEv && effectActive(x, e2)))).length; }
 // 今のBP(レベルのBP + 有効な常時効果)
 function curBP(G, k, why) {
   const li = lvInfo(k); let bp = li ? li.bp : 0;

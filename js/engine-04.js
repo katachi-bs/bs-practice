@@ -159,6 +159,7 @@ function execOp(G, it, op) {
     if (t.notSelf) t = Object.assign({}, t, { notIid: it.src });
     if (t.bpPlusEv) { const cn = G.p[it.pi].field.filter(x => x.def.type === 'spirit' && x.def.effects.some(e2 => e2.timing.kind === 'trigger' && e2.timing.event === t.bpPlusEv && effectActive(x, e2))).length; t = Object.assign({}, t, { bpMax: (t.bpMax | 0) + 1000 * cn }); }
     if (t.bpEqCtx) t = Object.assign({}, t, { bpEq: it.ctx && it.ctx.selfBp });
+    if (t.bpPlusFam) { const cn = G.p[it.pi].field.filter(x => x.def.type === 'spirit' && x.iid !== it.src && x.def.family.includes(t.bpPlusFam.family)).length; t = Object.assign({}, t, { bpMax: (t.bpMax | 0) + (t.bpPlusFam.n | 0) * cn }); }
     if (t.bpPlusKw) { const cn = G.p[it.pi].field.filter(x => x.def.type === 'spirit' && matchT(G, it.pi, it.pi, x, { kw: t.bpPlusKw })).length; t = Object.assign({}, t, { bpMax: (t.bpMax | 0) + 1000 * cn }); }
     if (t.countRest) { const r = t.countRest - (G.lastActN | 0) - (G.stashN | 0); if (r < 1) { lg(G, it.pi, '　' + it.name + ': 指定できる残り体数がありません'); return; } t = Object.assign({}, t, { count: r }); }
     if (t.bpEqSrc) { const S0 = G.p[it.pi].field.find(x => x.iid === it.src); if (S0) t = Object.assign({}, t, { bpEq: curBP(G, S0) }); }

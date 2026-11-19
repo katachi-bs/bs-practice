@@ -179,10 +179,11 @@ function mustBlocker(G) {
   const k = G.p[1 - b.pi].field.find(x => x.iid === b.must);
   return k && k.def.type === 'spirit' && canBlockWith(G, k) ? k.iid : null;
 }
+const clashFam = (G, pi, A) => G.turn === pi && G.p[pi].field.some(K => K.def.effects.some(e => e.timing.kind === 'static' && e.timing.when === 'step' && e.timing.step === 'attack' && e.timing.turn === 'you' && effectActive(K, e) && e.ops.some(o => o.op === 'grantClashFam' && A.def.family.includes(o.family))));   // 系統を持つ自分のスピリットすべてに【激突】を与える
 function clashForced(G) {
   const b = G.battle; if (!b || b.phase !== 'block') return false;
   const A = G.p[b.pi].field.find(x => x.iid === b.iid); if (!A) return false;
-  if (A.clashT !== G.turnNo && !A.def.effects.some(e => e.timing.kind === 'static' && e.timing.when === 'attacking' && e.ops.some(o => o.op === 'clash') && effectActive(A, e))) return false;
+  if (A.clashT !== G.turnNo && !clashFam(G, b.pi, A) && !A.def.effects.some(e => e.timing.kind === 'static' && e.timing.when === 'attacking' && e.ops.some(o => o.op === 'clash') && effectActive(A, e))) return false;
   return G.p[1 - b.pi].field.some(k => k.def.type === 'spirit' && !k.tapped && canBlockWith(G, k));
 }
 // 【起動】効果: メイン/フラッシュのタイミングで、コスト(コア支払い/疲労)を払って使う
