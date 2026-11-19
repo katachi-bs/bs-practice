@@ -22,6 +22,7 @@ function sha256hex(str) {
   return H.map(v => (v >>> 0).toString(16).padStart(8, '0')).join('');
 }
 function setAdm(on) {
+  if (on && !window.ADMIN_ED) on = false;   // 一般向けのアプリには、管理者モードはない(BSP ADMIN だけ)
   document.body.classList.toggle('adm', on); $('admBox').hidden = !on; $('vidBox').hidden = !on; if (on) admNtFill();
   try { localStorage.setItem('bs-adm', on ? '1' : ''); } catch (e) { }
   if (on) admFill();

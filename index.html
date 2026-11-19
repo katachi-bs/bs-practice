@@ -3,12 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.webmanifest">
+<script>
+/* BSP ADMIN(管理者用の版): 同じアプリを、URLが bsp-admin で始まる2つ目のサイトにも置く。そのときだけ管理者モードが最初から入る(入口の鍵は、Cloudflare Accessのログイン) */
+window.ADMIN_ED = /^bsp-admin(\.|-)/.test(location.hostname) || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && /[?&]edition=admin\b/.test(location.search));
+</script>
+<link rel="manifest" href="manifest.webmanifest" id="mfLink">
 <meta name="theme-color" content="#0d1220">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="バトスピ練習"><meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" href="icons/icon-192.png">
 <title>BATTLE SPIRITS PRACTICE</title>
+<script>if (window.ADMIN_ED) { document.title = 'BSP ADMIN'; var m = document.getElementById('mfLink'); m.href = 'manifest-admin.webmanifest'; m.setAttribute('crossorigin', 'use-credentials'); document.querySelector('meta[name="apple-mobile-web-app-title"]').content = 'BSP ADMIN'; var ai = document.querySelector('link[rel="apple-touch-icon"]'); ai.href = 'icons/admin-apple-touch-icon.png'; document.querySelector('link[rel="icon"]').href = 'icons/admin-192.png'; }</script>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <link rel="stylesheet" href="css/app-01.css">
 <link rel="stylesheet" href="css/app-02.css">
@@ -157,6 +162,11 @@
     <div id="admSmList" style="margin:6px 0;font-size:13px"></div>
     <div class="row"><label class="ck">追加するデッキ <select id="admSmSrc" style="width:auto;min-width:160px"></select></label><label class="ck">表示名 <input id="admSmName" maxlength="40" placeholder="(空なら【サンプル】＋デッキ名)" style="width:200px"></label><button id="admSmAdd" class="sub">追加</button></div>
     <div class="row"><button id="admSmPut">サーバーに反映(全員に配信)</button><button id="admSmDel" class="sub">配信をやめて初期に戻す</button><span class="note" id="admSmMsg"></span></div>
+
+    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">⑦ デッキの預かり(スマホとPCで同じデッキにする)</h3>
+    <p class="note">サーバーに、あなた専用のデッキの置き場所があります(管理者の合言葉が必要です)。「預かりへ送る」で、この端末のデッキを置き、別の端末で「預かりから取り込む」と、同じデッキになります。同じ名前のデッキは、保存日時が新しいほうが残ります。サンプルデッキは対象外です。</p>
+    <div class="row"><button id="admDkPut">預かりへ送る</button><button id="admDkGet" class="sub">預かりから取り込む</button><label class="ck"><input type="checkbox" id="admDkAuto" checked>開いたときに、自動で取り込む</label></div>
+    <p class="note" id="admDkMsg"></p>
   </div>
   <div class="box b-adm" id="vidBox" hidden>
     <h2>盤面動画編集エディタ</h2>
@@ -327,7 +337,7 @@
 <script src="js/ui-16.js"></script>
 <script>/* アプリ(PWA)として使うための登録。失敗しても通常のサイトとして動く */
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) {}   // デッキ・履歴などの保存データを、ブラウザが自動で消さないようにお願いする
-try { if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); } catch (e) {}</script>
+try { if (!window.ADMIN_ED && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {})); } catch (e) {}</script>
 <script>/* アプリとして入れる方法の案内(ホーム右上のボタン) */
 (function () {
   try {

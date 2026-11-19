@@ -70,6 +70,28 @@ $('admSmPut').onclick = async () => {
 $('admSmDel').onclick = async () => { const j = await admSmCall('DELETE'); if (j) $('admSmMsg').textContent = '配信をやめました(ページを開き直すと、アプリ内蔵の内容に戻ります)'; };
 setTimeout(() => { try { admSmLoad(); } catch (e) { } }, 1800);
 /* 管理者: 最近のログイン一覧 */
+/* 管理者: デッキの預かり(サーバーのデッキ置き場と、この端末のデッキを同じにする) */
+async function admDkApi(method, body) {
+  const key = ($('admNcK').value || '').trim(); if (!key) { toast('「① 管理用の合言葉」を入力してください'); return null; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
+  try { const r = await fetch(API + '/admin/decks', { method, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' }); const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $('admDkMsg').textContent = r.status === 401 ? '合言葉が違います' : r.status === 429 ? '試行が多すぎます。しばらくしてからやり直してください' : '失敗しました(' + r.status + ')'; return null; } return j; } catch (e) { $('admDkMsg').textContent = '通信エラー'; return null; }
+}
+function admDkNorm(d) { return d && Array.isArray(d.cards) ? { cards: d.cards.map(c => [String(c[0]), c[1] | 0]).filter(c => c[0] && c[1] > 0), t: +d.t || 0, cover: typeof d.cover === 'string' ? d.cover : undefined } : null; }
+async function admDkGet(quiet) {
+  const j = await admDkApi('GET'); if (!j) return; const un = userDecks(); let n = 0;
+  Object.keys(j.decks || {}).forEach(k => { const r = admDkNorm(j.decks[k]); if (!r || !r.cards.length) return; const l = un[k]; if (!l || (r.t || 0) > (l.t || 0)) { un[k] = Object.assign({}, l || {}, { t: r.t || Date.now(), cards: r.cards }); if (r.cover) un[k].cover = r.cover; delete un[k].sample; n++; } });
+  if (n) { try { localStorage.setItem('bs-decks', JSON.stringify(un)); } catch (e) { } try { bRefreshSelects(); } catch (e) { } }
+  $('admDkMsg').textContent = n ? n + '個のデッキを取り込みました' : '取り込むデッキはありませんでした(この端末のほうが新しい、または預かりが空です)'; if (n || !quiet) toast($('admDkMsg').textContent);
+}
+async function admDkPut() {
+  const un = userDecks(), cur = await admDkApi('GET'); if (!cur) return; const m = cur.decks || {}; let n = 0;
+  Object.keys(un).forEach(k => { const l = un[k]; if (!l || l.sample || !Array.isArray(l.cards) || !l.cards.length) return; const r = m[k]; if (!r || (l.t || 0) >= (r.t || 0)) { m[k] = { cards: l.cards.map(c => [String(c[0]), c[1] | 0]), t: l.t || Date.now(), cover: l.cover || undefined }; n++; } });
+  const j = await admDkApi('PUT', { decks: m }); if (j) { $('admDkMsg').textContent = n + '個を送りました(預かりは合計 ' + j.n + '個)'; toast($('admDkMsg').textContent); }
+}
+$('admDkGet').onclick = () => admDkGet(); $('admDkPut').onclick = admDkPut;
+try { $('admDkAuto').checked = localStorage.getItem('bs-dk-auto') !== '0'; } catch (e) { }
+$('admDkAuto').onchange = () => { try { localStorage.setItem('bs-dk-auto', $('admDkAuto').checked ? '1' : '0'); } catch (e) { } };
+setTimeout(() => { try { if (window.ADMIN_ED && $('admDkAuto').checked && ($('admNcK').value || '').trim()) admDkGet(true); } catch (e) { } }, 2500);
 $('admSeenGo').onclick = async (quiet) => {
   const key = ($('admNcK').value || '').trim(), box = $('admSeenList'), msg = $('admSeenMsg');
   if (!key) { toast('「① 管理用の合言葉」を入力してください'); return; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
@@ -119,13 +141,14 @@ $('admPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('admGo'
   hr.addEventListener('mousedown', e => { if (e.detail > 1) e.preventDefault(); });
   hr.addEventListener('selectstart', e => e.preventDefault());
   t.addEventListener('click', () => {
+    if (!window.ADMIN_ED) return;
     const now = Date.now(); ck.push(now); if (ck.length > 6) ck.shift();
     if (ck.length < 6) return;
     const d = ck.slice(1).map((v, i) => v - ck[i]);
     if (d[0] < 1000 && d[1] < 1000 && d[2] >= 1000 && d[2] <= 5000 && d[3] < 1000 && d[4] < 1000) { ck.length = 0; admGateOpen(); }
   });
 }
-try { if (localStorage.getItem('bs-adm') === '1') setAdm(true); } catch (e) { }
+try { if (window.ADMIN_ED) { setAdm(true); document.title = 'BSP ADMIN'; } else localStorage.removeItem('bs-adm'); } catch (e) { }
 /* カードタイルの行の高さ(縦横比1:1.4)を列幅から決める */
 function fixRows(el) {
   const cols = getComputedStyle(el).gridTemplateColumns.split(' ').map(parseFloat).filter(x => x > 0);

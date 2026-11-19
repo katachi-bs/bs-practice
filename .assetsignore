@@ -4,3 +4,4 @@ wrangler.jsonc
 README.md
 cloudflare
 *.zip
+wrangler.admin.jsonc
