@@ -119,14 +119,13 @@ $('admPass').addEventListener('keydown', e => { if (e.key === 'Enter') $('admGo'
   hr.addEventListener('mousedown', e => { if (e.detail > 1) e.preventDefault(); });
   hr.addEventListener('selectstart', e => e.preventDefault());
   t.addEventListener('click', () => {
-    if (!admPC()) return;
     const now = Date.now(); ck.push(now); if (ck.length > 6) ck.shift();
     if (ck.length < 6) return;
     const d = ck.slice(1).map((v, i) => v - ck[i]);
     if (d[0] < 1000 && d[1] < 1000 && d[2] >= 1000 && d[2] <= 5000 && d[3] < 1000 && d[4] < 1000) { ck.length = 0; admGateOpen(); }
   });
 }
-try { if (localStorage.getItem('bs-adm') === '1' && admPC()) setAdm(true); } catch (e) { }
+try { if (localStorage.getItem('bs-adm') === '1') setAdm(true); } catch (e) { }
 /* カードタイルの行の高さ(縦横比1:1.4)を列幅から決める */
 function fixRows(el) {
   const cols = getComputedStyle(el).gridTemplateColumns.split(' ').map(parseFloat).filter(x => x > 0);

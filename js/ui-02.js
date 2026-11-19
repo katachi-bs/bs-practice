@@ -157,7 +157,7 @@ $('builder').addEventListener('click', e => {
   const inf = t.closest('[data-binfo]'); if (inf) { const c = cardById(inf.dataset.binfo); if (c) showSheet(detailHTML({ def: c.def, cores: [], iid: '' }) + '<div class="acts"><button data-bpick="' + esc(c.raw.id) + '">デッキに入れる</button><button class="sub" data-close="1">閉じる</button></div>'); return; }
   const del = t.closest('[data-bdelall]'); if (del) { B.deck.delete(del.dataset.bdelall); bRender(); return; }
   const inc = t.closest('[data-binc]'); if (inc) { bAdd(inc.dataset.binc, 1); return; }
-  const fl = t.closest('[data-bflip]'); if (fl) { bFlip(fl.dataset.bflip, fl.closest('.bc')); return; }
+  { const tile = t.closest('#bList .bc'); if (tile && tile.dataset.bid && !t.closest('.bstep,[data-bcover],[data-bdelall],[data-binfo]')) { bFlip(tile.dataset.bid, tile); return; } }   // カードそのものを押すと、別のイラストがあれば順に切り替わる(ボタンは出さない隠し操作。なければ何も起きない)
   const dec = t.closest('[data-bdec]'); if (dec) { bAdd(dec.dataset.bdec, -1); return; }
   const add = t.closest('[data-badd]'); if (add) bAdd(add.dataset.badd, 1);
 });
@@ -167,7 +167,7 @@ document.addEventListener('click', e => { const p = e.target.closest && e.target
   const box = () => $('bList');
   document.addEventListener('pointerdown', e => {
     const el = e.target.closest && e.target.closest('#bList .bc'); if (!el) return;
-    if (e.target.closest('[data-bcover],[data-bdelall],[data-binfo],[data-bflip],.bstep b')) return;
+    if (e.target.closest('[data-bcover],[data-bdelall],[data-binfo],.bstep b')) return;
     sx = e.clientX; sy = e.clientY; clearTimeout(tm); mouse = e.pointerType === 'mouse'; cand = el;
     if (mouse) { if (e.button !== 0) cand = null; return; }
     tm = setTimeout(() => { drag = el; el.classList.add('lift'); try { navigator.vibrate && navigator.vibrate(25); } catch (x) { } toast('ドラッグして入れ替えできます'); }, 450);

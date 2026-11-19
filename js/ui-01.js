@@ -177,7 +177,7 @@ function bAdd(id, d) {
   if (next <= 0) B.deck.delete(id); else B.deck.set(id, next);
   bRender();
 }
-/* イラスト違い: 同じカードの別イラスト(VARIANTS)があるときだけ、デッキ一覧のカードで切り替えられる。別のイラストがなければ何も出ない・何もしない */
+/* イラスト違い(隠し操作): 同じカードの別イラスト(VARIANTS)があるとき、デッキ一覧のカードをクリックすると、裏返って次のイラストに切り替わる。別のイラストがなければ何もしない */
 function artGroup(id) {
   const c = cardById(id); if (!c) return [id]; const base = String(c.raw.altOf || id);
   return [base].concat(VARIANTS.filter(v => v.of === base).map(v => v.id)).filter(x => cardById(x));
@@ -201,7 +201,7 @@ function thumbHTML(c, mode, nOverride) {
   const act = mode === 'view' ? '' : mode === 'deck' ? ' data-bid="' + esc(id) + '" data-bdrag="' + esc(id) + '"' : ' draggable="true" data-badd="' + esc(id) + '"';
   return '<div class="bc' + (art ? ' hasimg' : '') + (mode === 'deck' && nameCount(d.name) > 3 ? ' over' : '') + (mode === 'deck' && _bFlipId === id ? ' flipin' : '') + '"' + act + (mode === 'view' ? ' data-vinfo="' + esc(id) + '"' : '') + ' style="--cc:' + (COLOR_HEX[d.color] || '#6a7499') + (art && mode !== 'pool' ? ';background-image:url(' + au + ')' : '') + '"' + (art && mode === 'pool' ? ' data-bg="' + au + '"' : '') + '>' +
     '<span class="bcost">' + d.cost + '</span><span class="bn">' + esc(d.name) + '</span><span class="bid">' + esc(c.raw.altOf || d.id) + ' / ' + TYPE_JP[d.type] + (c.raw.altOf ? ' <b class="balt">別絵</b>' : '') + '</span>' +
-    (n ? (mode === 'deck' ? '<span class="bcnt bstep"><b data-bdec="' + esc(id) + '" title="1枚減らす">－</b><i>' + n + '</i><b data-binc="' + esc(id) + '" title="1枚増やす">＋</b></span>' : '<span class="bcnt">' + n + '</span>') : '') + (mode === 'deck' ? '<span class="bstar' + (B.cover === id ? ' on' : '') + '" data-bcover="' + esc(id) + '" title="表紙にする">' + (B.cover === id ? '★表紙' : '☆') + '</span>' : '') + (mode === 'deck' && artGroup(id).length > 1 ? '<span class="bflip" data-bflip="' + esc(id) + '" title="別のイラストに切り替え">⟲</span>' : '') + (mode === 'view' ? '' : '<span class="bi" data-binfo="' + esc(id) + '">i</span>' + (n ? '<span class="bdel" data-bdelall="' + esc(id) + '">削除</span>' : '')) + '</div>';
+    (n ? (mode === 'deck' ? '<span class="bcnt bstep"><b data-bdec="' + esc(id) + '" title="1枚減らす">－</b><i>' + n + '</i><b data-binc="' + esc(id) + '" title="1枚増やす">＋</b></span>' : '<span class="bcnt">' + n + '</span>') : '') + (mode === 'deck' ? '<span class="bstar' + (B.cover === id ? ' on' : '') + '" data-bcover="' + esc(id) + '" title="表紙にする">' + (B.cover === id ? '★表紙' : '☆') + '</span>' : '') + (mode === 'view' ? '' : '<span class="bi" data-binfo="' + esc(id) + '">i</span>' + (n ? '<span class="bdel" data-bdelall="' + esc(id) + '">削除</span>' : '')) + '</div>';
 }
 function bFiltered() {
   const q = B.q.trim().toLowerCase();
