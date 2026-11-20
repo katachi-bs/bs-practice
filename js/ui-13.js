@@ -324,7 +324,12 @@ function setOpen() {
   $('setName').value = ($('myName').value || '').trim(); $('setNt').checked = ntPref(); $('setSnd').checked = SND.on; $('setVol').value = Math.round(SND.vol * 100); setNtMsg(); setCoreFill(); setSlvFill(); setIcoFill(); ov.hidden = false;
 }
 function setIcoFill() { $('setIco').innerHTML = iconSpan(myIcon(), ($('myName').value || '').trim() || '?', 56); }
-function setCoreFill() { const cur = lsGet('bs-core', ''); $('setCore').innerHTML = CORE_COL.map(o => '<button type="button" class="' + (cur === o[0] ? 'on' : 'sub') + '" data-core="' + o[0] + '" style="padding:6px 10px;font-size:13px">' + o[1] + '</button>').join(''); }
+const _coreUrl = {};
+async function coreUrlOf(o) { if (_coreUrl[o[0]]) return _coreUrl[o[0]]; let u = ''; if (o[2] == null) { await hexImg(); u = _hex0 || ''; } else u = await coreTint(o[2]); return (_coreUrl[o[0]] = u); }
+async function setCoreFill() {
+  const cur = lsGet('bs-core', ''), us = await Promise.all(CORE_COL.map(coreUrlOf));
+  $('setCore').innerHTML = '<div style="display:flex;gap:10px;flex-wrap:wrap;background:#000;padding:10px;border-radius:10px">' + CORE_COL.map((o, i) => '<button type="button" data-core="' + o[0] + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;background:#000;border:2px solid ' + (cur === o[0] ? '#ffd34d' : '#444') + ';border-radius:10px;color:#fff;font-size:12px;cursor:pointer"><span style="width:52px;height:52px;background:url(\'' + us[i] + '\') center/contain no-repeat"></span>' + o[1] + '</button>').join('') + '</div>';
+}
 function setSlvFill() { const cur = lsGet('bs-sleeve', ''), L = slvList(); $('setSlvList').innerHTML = L.length ? L.slice().reverse().map(x => '<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><img src="' + x.u + '" data-slv="' + x.id + '" style="width:62px;border-radius:5px;cursor:pointer;border:2px solid ' + (cur === x.id ? 'var(--acc)' : 'transparent') + '"><button type="button" class="sub" data-slvdel="' + x.id + '" style="padding:2px 8px;font-size:11px">削除</button></div>').join('') : '<span class="note">まだありません</span>'; }
 function setNtMsg() {
   const el = $('setNtMsg'); if (!el) return; const p = 'Notification' in window ? Notification.permission : 'none';
@@ -445,7 +450,7 @@ async function coreTint(deg) {
   const rgb = (h, s, l) => { h = ((h % 360) + 360) % 360 / 360; if (!s) { const v = l * 255; return [v, v, v]; } const q = l < .5 ? l * (1 + s) : l + s - l * s, pp = 2 * l - q, f = t => { t = (t + 1) % 1; return 255 * (t < 1 / 6 ? pp + (q - pp) * 6 * t : t < .5 ? q : t < 2 / 3 ? pp + (q - pp) * (2 / 3 - t) * 6 : pp); }; return [f(h + 1 / 3), f(h), f(h - 1 / 3)]; };
   let sh = 0, sw = 0, bx = 0, by = 0; for (let i = 0; i < p.length; i += 4) { if (p[i + 3] < 200) continue; const [h, s] = hsl(p[i], p[i + 1], p[i + 2]); if (s > .3) { sh += Math.cos(h * Math.PI / 180) * s; sw += Math.sin(h * Math.PI / 180) * s; } }
   const base = (Math.atan2(sw, sh) * 180 / Math.PI + 360) % 360;
-  for (let i = 0; i < p.length; i += 4) { if (!p[i + 3]) continue; let [h, s, l] = hsl(p[i], p[i + 1], p[i + 2]); if (deg < 0) { s *= .08; l = Math.min(1, l * .75 + .3); } else h += deg - base; const o = rgb(h, s, l); p[i] = o[0]; p[i + 1] = o[1]; p[i + 2] = o[2]; }
+  for (let i = 0; i < p.length; i += 4) { if (!p[i + 3]) continue; let [h, s, l] = hsl(p[i], p[i + 1], p[i + 2]); if (deg < 0) { s *= .08; l = Math.min(1, l * .75 + .3); } else { h += deg - base; if (s > .12) { s = Math.min(1, s * 1.6 + .35); l = l < .6 ? l * .4 : Math.min(1, .24 + (l - .6) * 1.9); } } const o = rgb(h, s, l); p[i] = o[0]; p[i + 1] = o[1]; p[i + 2] = o[2]; }
   x.putImageData(d, 0, 0); return c.toDataURL('image/png');
 }
 async function coreApply(key) {
