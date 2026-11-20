@@ -17,13 +17,13 @@ function coreOutNext(G) {
     if (!K) { cs.jobs.shift(); continue; }
     if (j.qi !== cs.pi && K.def.effects.some(e => e.timing.kind === 'static' && effectActive(K, e) && e.ops.some(o => o.op === 'coreLock'))) { cs.rs.push('「' + K.def.name + '」のコアは、相手の効果では移動できません'); lg(G, cs.pi, '　「' + K.def.name + '」のコアは相手の効果では移動できない'); cs.jobs.shift(); continue; }
     const len = K.cores.length, norm = K.cores.filter(c => !c.soul), soul = K.cores.filter(c => c.soul);
-    let rem = j.leave != null ? len - j.leave : Math.min(j.n, len);
-    if (j.non) rem = Math.min(rem, norm.length);
+    let rem = j.leave != null ? len - j.leave : j.leaveNon != null ? norm.length - j.leaveNon : Math.min(j.n, len);
+    if (j.non || j.leaveNon != null) rem = Math.min(rem, norm.length);
     if (j.keep != null) rem = Math.min(rem, len - j.keep);
     { const fnm = coreFloorSrc(G, K); if (fnm && rem >= len) { rem = len - 1; const r = '「' + fnm + '」の効果により、「' + K.def.name + '」のコアは1個より少なくならないため、1個は残ります'; cs.rs.push(r); lg(G, cs.pi, '　' + cs.name + ': ' + r); } }
     if (cs.pi !== j.qi && rem >= len && coreFloorOpp(G, K)) { rem = len - 1; const r = '「' + K.def.name + '」のコアは相手の効果では1個より少なくならないため、1個は残ります'; cs.rs.push(r); lg(G, cs.pi, '　' + cs.name + ': ' + r); }
     if (rem <= 0) { const r = '「' + K.def.name + '」から取り除けるコアがありません(何も起きません)'; cs.rs.push(r); lg(G, cs.pi, '　' + cs.name + ': ' + r); cs.jobs.shift(); continue; }
-    if (j.choose && soul.length && rem < len) {
+    if (j.choose && soul.length && rem < len && j.leaveNon == null) {
       G.pending = { pi: j.qi, name: cs.name, n: rem, cands: K.cores.map(c => c.id), qi: j.qi, text: '', kind: 'coreSel', opt: false, x: { iid: K.iid, sname: K.def.name, rem, cores: K.cores.map(c => ({ id: c.id, soul: !!c.soul })), by: cs.pi } };
       return 'wait';
     }

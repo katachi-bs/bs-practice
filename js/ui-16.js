@@ -57,7 +57,7 @@ $('admSmAdd').onclick = () => {
   admSm.push({ name: nm.slice(0, 40), cards: JSON.parse(JSON.stringify(all[k].cards || [])), cover: all[k].cover || undefined }); $('admSmName').value = ''; admSmRender();
 };
 async function admSmCall(method, body) {
-  const key = ($('admNcK').value || '').trim(), msg = $('admSmMsg'); if (!key) { toast('「① 管理用の合言葉」を入力してください'); return null; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
+  const key = ($('admNcK').value || '').trim(), msg = $('admSmMsg'); if (!key) { toast('「合言葉」を入力してください'); return null; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
   try { const r = await fetch(API + '/admin/samples', { method, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: body ? JSON.stringify(body) : undefined }); const j = await r.json().catch(() => ({}));
     if (!r.ok) { msg.textContent = r.status === 401 ? '合言葉が違います' : '失敗しました(' + r.status + ' ' + (j.err || '') + ')'; return null; } return j; } catch (e) { msg.textContent = '通信エラー'; return null; }
 }
@@ -72,7 +72,7 @@ setTimeout(() => { try { admSmLoad(); } catch (e) { } }, 1800);
 /* 管理者: 最近のログイン一覧 */
 /* 管理者: デッキの預かり(サーバーのデッキ置き場と、この端末のデッキを同じにする) */
 async function admDkApi(method, body) {
-  const key = ($('admNcK').value || '').trim(); if (!key) { toast('「① 管理用の合言葉」を入力してください'); return null; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
+  const key = ($('admNcK').value || '').trim(); if (!key) { toast('「合言葉」を入力してください'); return null; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
   try { const r = await fetch(API + '/admin/decks', { method, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' }); const j = await r.json().catch(() => ({}));
     if (!r.ok) { $('admDkMsg').textContent = r.status === 401 ? '合言葉が違います' : r.status === 429 ? '試行が多すぎます。しばらくしてからやり直してください' : '失敗しました(' + r.status + ')'; return null; } return j; } catch (e) { $('admDkMsg').textContent = '通信エラー'; return null; }
 }
@@ -142,27 +142,38 @@ setTimeout(() => { try { if (window.ADMIN_ED && $('admDkAuto').checked && ($('ad
   setInterval(again, 10 * 60 * 1000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastOk > 2 * 60 * 1000) again(); });
 })();
+function admTrend(el, g, now) {   // 名前をタップ: 直近7日の使用推移(日ごとに、30分以上あけて開いた回数)
+  const devs = new Set(g.a.map(x => x.dev)), days = [], jst = t => new Date(t + 9 * 3600e3).toISOString().slice(0, 10);
+  for (let i = 6; i >= 0; i--) days.push(jst(now - i * 864e5));
+  const by = {}; (window._seenDays || []).forEach(x => { if (devs.has(x.dev)) { const o = by[x.day] || (by[x.day] = { n: 0, m: 0 }); o.n += x.n; o.m += x.m; } });
+  const has = (window._seenDays || []).length > 0, mx = Math.max(1, ...days.map(d => (by[d] || { n: 0 }).n));
+  el.style.cssText = 'margin:6px 0 4px 14px;padding:8px;background:#ffffff0a;border-radius:8px';
+  el.innerHTML = '<div class="note" style="margin:0 0 6px">直近7日の使用(30分以上あけて開いた回数)' + (has ? '' : ' — 日ごとの記録は、サーバーを更新したあとから貯まります') + '</div>' + days.map(d => { const o = by[d] || { n: 0, m: 0 }; return '<div style="display:flex;align-items:center;gap:6px;font-size:12px;line-height:1.7"><span style="width:44px;color:var(--sub)">' + d.slice(5).replace('-', '/') + '</span><span style="flex:1;height:10px;background:#ffffff10;border-radius:5px;overflow:hidden"><i style="display:block;height:100%;width:' + Math.round(o.n / mx * 100) + '%;background:var(--acc)"></i></span><span style="width:28px;text-align:right">' + (has ? o.n : '-') + '</span></div>'; }).join('') +
+    '<div class="note" style="margin:6px 0 0">全期間: ' + g.a.reduce((a, x) => a + (x.n || 0), 0) + '回 / 初回 ' + new Date(Math.min(...g.a.map(x => x.t0 || x.t)) + 0).toLocaleDateString('ja-JP') + '</div>';
+}
 $('admSeenGo').onclick = async (quiet) => {
   const key = ($('admNcK').value || '').trim(), box = $('admSeenList'), msg = $('admSeenMsg');
-  if (!key) { toast('「① 管理用の合言葉」を入力してください'); return; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
+  if (!key) { toast('「合言葉」を入力してください'); return; } try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
   if (quiet !== true) msg.textContent = '読み込み中…';
   try {
     const r = await fetch(API + '/admin/seen', { headers: { authorization: 'Bearer ' + key } });
     if (!r.ok) { msg.textContent = r.status === 401 ? '合言葉が違います' : '読み込めませんでした(' + r.status + ')'; return; }
-    const j = await r.json(), now = j.now || Date.now(), by = new Map();
-    (j.seen || []).forEach(x => { if (!by.has(x.name)) by.set(x.name, []); by.get(x.name).push(x); });
+    const j = await r.json(), now = j.now || Date.now(), by = new Map(); window._seenDays = j.days || [];
+    const dv = new Map(); (j.seen || []).forEach(x => { const k = x.dev || (x.name + '|' + x.plat), o = dv.get(k); if (!o) dv.set(k, Object.assign({}, x)); else { const nw = x.t > o.t ? Object.assign({}, x) : o; nw.t0 = Math.min(o.t0 || o.t, x.t0 || x.t); nw.n = Math.max(o.n || 0, x.n || 0); dv.set(k, nw); } });   // 同じIDは1件にまとめる(いちばん新しい名前・時刻で上書き)
+    const seen1 = [...dv.values()]; seen1.forEach(x => { if (!by.has(x.name)) by.set(x.name, []); by.get(x.name).push(x); });
     const ago = t => { const m = Math.max(0, Math.round((now - t) / 60000)); return m < 1 ? 'いま' : m < 60 ? m + '分前' : m < 1440 ? Math.floor(m / 60) + '時間前' : Math.floor(m / 1440) + '日前'; };
     const dt = t => { const d = new Date(t); return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
     const rows = [...by.entries()].map(([name, a]) => ({ name, a, last: Math.max(...a.map(x => x.t)) })).sort((p, q) => q.last - p.last);
     const ON = 3 * 60000, onl = rows.filter(g => now - g.last <= ON).length;
-    msg.textContent = 'オンライン ' + onl + '人 / 記録 ' + rows.length + '人(' + (j.seen || []).length + '台)';
+    msg.textContent = 'オンライン ' + onl + '人 / 記録 ' + rows.length + '人(' + seen1.length + '台)';
     box.textContent = '';
     rows.forEach(g => {
       const d = document.createElement('div'); d.style.cssText = 'padding:5px 0;border-bottom:1px solid #334';
-      const b = document.createElement('b'); b.textContent = (now - g.last <= ON ? '● ' : '○ ') + (g.a.length > 1 ? '⚠ ' : '') + g.name; if (now - g.last <= ON) b.style.color = '#6fe39a'; d.appendChild(b);
+      const b = document.createElement('b'); b.textContent = (now - g.last <= ON ? '● ' : '○ ') + (g.a.length > 1 ? '⚠ ' : '') + g.name; if (now - g.last <= ON) b.style.color = '#6fe39a'; b.style.cursor = 'pointer'; b.style.textDecoration = 'underline dotted'; b.title = 'タップで使用推移'; d.appendChild(b);
+      const tr = document.createElement('div'); tr.hidden = true; tr.className = 'admtr'; b.onclick = () => { if (tr.hidden) admTrend(tr, g, now); tr.hidden = !tr.hidden; };
       d.appendChild(document.createTextNode((now - g.last <= ON ? '  オンライン' : '  最終 ' + ago(g.last) + '(' + dt(g.last) + ')') + '  端末' + g.a.length + '台'));
       g.a.sort((p, q) => q.t - p.t).forEach(x => { const l = document.createElement('div'); l.className = 'note'; l.style.margin = '0 0 0 14px'; l.textContent = (x.plat || '不明') + ' ・ ID ' + x.dev + ' ・ 最終 ' + ago(x.t) + ' ・ 初回 ' + dt(x.t0) + ' ・ ' + x.n + '回'; d.appendChild(l); });
-      box.appendChild(d);
+      d.appendChild(tr); box.appendChild(d);
     });
     if (!rows.length) box.textContent = 'まだ記録がありません。';
   } catch (e) { msg.textContent = '通信エラー'; }
@@ -170,7 +181,7 @@ $('admSeenGo').onclick = async (quiet) => {
 setInterval(() => { try { if (document.body.classList.contains('adm') && !document.hidden && $('admSeenList').childNodes.length && ($('admNcK').value || '').trim()) $('admSeenGo').onclick(true); } catch (e) { } }, 30000);
 $('admNtPush').onclick = async () => {
   const key = ($('admNcK').value || '').trim(), nm = (($('admNtTo').value || '').trim() || (($('myName') && $('myName').value) || '').trim()).slice(0, 12);
-  if (!key) { toast('「① 管理用の合言葉」を入力してください'); return; } if (!nm) { toast('送り先のプレイヤー名を入れてください'); return; }
+  if (!key) { toast('「合言葉」を入力してください'); return; } if (!nm) { toast('送り先のプレイヤー名を入れてください'); return; }
   try { localStorage.setItem('bs-adm-key', key); } catch (e) { }
   try { const r = await fetch(API + '/admin/test', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: JSON.stringify({ name: nm }) }); const j = await r.json().catch(() => ({}));
     if (!r.ok) { toast(r.status === 401 ? '合言葉が違います' : '送れませんでした(' + r.status + ')'); return; }

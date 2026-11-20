@@ -80,6 +80,7 @@ async function ensure(env) {   // ロビー・ログイン記録の表を、な�
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS lobby (id TEXT PRIMARY KEY, data TEXT, t INTEGER)').run();
   await env.DB.prepare('CREATE TABLE IF NOT EXISTS seen (name TEXT, dev TEXT, t INTEGER, t0 INTEGER, plat TEXT, n INTEGER, PRIMARY KEY(name, dev))').run();
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS seen_t ON seen(t)').run();
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS seen_day (dev TEXT, day TEXT, n INTEGER, m INTEGER, PRIMARY KEY(dev, day))').run();   // 日ごとの利用(使用推移)
   await env.DB.prepare('CREATE INDEX IF NOT EXISTS lobby_t ON lobby(t)').run();
   _ens = true;
 }
@@ -87,6 +88,12 @@ const SEEN_KEEP = 7 * 24 * 3600 * 1000, ROOM_TTL = 50 * 1000;
 async function touchSeen(env, name, dev, plat) {   // 最終ログイン・オンライン状態の記録(同じ端末は30秒に1回だけ書き込む。回数は、30分以上あいてから開いたときだけ増える)
   name = clip(name, 12).trim(); dev = clip(dev, 24).replace(/[^A-Za-z0-9_-]/g, ''); if (!name || dev.length < 6) return;
   const now = Date.now();
+  const prev = await env.DB.prepare('SELECT t FROM seen WHERE name=? AND dev=?').bind(name, dev).first();
+  if (!prev || now - prev.t > 30000) {   // 日ごとの記録(n=30分以上あけて開いた回数, m=記録した回数)
+    const day = new Date(now + 9 * 3600e3).toISOString().slice(0, 10), ns = (!prev || now - prev.t > 1800000) ? 1 : 0;
+    await env.DB.prepare('INSERT INTO seen_day(dev,day,n,m) VALUES(?,?,?,1) ON CONFLICT(dev,day) DO UPDATE SET n=n+excluded.n, m=m+1').bind(dev, day, ns).run();
+    if (Math.random() < 0.02) await env.DB.prepare('DELETE FROM seen_day WHERE day < ?').bind(new Date(now - 14 * 864e5 + 9 * 3600e3).toISOString().slice(0, 10)).run();
+  }
   await env.DB.prepare('INSERT INTO seen(name,dev,t,t0,plat,n) VALUES(?,?,?,?,?,1) ON CONFLICT(name,dev) DO UPDATE SET t=excluded.t, plat=excluded.plat, n=n+(CASE WHEN excluded.t - seen.t > 1800000 THEN 1 ELSE 0 END) WHERE seen.t < excluded.t - 30000').bind(name, dev, now, now, clip(plat, 12)).run();
   if (Math.random() < 0.02) await env.DB.prepare('DELETE FROM seen WHERE t < ?').bind(now - SEEN_KEEP).run();   // 1週間ログインがない記録は消す
 }
@@ -145,7 +152,7 @@ export default {
       if (p === '/lobby/reg' && req.method === 'POST') {
         if (await limited(env, req, 'lobby', 120, 60)) return J({ err: 'limit' }, 429);
         await ensure(env); const o = await req.json().catch(() => null); if (!o || typeof o.id !== 'string' || o.id.length < 4 || o.id.length > 40) return J({ err: 'bad' }, 400);
-        const r = { id: o.id, name: clip(o.name, 12) || 'プレイヤー', msg: clip(o.msg, 24), st: o.st === 'play' ? 'play' : 'wait', n2: clip(o.n2, 12), sp: o.sp ? 1 : 0, ns: Math.min(99, +o.ns || 0), nt: o.nt ? 1 : 0 };
+        const r = { ic: (typeof o.ic === 'string' && o.ic.length < 4000 && /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(o.ic)) ? o.ic : '', id: o.id, name: clip(o.name, 12) || 'プレイヤー', msg: clip(o.msg, 24), st: o.st === 'play' ? 'play' : 'wait', n2: clip(o.n2, 12), sp: o.sp ? 1 : 0, ns: Math.min(99, +o.ns || 0), nt: o.nt ? 1 : 0 };
         await env.DB.prepare('INSERT OR REPLACE INTO lobby(id,data,t) VALUES(?,?,?)').bind(r.id, JSON.stringify(r), Date.now()).run();
         if (o.dev) await touchSeen(env, r.name, o.dev, o.plat);
         return J({ ok: 1 });
@@ -175,7 +182,7 @@ export default {
         if (p === '/admin/notify' && req.method === 'PUT') { const b = await req.json(); const v = { title: clip(b.title, 80) || '{name}が部屋を作成しました', body: clip(b.body, 120), only: (Array.isArray(b.only) ? b.only : []).map(x => clip(x, 12).trim()).filter(Boolean).slice(0, 200) }; await env.DB.prepare('INSERT OR REPLACE INTO cfg(k,v) VALUES(?,?)').bind('notify', JSON.stringify(v)).run(); return J({ ok: 1, v }); }
         if (p === '/admin/notify' && req.method === 'GET') return J(await getCfg(env, 'notify', { title: '{name}が部屋を作成しました', body: '{msg}', only: [] }));
         if (p === '/admin/weights' && req.method === 'PUT') { const b = await req.json(); if (!b || typeof b !== 'object') return J({ err: 'bad' }, 400); const w = {}; Object.keys(b).slice(0, 60).forEach(k => { if (typeof b[k] === 'number' && isFinite(b[k])) w[k] = b[k]; }); await env.DB.prepare('INSERT OR REPLACE INTO cfg(k,v) VALUES(?,?)').bind('weights', JSON.stringify(w)).run(); return J({ ok: 1, w }); }
-        if (p === '/admin/seen' && req.method === 'GET') { await ensure(env); const now = Date.now(); await env.DB.prepare('DELETE FROM seen WHERE t < ?').bind(now - SEEN_KEEP).run(); const r = (await env.DB.prepare('SELECT name,dev,t,t0,plat,n FROM seen ORDER BY t DESC LIMIT 500').all()).results || []; return J({ now, seen: r.map(x => ({ name: x.name, dev: x.dev.slice(0, 6), t: x.t, t0: x.t0, plat: x.plat, n: x.n })) }); }
+        if (p === '/admin/seen' && req.method === 'GET') { await ensure(env); const now = Date.now(); await env.DB.prepare('DELETE FROM seen WHERE t < ?').bind(now - SEEN_KEEP).run(); const r = (await env.DB.prepare('SELECT name,dev,t,t0,plat,n FROM seen ORDER BY t DESC LIMIT 500').all()).results || []; const dd = (await env.DB.prepare('SELECT dev,day,n,m FROM seen_day WHERE day >= ? ORDER BY day').bind(new Date(now - 7 * 864e5 + 9 * 3600e3).toISOString().slice(0, 10)).all()).results || []; return J({ now, seen: r.map(x => ({ name: x.name, dev: x.dev.slice(0, 6), t: x.t, t0: x.t0, plat: x.plat, n: x.n })), days: dd.map(x => ({ dev: x.dev.slice(0, 6), day: x.day, n: x.n, m: x.m })) }); }
         if (p === '/admin/samples' && req.method === 'PUT') {   // サンプルデッキの差し替え(全員に配信される)
           const b = await req.json().catch(() => null); if (!Array.isArray(b) || !b.length || b.length > 20) return J({ err: 'bad' }, 400);
           const out = [];

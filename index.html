@@ -51,7 +51,7 @@ if (window.ADMIN_ED) document.documentElement.classList.add('admed', 'tklock'); 
 </div></div>
 
 <main>
-<div class="hrow"><h1>BATTLE SPIRITS PRACTICE <span class="admtag adm-only">管理者モード</span></h1><button id="admEnd" class="sub adm-only" type="button" style="margin-left:auto;padding:5px 12px;font-size:12px">管理者モードを終了</button><button id="pwaBtn" class="pwabtn" type="button" hidden>アプリとして入れる</button></div>
+<div class="hrow"><h1>BATTLE SPIRITS PRACTICE <span class="admtag adm-only">管理者モード</span></h1><span id="hdrName" style="margin-left:auto;font-size:13px;font-weight:700;color:var(--gold);max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer"></span><button id="setBtn" type="button" aria-label="設定" title="設定" style="padding:0;width:38px;height:38px;border:0;background:none;border-radius:50%;display:grid;place-items:center;cursor:pointer"><span id="hdrIcon"></span></button><button id="admEnd" class="sub adm-only" type="button" style="padding:5px 12px;font-size:12px">管理者モードを終了</button><button id="pwaBtn" class="pwabtn" type="button" hidden>アプリとして入れる</button></div>
 <div id="noticeBar" hidden><span id="noticeTx"></span><a id="noticeGo" target="_blank" rel="noopener" hidden></a><button type="button" id="noticeX" aria-label="閉じる">×</button></div>
 <div id="pwaBox" hidden><div class="pwaback" data-pwaclose="1"></div><div class="pwapanel" role="dialog" aria-label="アプリとして入れる方法">
   <div class="pwahd"><b>アプリとして入れる方法</b><button type="button" class="pwax" data-pwaclose="1" aria-label="閉じる">✕</button></div>
@@ -133,46 +133,50 @@ if (window.ADMIN_ED) document.documentElement.classList.add('admed', 'tklock'); 
   </div>
   <div class="box b-adm" id="admBox" hidden>
     <h2>管理者メニュー</h2>
-    <p class="note">管理者モード中だけ表示されます。</p>
-    <div class="row" style="margin:8px 0"><label class="ck">プレイヤーAのデッキ <select id="admDeckA" style="width:auto;min-width:170px"></select></label><label class="ck">プレイヤーBのデッキ <select id="admDeckB" style="width:auto;min-width:170px"></select></label></div>
-    <div class="row"><button id="admExp2">2人分のデッキ情報を書き出す</button><button id="admExpAll" class="sub">保存済みの全デッキを書き出す</button><button id="admCards" class="sub">カード一覧(CSV)</button><button id="admCol">カード所持管理</button></div>
-    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">① 管理用の合言葉</h3>
-    <p class="note">下の「テスト送信」と「お知らせ」で使います(ADMIN_TOKEN)。この端末にだけ保存されます。</p>
+    <p class="note">管理者モード中だけ表示されます。見出しをタップすると開きます。</p>
+    <details class="admsec" open><summary><b>合言葉</b><small>最初に入れる(下の送信・配信で使います)</small></summary><div class="admin">
+    <p class="note">下の通知・お知らせ・サンプルデッキ・預かりで使います(ADMIN_TOKEN)。この端末にだけ保存されます。</p>
     <div class="row"><label class="ck">合言葉 <input id="admNcK" type="password" style="width:220px" autocomplete="off"></label></div>
-
-    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">② 通知のテスト送信</h3>
+    </div></details>
+    <details class="admsec" open><summary><b>カード</b><small>所持管理・一覧の書き出し</small></summary><div class="admin">
+    <div class="row"><button id="admCol">カード所持管理</button><button id="admRv">効果の照合</button><button id="admCards" class="sub">カード一覧(CSV)</button></div>
+    <p class="note">効果の照合: 公式テキストと、実装を日本語に読み戻した文を並べて、1枚ずつ「合っている/違う/保留」を付けられます。</p>
+    <p class="note">カード所持管理: R・M・X・シークレット・プロモの所持枚数を、収録弾ごとに見たり、編集したり、Excelに書き出せます。</p>
+    </div></details>
+    <details class="admsec"><summary><b>利用状況</b><small>オンライン状態・最近のログイン(7日間)</small></summary><div class="admin">
+    <p class="note">アプリを開いている人(プレイヤー名を入れている人)の状態です。「● オンライン」は、いまアプリを開いて見ている人(直近3分以内)です。画面を閉じたり、別のアプリを見ていると、オフラインになります。7日間使われていないものは、自動で消えます。同じ名前を別々の端末で使っているときは「⚠」が付きます(自分のスマホとPCでも付きます。端末ごとのID・種類で見分けてください)。「合言葉」が必要です。一覧は、開いている間、30秒ごとに自動で更新されます。</p>
+    <div class="row"><button id="admSeenGo">一覧を更新</button><span class="note" id="admSeenMsg"></span></div>
+    <div id="admSeenList" style="margin-top:6px;font-size:13px;line-height:1.6"></div>
+    </div></details>
+    <details class="admsec"><summary><b>お知らせ・配信</b><small>トップのお知らせ / サンプルデッキ</small></summary><div class="admin">
+    <h4 class="admh4">トップのお知らせ(URL変更の案内など)</h4>
+    <p class="note">サーバーに保存され、全員のトップに表示されます(閉じた人には、内容を変えるまで出ません)。「合言葉」が必要です。</p>
+    <div class="row"><label class="ck" style="align-items:flex-start">文<textarea id="admNcT" rows="4" style="width:300px;max-width:100%"></textarea></label></div>
+    <div class="row"><label class="ck">リンク先 <input id="admNcU" placeholder="https://…" style="width:240px"></label><label class="ck">ボタン名 <input id="admNcL" value="新しいURLを開く" style="width:130px"></label></div>
+    <div class="row"><button id="admNcP">お知らせを表示する</button><button id="admNcD" class="sub">お知らせを消す</button><button id="admNcS" class="sub">URL変更の例文を入れる</button></div>
+    <h4 class="admh4">サンプルデッキの管理(全員に配信)</h4>
+    <p class="note">ここで「サーバーに反映」すると、全員のサンプルデッキが入れ替わります(GitHubにファイルを上げる必要はありません)。順番の入れ替え、名前の変更、削除、追加ができます。追加は、この端末に保存してあるデッキから選べます。「合言葉」が必要です。</p>
+    <div class="row"><button id="admSmLoad" class="sub">いま表示されている内容を読み込む</button></div>
+    <div id="admSmList" style="margin:6px 0;font-size:13px"></div>
+    <div class="row"><label class="ck">追加するデッキ <select id="admSmSrc" style="width:auto;min-width:160px"></select></label><label class="ck">表示名 <input id="admSmName" maxlength="40" placeholder="(空なら【サンプル】＋デッキ名)" style="width:200px"></label><button id="admSmAdd" class="sub">追加</button></div>
+    <div class="row"><button id="admSmPut">サーバーに反映(全員に配信)</button><button id="admSmDel" class="sub">配信をやめて初期に戻す</button><span class="note" id="admSmMsg"></span></div>
+    </div></details>
+    <details class="admsec"><summary><b>通知</b><small>テスト送信 / 部屋作成の通知</small></summary><div class="admin">
+    <h4 class="admh4">通知のテスト送信</h4>
     <p class="note">指定したプレイヤー名で登録された端末(通知を許可してアプリを開いた端末)に、実際に通知を送ります。空欄なら、この端末のプレイヤー名に送ります。</p>
     <div class="row"><label class="ck">送り先のプレイヤー名 <input id="admNtTo" maxlength="12" placeholder="(空なら自分)" style="width:160px"></label><button id="admNtPush">テスト送信</button></div>
-
-    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">③ 部屋作成の通知(文面と送り先)</h3>
+    <h4 class="admh4">部屋作成の通知(文面と送り先)</h4>
     <p class="note">{name}=作成者名、{msg}=ひとこと。この端末に保存されます。全員に反映したい場合は「notify.json を書き出す」をGitHubのルートに置いてください(端末の設定が優先)。</p>
     <div class="row"><label class="ck">タイトル <input id="admNtT" style="width:260px"></label><label class="ck">本文 <input id="admNtB" style="width:200px"></label></div>
     <p class="note" style="margin:8px 0 2px">通知を送るプレイヤー名(1行に1名。空なら全員。名前の確認はしていないため、テスト用の絞り込みです)</p>
     <textarea id="admNtO" rows="3" style="width:220px;max-width:100%"></textarea>
     <div class="row"><button id="admNtS">保存</button><button id="admNtR" class="sub">初期に戻す</button><button id="admNtX" class="sub">notify.json を書き出す</button><button id="admNtTest" class="sub">この端末で表示を確認</button></div>
-
-    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">④ トップのお知らせ(URL変更の案内など)</h3>
-    <p class="note">サーバーに保存され、全員のトップに表示されます(閉じた人には、内容を変えるまで出ません)。「① 管理用の合言葉」が必要です。</p>
-    <div class="row"><label class="ck" style="align-items:flex-start">文<textarea id="admNcT" rows="4" style="width:300px;max-width:100%"></textarea></label></div>
-    <div class="row"><label class="ck">リンク先 <input id="admNcU" placeholder="https://…" style="width:240px"></label><label class="ck">ボタン名 <input id="admNcL" value="新しいURLを開く" style="width:130px"></label></div>
-    <div class="row"><button id="admNcP">お知らせを表示する</button><button id="admNcD" class="sub">お知らせを消す</button><button id="admNcS" class="sub">URL変更の例文を入れる</button></div>
-
-    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">⑤ オンライン状態・最近のログイン(7日間)</h3>
-    <p class="note">アプリを開いている人(プレイヤー名を入れている人)の状態です。「● オンライン」は、いまアプリを開いて見ている人(直近3分以内)です。画面を閉じたり、別のアプリを見ていると、オフラインになります。7日間使われていないものは、自動で消えます。同じ名前を別々の端末で使っているときは「⚠」が付きます(自分のスマホとPCでも付きます。端末ごとのID・種類で見分けてください)。「① 管理用の合言葉」が必要です。一覧は、開いている間、30秒ごとに自動で更新されます。</p>
-    <div class="row"><button id="admSeenGo">一覧を更新</button><span class="note" id="admSeenMsg"></span></div>
-    <div id="admSeenList" style="margin-top:6px;font-size:13px;line-height:1.6"></div>
-
-    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">⑥ サンプルデッキの管理(全員に配信)</h3>
-    <p class="note">ここで「サーバーに反映」すると、全員のサンプルデッキが入れ替わります(GitHubにファイルを上げる必要はありません)。順番の入れ替え、名前の変更、削除、追加ができます。追加は、この端末に保存してあるデッキから選べます。「① 管理用の合言葉」が必要です。</p>
-    <div class="row"><button id="admSmLoad" class="sub">いま表示されている内容を読み込む</button></div>
-    <div id="admSmList" style="margin:6px 0;font-size:13px"></div>
-    <div class="row"><label class="ck">追加するデッキ <select id="admSmSrc" style="width:auto;min-width:160px"></select></label><label class="ck">表示名 <input id="admSmName" maxlength="40" placeholder="(空なら【サンプル】＋デッキ名)" style="width:200px"></label><button id="admSmAdd" class="sub">追加</button></div>
-    <div class="row"><button id="admSmPut">サーバーに反映(全員に配信)</button><button id="admSmDel" class="sub">配信をやめて初期に戻す</button><span class="note" id="admSmMsg"></span></div>
-
-    <h3 style="margin:14px 0 4px;font-size:14px;border-top:1px solid var(--line,#334);padding-top:10px">⑦ デッキの預かり(スマホとPCで同じデッキにする)</h3>
+    </div></details>
+    <details class="admsec"><summary><b>デッキの預かり</b><small>スマホとPCで同じデッキにする</small></summary><div class="admin">
     <p class="note">サーバーに、あなた専用のデッキの置き場所があります(管理者の合言葉が必要です)。「預かりへ送る」で、この端末のデッキを置き、別の端末で「預かりから取り込む」と、同じデッキになります。同じ名前のデッキは、保存日時が新しいほうが残ります。サンプルデッキは対象外です。</p>
     <div class="row"><button id="admDkPut">預かりへ送る</button><button id="admDkGet" class="sub">預かりから取り込む</button><label class="ck"><input type="checkbox" id="admDkAuto" checked>開いたときに、自動で取り込む</label></div>
     <p class="note" id="admDkMsg"></p>
+    </div></details>
   </div>
   <div class="box b-adm" id="vidBox" hidden>
     <h2>盤面動画編集エディタ</h2>
@@ -182,7 +186,7 @@ if (window.ADMIN_ED) document.documentElement.classList.add('admed', 'tklock'); 
   <div class="box b-bbs">
     <h2>バグ・要望報告掲示板</h2>
     <p class="note">バグを見つけた時や、直してほしいところ・ほしい機能を書いてください。プレイヤー名と内容が保存されて、管理人があとで読めます。</p>
-    <div class="row" style="margin:6px 0"><input id="bbsName" maxlength="12" placeholder="プレイヤー名" style="width:150px" autocomplete="off"></div>
+    <p class="note" style="margin:6px 0">投稿者名は、設定のプレイヤー名が使われます。</p>
     <textarea id="bbsText" maxlength="400" rows="3" placeholder="例: ○○のカードを使うと△△になる(どのカード・どの場面かも書いてもらえると助かります)" style="width:100%;box-sizing:border-box;background:#0f1424;color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit"></textarea>
     <div class="row" style="margin:6px 0"><button id="bbsPost">投稿する</button><span id="bbsStat" class="note"></span></div>
     <div id="bbsList" class="bbslist"></div>

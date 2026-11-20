@@ -84,8 +84,6 @@ function nameGate() {
   const m = $('nameMsg'); if (m) m.hidden = ok;
 }
 try { $('myName').value = localStorage.getItem('bs-name') || ''; } catch (e) { }
-try { const bn = localStorage.getItem('bs-bbsname'); if (bn) $('bbsName').value = bn; } catch (e) { }
-$('bbsName').oninput = () => { try { localStorage.setItem('bs-bbsname', $('bbsName').value.trim().slice(0, 12)); } catch (e) { } };
 let nameT = 0;
 $('myName').oninput = () => { try { localStorage.setItem('bs-name', $('myName').value.trim().slice(0, 12)); } catch (e) { } nameGate(); clearTimeout(nameT); nameT = setTimeout(() => { try { pushSync(); } catch (e) { } }, 1500); };
 nameGate();
@@ -130,8 +128,8 @@ function asGuest(id, n, fr) {
 const HUB_ID = 'bsprac-free-hub-v1', FREE_MAX = 8;
 const free = { peer: null, hub: false, conns: new Map(), rooms: new Map(), link: null, mine: null, list: [], shown: [], stopped: true, timer: null, joining: false, got: false };
 const freeSay = m => { };   // 部屋がある時だけ一覧を表示する(状態の文言は出さない)
-const roomOf = m => ({ id: m.id, name: m.name, msg: m.msg, st: m.st === 'play' ? 'play' : 'wait', n2: str(m.n2, 12), sp: m.sp ? 1 : 0, ns: Math.min(99, +m.ns || 0), nt: m.nt ? 1 : 0 });
-const freeSnap = () => { const t = Date.now(); free.rooms.forEach((r, k) => { if (r._at && t - r._at > 60000) free.rooms.delete(k); }); return [...free.rooms.values()].map(r => ({ id: r.id, name: r.name, msg: r.msg, st: r.st, n2: r.n2, sp: r.sp, ns: r.ns, nt: r.nt })); };   // 一定時間(60秒)更新のない部屋は、残骸として一覧から消す
+const roomOf = m => ({ ic: icoOk(m.ic) && m.ic.length < 4000 ? m.ic : '', id: m.id, name: m.name, msg: m.msg, st: m.st === 'play' ? 'play' : 'wait', n2: str(m.n2, 12), sp: m.sp ? 1 : 0, ns: Math.min(99, +m.ns || 0), nt: m.nt ? 1 : 0 });
+const freeSnap = () => { const t = Date.now(); free.rooms.forEach((r, k) => { if (r._at && t - r._at > 60000) free.rooms.delete(k); }); return [...free.rooms.values()].map(r => ({ ic: r.ic || '', id: r.id, name: r.name, msg: r.msg, st: r.st, n2: r.n2, sp: r.sp, ns: r.ns, nt: r.nt })); };   // 一定時間(60秒)更新のない部屋は、残骸として一覧から消す
 function hubBroadcast() { const rs = freeSnap(); free.conns.forEach(c => { try { if (c.open) c.send({ t: 'rooms', rooms: rs }); } catch (e) { } }); freeGotRooms(rs); }
 function hubHandle(c, m) {
   if (!m || typeof m !== 'object') return;
@@ -298,7 +296,7 @@ const NT_DEF = { title: '{name}が部屋を作成しました', body: '{msg}' };
 function ntOnly() { let a = null; try { a = JSON.parse(localStorage.getItem('bs-nt-tpl') || 'null'); } catch (e) { } const l = a && Array.isArray(a.only) ? a.only : (window.__ntFile && Array.isArray(window.__ntFile.only) ? window.__ntFile.only : []); return l.map(x => String(x).trim()).filter(Boolean); }
 function ntTpl() { let a = {}; try { a = JSON.parse(localStorage.getItem('bs-nt-tpl') || '{}') || {}; } catch (e) { } if (!a.title && window.__ntFile) a = window.__ntFile; return { title: a.title || NT_DEF.title, body: a.body != null && a.title ? a.body : (a.body != null ? a.body : NT_DEF.body) }; }
 try { fetch('notify.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(j => { if (j && j.title) window.__ntFile = j; }).catch(() => { }); } catch (e) { }
-function ntPref() { return true; }   // 通知は常に受け取る(オン・オフは端末の設定で切り替える)
+function ntPref() { try { return localStorage.getItem('bs-nt-off') !== '1'; } catch (e) { return true; } }   // 通知のオン・オフ(設定で切り替える。初期はオン)
 function ntOn() { try { return ntPref() && 'Notification' in window && Notification.permission === 'granted'; } catch (e) { return false; } }
 function freeNotify(r) {
   try {

@@ -4,8 +4,8 @@ function freeShuffle() {
 }
 function freeRender() {
   const box = $('freeList'); if (!box) return;
-  const me = free.mine && free.mine.st !== 'play' ? '<div class="frm mine"><div class="fn">' + esc(free.mine.name) + '(あなた)</div><div class="fm">' + esc(free.mine.msg || '(ひとことなし)') + '</div><button class="sec" disabled>募集中…</button></div>' : '';
-  const cards = free.shown.map(i => free.list.find(r => r.id === i)).filter(Boolean).map(r => '<div class="frm"><div class="fn">' + esc(r.name) + '</div><div class="fm">' + esc(r.msg || '(ひとことなし)') + '</div><button data-fjoin="' + esc(r.id) + '">この部屋に入る</button></div>').join('');
+  const me = free.mine && free.mine.st !== 'play' ? '<div class="frm mine"><div class="fn">' + iconSpan(free.mine.ic, free.mine.name, 22) + esc(free.mine.name) + '(あなた)</div><div class="fm">' + esc(free.mine.msg || '(ひとことなし)') + '</div><button class="sec" disabled>募集中…</button></div>' : '';
+  const cards = free.shown.map(i => free.list.find(r => r.id === i)).filter(Boolean).map(r => '<div class="frm"><div class="fn">' + iconSpan(r.ic, r.name, 22) + esc(r.name) + '</div><div class="fm">' + esc(r.msg || '(ひとことなし)') + '</div><button data-fjoin="' + esc(r.id) + '">この部屋に入る</button></div>').join('');
   const pl = free.list.filter(r => r.st === 'play').slice(0, 40).map(r => '<div class="frm playing' + (r.sp ? '' : ' nospec') + '"><div class="fn">' + esc(r.name) + ' vs ' + esc(r.n2 || '…') + '</div><div class="fm">⚔ 対戦中' + (r.msg ? ' ・ ' + esc(r.msg) : '') + (r.sp ? ' ・ 観戦 ' + (r.ns | 0) + '人' : ' ・ 観戦できません') + '</div>' + (r.sp ? '<button class="sec" data-fspec="' + esc(r.id) + '">👁 観戦する</button>' : '<button class="sec" disabled>観戦不可</button>') + (r.name === getName() ? '<button class="sec" data-fdel="' + esc(r.id) + '">この部屋を削除</button>' : '') + '</div>').join('');
   box.innerHTML = me + pl + cards; box.hidden = !(me || pl || cards);
   const sb = $('bFreeShuffle'); if (sb) sb.hidden = free.list.filter(r => r.st !== 'play').length <= FREE_MAX || !cards;
@@ -15,7 +15,7 @@ $('bFreeMake').onclick = () => {
   const d = getDeck(); if (!d) return;
   myDefs = d.defs; matchTest = false; cpu = false; solo = false;
   const id = 'bsprac-f-' + Math.random().toString(36).slice(2, 10);
-  free.mine = { id, name: getName(), msg: ($('freeMsg').value || '').trim().slice(0, 24), st: 'wait', n2: '', sp: $('freeSpec').checked ? 1 : 0, ns: 0, nt: 1 }; freeButtons(); freeRender();
+  free.mine = { ic: MYICS, id, name: getName(), msg: ($('freeMsg').value || '').trim().slice(0, 24), st: 'wait', n2: '', sp: $('freeSpec').checked ? 1 : 0, ns: 0, nt: 1 }; freeButtons(); freeRender();
   apiPost('/room', { name: getName(), msg: free.mine.msg, self: window.__pushEp || '' });   // 通知をオンにしている人へプッシュ通知
   asHost(id, 0, true);
 };

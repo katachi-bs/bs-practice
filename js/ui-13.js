@@ -29,7 +29,6 @@ function setAdm(on) {
 }
 function admFill() {
   const all = loadDecks(), names = Object.keys(all).sort((x, y) => (all[y].t || 0) - (all[x].t || 0));
-  ['admDeckA', 'admDeckB'].forEach((id, k) => { const el = $(id), cur = el.value; el.innerHTML = names.map(n => '<option>' + esc(n) + '</option>').join(''); el.value = names.includes(cur) ? cur : (names[k] || names[0] || ''); });
 }
 function admDeckInfo(role, name) {
   const d = loadDecks()[name]; if (!d) return null;
@@ -43,15 +42,6 @@ function admOut(title, fn, text, mime) {
     sbtn('コピー', async () => { try { await navigator.clipboard.writeText(text); toast('コピーしました'); } catch (e) { toast('コピーできませんでした'); } }, 1) +
     '<button class="sub" data-close="1">閉じる</button></div>');
 }
-$('admExp2').onclick = () => {
-  const a = admDeckInfo('A', $('admDeckA').value), b = admDeckInfo('B', $('admDeckB').value);
-  if (!a || !b) { toast('デッキを選んでください'); return; }
-  admOut('デッキ情報(2人分)', 'bsp-decks-AB.json', JSON.stringify({ format: 'bsp-decks', version: 1, decks: [a, b] }, null, 1), 'application/json');
-};
-$('admExpAll').onclick = () => {
-  const names = Object.keys(loadDecks()), arr = names.map(n => admDeckInfo('', n)).filter(Boolean);
-  admOut('保存済みの全デッキ', 'bsp-decks-all.json', JSON.stringify({ format: 'bsp-decks', version: 1, decks: arr }, null, 1), 'application/json');
-};
 $('admCards').onclick = () => {
   const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
   const rows = ['id,name,color,cost,type'].concat(CARD_LIST.map(c => [c.raw.id, c.def.name, c.def.color, c.def.cost, c.def.type].map(q).join(',')));
@@ -219,6 +209,261 @@ function colClick(e) {
   if (a === 'rs') { try { const j = JSON.parse($('colBk').value); if (!j || !j.own) throw 0; COL = { own: j.own, fav: j.fav || {}, extra: j.extra || {} }; colSave(); toast('復元しました'); ed.hidden = true; colRender(); } catch (x) { toast('読み込めませんでした'); } return; }
 }
 $('admCol').onclick = colOpen;
+/* ===== 効果の照合(管理者): 公式テキストと、実装の読み戻しを並べて、合っているか確認する ===== */
+const RVK = 'bs-rv-v1';
+let RV = {}, RVD = null, RVV = { set: '', st: '', q: '', n: 40 };
+try { RV = JSON.parse(localStorage.getItem(RVK) || '{}') || {}; } catch (e) { RV = {}; }
+const rvSave = () => { try { localStorage.setItem(RVK, JSON.stringify(RV)); } catch (e) { toast('この端末に保存できませんでした'); } };
+const rvSt = id => (RV[id] && RV[id].s) || '';
+async function rvOpen() {
+  if (!RVD) { try { const r = await fetch('cards/review.json', { cache: 'no-cache' }); RVD = await r.json(); } catch (e) { toast('照合データを読み込めませんでした'); return; } }
+  let ov = $('rvOv'); if (!ov) { ov = document.createElement('div'); ov.id = 'rvOv'; document.body.appendChild(ov); ov.addEventListener('click', rvClick); ov.addEventListener('input', rvInput); ov.addEventListener('change', rvInput); }
+  ov.hidden = false; rvRender();
+}
+function rvList() {
+  const q = RVV.q.trim().toLowerCase();
+  return RVD.filter(c => (!RVV.set || c.set === RVV.set) && (!RVV.st || (RVV.st === 'none' ? !rvSt(c.id) : rvSt(c.id) === RVV.st)) && (!q || (c.name + ' ' + c.id + ' ' + c.text).toLowerCase().includes(q)));
+}
+function rvRender(keep) {
+  const ov = $('rvOv'), L = rvList(), done = RVD.filter(c => rvSt(c.id)).length, ng = RVD.filter(c => rvSt(c.id) === 'ng').length;
+  const sets = [...new Set(RVD.map(c => c.set))];
+  const head = '<div class="rvhd"><div class="rvtop"><b>効果の照合</b><span class="note">確認済 ' + done + '/' + RVD.length + ' ・ 違う ' + ng + '</span><button class="sub" data-rx="close" type="button">閉じる</button></div>' +
+    '<div class="colflt"><select data-rf="set"><option value="">全収録</option>' + sets.map(x => '<option' + (RVV.set === x ? ' selected' : '') + '>' + esc(x) + '</option>').join('') + '</select>' +
+    '<select data-rf="st">' + [['', 'すべて'], ['none', '未確認'], ['ok', '合っている'], ['ng', '違う'], ['hold', '保留']].map(o => '<option value="' + o[0] + '"' + (RVV.st === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>' +
+    '<input data-rf="q" placeholder="カード名・番号・テキスト" value="' + esc(RVV.q) + '"></div>' +
+    '<div class="row" style="margin:0"><button class="sub" data-rx="copyng" type="button">「違う」をコピー</button><button class="sub" data-rx="xlsx" type="button">Excelに書き出す</button></div></div>';
+  const body = '<div class="rvmain">' + '<div class="colinfo">' + L.length + '枚</div>' + L.slice(0, RVV.n).map(rvCard).join('') + (L.length > RVV.n ? '<div class="row"><button type="button" data-rx="more">さらに表示(残り' + (L.length - RVV.n) + '枚)</button></div>' : '') + '</div>';
+  if (keep) { ov.querySelector('.rvmain').outerHTML = body; ov.querySelector('.rvtop .note').textContent = '確認済 ' + done + '/' + RVD.length + ' ・ 違う ' + ng; return; }
+  ov.innerHTML = head + body;
+}
+function rvCard(c) {
+  const s = rvSt(c.id), m = (RV[c.id] && RV[c.id].m) || '', u = (typeof thumbOf === 'function' && (thumbOf(c.id) || artQ(c.id))) || '';
+  const btn = (k, t) => '<button type="button" class="' + (s === k ? 'on' : 'sub') + '" data-rx="mk" data-id="' + esc(c.id) + '" data-v="' + k + '">' + t + '</button>';
+  return '<div class="rvc ' + (s || '') + '" id="rv-' + esc(c.id) + '"><div class="rvh">' + (u ? '<img loading="lazy" src="' + esc(u) + '" alt="">' : '') + '<div><b>' + esc(c.name) + '</b><small>' + esc(c.id) + ' / ' + esc(c.type) + ' / ' + esc(c.color) + ' / コスト' + c.cost + '</small>' + (c.meta.length ? '<small>' + c.meta.map(esc).join(' ・ ') + '</small>' : '') + '</div></div>' +
+    '<div class="rvtx"><span>公式テキスト</span>' + esc(c.text).replace(/\n/g, '<br>') + '</div>' +
+    '<div class="rvim"><span>実装(読み戻し)</span>' + (c.impl.length ? c.impl.map(l => '<div>' + esc(l) + '</div>').join('') : '<div class="note">効果の処理はありません(' + (c.noImpl ? '効果なし/バニラ' : '') + ')</div>') + '</div>' +
+    '<div class="row">' + btn('ok', '合っている') + btn('ng', '違う') + btn('hold', '保留') + '</div>' +
+    ((s === 'ng' || s === 'hold' || m) ? '<input class="rvm" data-rm="' + esc(c.id) + '" placeholder="どう違うか(メモ)" value="' + esc(m) + '">' : '') + '</div>';
+}
+function rvInput(e) {
+  const t = e.target, f = t.dataset && t.dataset.rf, rm = t.dataset && t.dataset.rm;
+  if (rm) { (RV[rm] = RV[rm] || {}).m = t.value.slice(0, 200); rvSave(); return; }
+  if (!f) return; RVV[f] = t.value; RVV.n = 40; if (f === 'q' && e.type === 'change') return; const q = f === 'q'; rvRender(true); if (q) { /* 入力中の欄は残す */ }
+}
+function rvClick(e) {
+  const t = e.target.closest('[data-rx]'); if (!t) return; const a = t.dataset.rx;
+  if (a === 'close') $('rvOv').hidden = true;
+  else if (a === 'more') { RVV.n += 40; rvRender(true); }
+  else if (a === 'mk') { const id = t.dataset.id, v = t.dataset.v, o = RV[id] = RV[id] || {}; o.s = o.s === v ? '' : v; o.t = Date.now(); rvSave(); const el = $('rv-' + id); if (el) { const w = document.createElement('div'); w.innerHTML = rvCard(RVD.find(x => x.id === id)); el.replaceWith(w.firstElementChild); } $('rvOv').querySelector('.rvtop .note').textContent = '確認済 ' + RVD.filter(c => rvSt(c.id)).length + '/' + RVD.length + ' ・ 違う ' + RVD.filter(c => rvSt(c.id) === 'ng').length; }
+  else if (a === 'copyng') { const L = RVD.filter(c => rvSt(c.id) === 'ng').map(c => c.id + ' ' + c.name + ((RV[c.id] && RV[c.id].m) ? ' … ' + RV[c.id].m : '')).join('\n'); navigator.clipboard.writeText(L || '(なし)').then(() => toast('コピーしました'), () => toast('コピーできませんでした')); }
+  else if (a === 'xlsx') { const J = { ok: '合っている', ng: '違う', hold: '保留' }; const rows = [['収録', '番号', 'カード名', '公式テキスト', '実装(読み戻し)', '確認', 'メモ']].concat(RVD.map(c => [c.set, c.id, c.name, c.text, c.impl.join('\n'), J[rvSt(c.id)] || '', (RV[c.id] && RV[c.id].m) || ''])); const b = xlsxBuild([['効果の照合', rows]]), u = URL.createObjectURL(b), l = document.createElement('a'); l.href = u; l.download = 'bsp-review-' + new Date().toISOString().slice(0, 10) + '.xlsx'; document.body.appendChild(l); l.click(); setTimeout(() => { URL.revokeObjectURL(u); l.remove(); }, 1500); }
+}
+$('admRv').onclick = rvOpen;
+
+/* ===== 設定(通知のオン・オフ / データの移行・共有) — 全ユーザー向け ===== */
+const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { toast('この端末に保存できませんでした'); } };
+const migGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+function migPack() {
+  return { format: 'bsp-data', version: 1, t: Date.now(), name: migGet('bs-name') || '', decks: userDecks(), raw: { 'bs-deck-order': migGet('bs-deck-order'), 'bs-del-samples': migGet('bs-del-samples') }, col: COL };
+}
+function migApply(j) {
+  if (!j || j.format !== 'bsp-data') throw new Error('形式が違います');
+  const un = userDecks(); let nd = 0;
+  Object.keys(j.decks || {}).forEach(k => { const r = j.decks[k]; if (!r || r.sample || !Array.isArray(r.cards) || !r.cards.length) return; const l = un[k]; if (!l || (r.t || 0) > (l.t || 0)) { un[k] = { cards: r.cards.map(c => [String(c[0]), c[1] | 0]), t: r.t || Date.now(), cover: r.cover || undefined }; nd++; } });
+  try { localStorage.setItem('bs-decks', JSON.stringify(un)); } catch (e) { }
+  if (j.name && !migGet('bs-name')) { try { localStorage.setItem('bs-name', String(j.name).slice(0, 12)); } catch (e) { } }
+  Object.keys(j.raw || {}).forEach(k => { if (j.raw[k] && !migGet(k)) { try { localStorage.setItem(k, j.raw[k]); } catch (e) { } } });
+  const c = j.col || {}; let nc = 0;
+  Object.keys(c.own || {}).forEach(id => { if ((c.own[id] | 0) > colN(id)) { COL.own[id] = c.own[id] | 0; nc++; } });
+  Object.keys(c.fav || {}).forEach(id => { if (!COL.fav[id]) COL.fav[id] = c.fav[id]; });
+  Object.keys(c.extra || {}).forEach(id => { COL.extra[id] = 1; });
+  colSave();
+  return { nd, nc };
+}
+function setOpen() {
+  let ov = $('setOv');
+  if (!ov) {
+    ov = document.createElement('div'); ov.id = 'setOv'; document.body.appendChild(ov);
+    ov.innerHTML = '<div class="setp"><div class="seth"><b>設定</b><button class="sub" data-sx="close" type="button">閉じる</button></div>' +
+      '<div class="admsec setsec"><div class="admin"><h4 class="admh4">プレイヤー名</h4><div class="row"><input id="setName" maxlength="12" placeholder="名前を入力(最大12文字)" autocomplete="off" style="max-width:220px"></div><p class="note">対戦の相手や、掲示板の投稿に表示されます。</p><h4 class="admh4">アイコン</h4><div class="row" style="align-items:center"><span id="setIco"></span><label class="sub filebtn">画像を選ぶ<input type="file" id="setIcoF" accept="image/*" hidden></label><button type="button" class="sub" data-sx="icodel">削除</button></div><p class="note">正方形に切り抜いて、小さくして使います。名前の横・部屋の一覧・対戦画面に表示され、オンラインの相手にも見えます。選ばないときは、名前の頭文字になります。</p><h4 class="admh4">通知</h4><label class="ck"><input type="checkbox" id="setNt"> 部屋ができたときの通知を受け取る</label><p class="note" id="setNtMsg"></p>' +
+      '<h4 class="admh4">効果音</h4><label class="ck"><input type="checkbox" id="setSnd"> 効果音を鳴らす</label><div class="row"><label class="ck">音量 <input type="range" id="setVol" min="0" max="100" style="width:160px"></label><button type="button" class="sub" data-sx="sndtest">試し聞き</button></div><p class="note">召喚・アタック・ブロック・破壊・ライフ・ターンの変わり目などで鳴ります。端末がマナーモードのときは鳴りません。</p>' +
+      '<h4 class="admh4">コアの色</h4><div class="row" id="setCore"></div>' +
+      '<h4 class="admh4">カードの裏面(スリーブ)</h4><p class="note">好きな画像を選ぶと、この端末のカードの裏面が変わります(オンライン対戦の相手には、相手側の画面で見えます)。' + SLV_MAX + '枚まで保存でき、増えると古いものから消えます。</p><div class="row"><label class="sub filebtn">画像を追加<input type="file" id="setSlv" accept="image/*" hidden></label><button type="button" class="sub" data-sx="slvreset">標準に戻す</button></div><div class="row" id="setSlvList"></div>' +
+      '<h4 class="admh4">データの移行・共有</h4><p class="note">端末を変えるときや、スマホとパソコンで同じデータを使いたいときに使います。デッキ・プレイヤー名・カードの所持データを、ファイル(またはテキスト)にして書き出し、別の端末で読み込みます。自動では同期されません。変更したら、また書き出して読み込んでください。</p>' +
+      '<div class="row"><button type="button" data-sx="save">ファイルで書き出す</button><button type="button" class="sub" data-sx="copy">テキストをコピー</button></div>' +
+      '<p class="note" style="margin-top:12px">別の端末で、書き出したファイルかテキストを読み込みます。同じ名前のデッキは、保存日時が新しいほうが残ります。所持枚数は、多いほうが残ります。</p>' +
+      '<div class="row"><label class="sub filebtn">ファイルを選ぶ<input type="file" id="setFile" accept=".json,application/json,text/plain" hidden></label></div>' +
+      '<textarea id="setTxt" rows="3" placeholder="コピーしたテキストを貼り付け" style="width:100%;box-sizing:border-box"></textarea><div class="row"><button type="button" class="sub" data-sx="load">貼り付けたテキストを読み込む</button></div>' +
+      '<p class="note">保存済みのリプレイは含まれません。</p><p class="note" id="setMsg"></p></div></div></div>';
+    ov.addEventListener('click', e => {
+      const t = e.target.closest('[data-sx],[data-core],[data-slv],[data-slvdel]'), a = t && t.dataset.sx; if (e.target === ov) { ov.hidden = true; return; } if (!t) return;
+      if (a === 'close') ov.hidden = true;
+      else if (a === 'save') { const u = URL.createObjectURL(new Blob([JSON.stringify(migPack())], { type: 'application/json' })), l = document.createElement('a'); l.href = u; l.download = 'bsp-data-' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(l); l.click(); setTimeout(() => { URL.revokeObjectURL(u); l.remove(); }, 1500); toast('書き出しました'); }
+      else if (a === 'copy') navigator.clipboard.writeText(JSON.stringify(migPack())).then(() => toast('コピーしました'), () => toast('コピーできませんでした'));
+      else if (a === 'load') setImport($('setTxt').value);
+      else if (a === 'sndtest') { sndCtx(); ['put', 'attack', 'break', 'life', 'turn'].forEach((k, i) => setTimeout(() => sndPlay(k), i * 450)); }
+      else if (a === 'icodel') { lsSet('bs-icon', ''); hdrIconUpd(); setIcoFill(); icsRefresh(); iconSend(); }
+      else if (a === 'slvreset') { lsSet('bs-sleeve', ''); slvApply(); setSlvFill(); sleeveSend(); }
+      else if (t.dataset.core != null) { lsSet('bs-core', t.dataset.core); coreApply(t.dataset.core); setCoreFill(); }
+      else if (t.dataset.slv) { lsSet('bs-sleeve', t.dataset.slv); slvApply(); setSlvFill(); sleeveSend(); }
+      else if (t.dataset.slvdel) { slvSave(slvList().filter(x => x.id !== t.dataset.slvdel)); if (lsGet('bs-sleeve', '') === t.dataset.slvdel) lsSet('bs-sleeve', ''); slvApply(); setSlvFill(); sleeveSend(); }
+    });
+    $('setFile').onchange = e => { const f = e.target.files && e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => setImport(String(r.result || '')); r.readAsText(f); e.target.value = ''; };
+    $('setName').oninput = () => { const v = $('setName').value.trim().slice(0, 12); $('myName').value = v; $('myName').dispatchEvent(new Event('input')); };
+    $('setIcoF').onchange = async e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return; try { lsSet('bs-icon', await icoMake(f, 96, .8)); hdrIconUpd(); setIcoFill(); icsRefresh(); iconSend(); } catch (x) { toast('画像を読み込めませんでした'); } };
+    $('setSnd').onchange = () => { SND.on = $('setSnd').checked; lsSet('bs-snd', SND.on ? '1' : '0'); if (SND.on) sndCtx(); };
+    $('setVol').oninput = () => { SND.vol = +$('setVol').value / 100; lsSet('bs-snd-vol', $('setVol').value); };
+    $('setSlv').onchange = async e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return; try { const u = await slvMake(f), a = slvList(), id = 's' + Date.now(); a.push({ id, t: Date.now(), u }); if (slvSave(a)) { lsSet('bs-sleeve', id); slvApply(); setSlvFill(); sleeveSend(); } } catch (x) { toast('画像を読み込めませんでした'); } };
+    $('setNt').onchange = async () => {
+      try { localStorage.setItem('bs-nt-off', $('setNt').checked ? '' : '1'); } catch (x) { }
+      if ($('setNt').checked && 'Notification' in window && Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (x) { } }
+      try { pushSync(); } catch (x) { } setNtMsg();
+    };
+  }
+  $('setName').value = ($('myName').value || '').trim(); $('setNt').checked = ntPref(); $('setSnd').checked = SND.on; $('setVol').value = Math.round(SND.vol * 100); setNtMsg(); setCoreFill(); setSlvFill(); setIcoFill(); ov.hidden = false;
+}
+function setIcoFill() { $('setIco').innerHTML = iconSpan(myIcon(), ($('myName').value || '').trim() || '?', 56); }
+function setCoreFill() { const cur = lsGet('bs-core', ''); $('setCore').innerHTML = CORE_COL.map(o => '<button type="button" class="' + (cur === o[0] ? 'on' : 'sub') + '" data-core="' + o[0] + '" style="padding:6px 10px;font-size:13px">' + o[1] + '</button>').join(''); }
+function setSlvFill() { const cur = lsGet('bs-sleeve', ''), L = slvList(); $('setSlvList').innerHTML = L.length ? L.slice().reverse().map(x => '<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><img src="' + x.u + '" data-slv="' + x.id + '" style="width:62px;border-radius:5px;cursor:pointer;border:2px solid ' + (cur === x.id ? 'var(--acc)' : 'transparent') + '"><button type="button" class="sub" data-slvdel="' + x.id + '" style="padding:2px 8px;font-size:11px">削除</button></div>').join('') : '<span class="note">まだありません</span>'; }
+function setNtMsg() {
+  const el = $('setNtMsg'); if (!el) return; const p = 'Notification' in window ? Notification.permission : 'none';
+  el.textContent = !ntPref() ? '通知はオフです。' : p === 'granted' ? '通知はオンです。' : p === 'denied' ? '通知はオンですが、端末(ブラウザ)の設定で通知が許可されていないため、届きません。' : p === 'none' ? 'この端末(ブラウザ)は通知に対応していません。' : 'オンにしました。許可の確認が出たら「許可」を選んでください。';
+}
+function setImport(txt) {
+  const m = $('setMsg');
+  try { const r = migApply(JSON.parse(txt)); m.textContent = '読み込みました(デッキ ' + r.nd + '個、カード ' + r.nc + '種の所持枚数)。画面を更新します…'; toast('読み込みました'); setTimeout(() => location.reload(), 900); }
+  catch (e) { m.textContent = '読み込めませんでした。書き出したファイルか、コピーしたテキストをそのまま入れてください。'; }
+}
+$('setBtn').onclick = setOpen;
+/* ===== プレイヤー名: 設定に移動。初回はポップで入力 / ヘッダーに表示 ===== */
+const hdrNameUpd = () => { const v = ($('myName').value || '').trim(); $('hdrName').textContent = v; };
+$('myName').addEventListener('input', hdrNameUpd); hdrNameUpd();
+(function () {
+  if (nameOk()) return;
+  const ov = document.createElement('div'); ov.id = 'nameOv'; ov.hidden = true;
+  ov.innerHTML = '<div class="namep"><b>プレイヤー名を入力してください</b><p class="note">対戦の相手や、掲示板の投稿に表示されます。あとから設定で変えられます。</p><input id="nameIn" maxlength="12" placeholder="名前(最大12文字)" autocomplete="off"><button type="button" id="nameGo" disabled>決定</button></div>';
+  document.body.appendChild(ov);
+  const inp = ov.querySelector('#nameIn'), go = ov.querySelector('#nameGo');
+  inp.oninput = () => { go.disabled = !inp.value.trim(); };
+  const ok = () => { const v = inp.value.trim().slice(0, 12); if (!v) return; $('myName').value = v; $('myName').dispatchEvent(new Event('input')); ov.remove(); };
+  go.onclick = ok; inp.onkeydown = e => { if (e.key === 'Enter') ok(); };
+  const t = setInterval(() => { if (!document.body.contains(ov) || nameOk()) { clearInterval(t); ov.remove(); return; } if (!document.documentElement.classList.contains('tklock') && !document.body.classList.contains('tklock')) { ov.hidden = false; clearInterval(t); setTimeout(() => inp.focus(), 100); } }, 400);
+})();
+/* ===== スリーブをオンラインの相手にも見せる ===== */
+let _back0 = null;
+function oppBackDefault() { if (_back0 == null) _back0 = (getComputedStyle(document.documentElement).getPropertyValue('--back') || '').trim(); document.documentElement.style.setProperty('--back-opp', _back0); }
+function slvSmall() {   // 送る用に小さくした自分のスリーブ(なければ空)
+  return new Promise(res => { const id = lsGet('bs-sleeve', ''), x = slvList().find(o => o.id === id); if (!x) { res(''); return; } const im = new Image(); im.onerror = () => res(''); im.onload = () => { const c = document.createElement('canvas'); c.width = 168; c.height = 234; c.getContext('2d').drawImage(im, 0, 0, 168, 234); res(c.toDataURL('image/jpeg', .7)); }; im.src = x.u; });
+}
+async function sleeveSend() { try { if (!dc || !dc.open) return; const u = await slvSmall(); dsend({ t: 'sleeve', u }); } catch (e) { } }
+function sleeveRecv(m) { const u = m && typeof m.u === 'string' ? m.u : ''; if (u && /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]{20,}$/.test(u) && u.length < 80000) document.documentElement.style.setProperty('--back-opp', 'url("' + u + '")'); else oppBackDefault(); }
+oppBackDefault();
+/* ===== アイコン(プロフィール画像): 設定・部屋の一覧・対戦画面・ゲートオープンに表示 ===== */
+const ICO_COL = ['#e0526b', '#e08a3c', '#b8921f', '#3fae6a', '#2f9fb8', '#4f7be0', '#8a5fe0', '#c35fb0'];
+const icoOk = u => typeof u === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+\/=]{20,}$/.test(u) && u.length < 30000;
+const myIcon = () => { const u = lsGet('bs-icon', ''); return icoOk(u) ? u : ''; };
+let OPPIC = '';
+function iconSpan(u, name, px) {
+  px = px || 22; const st = 'width:' + px + 'px;height:' + px + 'px';
+  if (icoOk(u)) return '<span class="ico" style="' + st + '"><img src="' + u + '" alt=""></span>';
+  const n = String(name || '?'), ch = [...n][0] || '?'; let h = 0; for (const c of n) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return '<span class="ico ini" style="' + st + ';font-size:' + Math.round(px * .5) + 'px;background:' + ICO_COL[h % ICO_COL.length] + '">' + esc(ch) + '</span>';
+}
+function icoMake(file, px, q) {   // 正方形に切り抜いて、小さくする
+  return new Promise((res, rej) => { const fr = new FileReader(); fr.onerror = () => rej(); fr.onload = () => { const im = new Image(); im.onerror = () => rej(); im.onload = () => { const c = document.createElement('canvas'); c.width = c.height = px; const s = Math.min(im.naturalWidth, im.naturalHeight), x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, px, px); x.drawImage(im, (im.naturalWidth - s) / 2, (im.naturalHeight - s) / 2, s, s, 0, 0, px, px); res(c.toDataURL('image/jpeg', q)); }; im.src = String(fr.result); }; fr.readAsDataURL(file); });
+}
+function icoSmall() {   // 部屋の一覧に載せる、さらに小さいアイコン
+  return new Promise(res => { const u = myIcon(); if (!u) { res(''); return; } const im = new Image(); im.onerror = () => res(''); im.onload = () => { const c = document.createElement('canvas'); c.width = c.height = 36; c.getContext('2d').drawImage(im, 0, 0, 36, 36); res(c.toDataURL('image/jpeg', .55)); }; im.src = u; });
+}
+let MYICS = ''; const icsRefresh = async () => { MYICS = await icoSmall(); if (free && free.mine) { free.mine.ic = MYICS; try { freeRender(); freeReg(); } catch (e) { } } };
+const hdrIconUpd = () => { const e = $('hdrIcon'); if (e) e.innerHTML = iconSpan(myIcon(), ($('myName').value || '').trim() || '?', 34); };
+$('myName').addEventListener('input', hdrIconUpd); hdrIconUpd(); icsRefresh();
+$('hdrName').onclick = () => $('setBtn').click();
+function iconSend() { try { if (dc && dc.open) dsend({ t: 'icon', u: myIcon() }); } catch (e) { } }
+function iconRecv(m) { OPPIC = m && icoOk(m.u) ? m.u : ''; try { if (V) render(); } catch (e) { } }
+function gateFill() {
+  try {
+    const nm = V && V.names, a = nm ? nm[V.me] : getName(), b = nm ? nm[1 - V.me] : '', real = !RP && !(V && V.spec);
+    const side = (u, n) => '<div class="gp">' + iconSpan(u, n, 72) + '<b>' + esc(String(n || '').slice(0, 12)) + '</b></div>';
+    $('gate').innerHTML = (a && b ? '<div class="gvs">' + side(real ? myIcon() : '', a) + '<span class="gv">VS</span>' + side(real && inMatch() ? OPPIC : '', b) + '</div>' : '') + '<div class="gt">ゲートオープン、界放</div>';
+  } catch (e) { }
+}
+
+/* ===== 効果音・コアの色・スリーブ(設定) ===== */
+/* --- 効果音(音声ファイルなし。ブラウザで合成する) --- */
+const SND = { ac: null, on: lsGet('bs-snd', '1') !== '0', vol: +lsGet('bs-snd-vol', '60') / 100, n: 0, last: {} };
+function sndCtx() { if (!SND.ac) { try { SND.ac = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } } if (SND.ac.state === 'suspended') SND.ac.resume().catch(() => { }); return SND.ac; }
+function sndTone(ac, t0, f0, f1, dur, type, g) { const o = ac.createOscillator(), v = ac.createGain(); o.type = type; o.frequency.setValueAtTime(f0, t0); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t0 + dur); v.gain.setValueAtTime(0.0001, t0); v.gain.exponentialRampToValueAtTime(g * SND.vol, t0 + 0.008); v.gain.exponentialRampToValueAtTime(0.0001, t0 + dur); o.connect(v); v.connect(ac.destination); o.start(t0); o.stop(t0 + dur + 0.02); }
+function sndNoise(ac, t0, dur, g, hp) { const n = Math.max(1, Math.floor(ac.sampleRate * dur)), b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n); const s = ac.createBufferSource(), f = ac.createBiquadFilter(), v = ac.createGain(); f.type = 'highpass'; f.frequency.value = hp; v.gain.value = g * SND.vol; s.buffer = b; s.connect(f); f.connect(v); v.connect(ac.destination); s.start(t0); }
+const SND_FX = {
+  put: (a, t) => { sndTone(a, t, 420, 700, .13, 'triangle', .5); sndTone(a, t + .05, 840, 840, .1, 'sine', .25); },
+  attack: (a, t) => { sndNoise(a, t, .22, .5, 900); sndTone(a, t + .12, 180, 70, .2, 'sine', .7); },
+  block: (a, t) => { sndTone(a, t, 330, 300, .09, 'square', .22); sndTone(a, t + .09, 260, 240, .12, 'square', .22); },
+  break: (a, t) => { sndNoise(a, t, .3, .7, 500); sndTone(a, t, 260, 60, .3, 'sawtooth', .35); },
+  life: (a, t) => { sndTone(a, t, 880, 660, .18, 'sine', .5); sndTone(a, t + .14, 660, 440, .3, 'sine', .5); },
+  draw: (a, t) => { sndTone(a, t, 1300, 1700, .05, 'sine', .3); },
+  core: (a, t) => { sndTone(a, t, 1500, 2000, .09, 'sine', .3); },
+  turn: (a, t) => { sndTone(a, t, 660, 660, .14, 'sine', .45); sndTone(a, t + .13, 880, 880, .22, 'sine', .45); },
+  win: (a, t) => { [523, 659, 784, 1047].forEach((f, i) => sndTone(a, t + i * .11, f, f, .3, 'triangle', .5)); },
+  lose: (a, t) => { [392, 330, 262].forEach((f, i) => sndTone(a, t + i * .18, f, f * .98, .4, 'sine', .5)); }
+};
+function sndPlay(k) { if (!SND.on || SND.vol <= 0) return; const a = sndCtx(); if (!a || a.state !== 'running') return; const now = Date.now(); if (now - (SND.last[k] || 0) < 90) return; SND.last[k] = now; try { SND_FX[k](a, a.currentTime + 0.005); } catch (e) { } }
+function sndKind(m) {
+  if (/ゲーム開始$|ゲーム開始:/.test(m)) return 'turn';
+  if (/敗北|ライフが0になりました/.test(m)) return /相手のライフ/.test(m) ? 'win' : 'lose';
+  if (/でアタック!/.test(m)) return 'attack';
+  if (/でブロック|ブロック宣言/.test(m)) return 'block';
+  if (/が破壊された|が消滅/.test(m)) return 'break';
+  if (/ライフで受けた/.test(m)) return 'life';
+  if (/を召喚|を配置|を使用$/.test(m)) return 'put';
+  if (/^スタートステップ/.test(m)) return 'turn';
+  if (/^コアステップ|リザーブにコア|^コア\d+個を/.test(m)) return 'core';
+  if (/ドロー/.test(m)) return 'draw';
+  return '';
+}
+function sndScan() {
+  try {
+    const g = G; if (!g || !g.log) return; const n = g.log.length;
+    if (SND.g !== g || n < SND.n) { SND.g = g; SND.n = n; return; }   // 新しい対戦(や巻き戻し)では鳴らさない
+    const from = Math.max(SND.n, n - 8); SND.n = n; if (n === from) return;
+    const ks = []; for (let i = from; i < n; i++) { const k = sndKind((g.log[i] && g.log[i].m) || ''); if (k && !ks.includes(k)) ks.push(k); }
+    ks.slice(0, 3).forEach((k, i) => setTimeout(() => sndPlay(k), i * 120));
+  } catch (e) { }
+}
+const _render0 = render; render = function () { _render0(); sndScan(); };
+document.addEventListener('pointerdown', () => { if (SND.on) sndCtx(); }, { once: true, capture: true });
+/* --- コアの色(画像の色相をずらして作る) --- */
+const CORE_COL = [['', '青(標準)', null], ['red', '赤', 0]];
+let _hex0 = null;
+function hexImg() { return new Promise(res => { if (!_hex0) { const v = getComputedStyle(document.documentElement).getPropertyValue('--hex'), m = /url\(["']?(.*?)["']?\)/.exec(v); _hex0 = m ? m[1] : ''; } if (!_hex0) { res(null); return; } const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = _hex0; }); }
+async function coreTint(deg) {
+  const im = await hexImg(); if (!im) return '';
+  const c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight; const x = c.getContext('2d'); x.drawImage(im, 0, 0);
+  const d = x.getImageData(0, 0, c.width, c.height), p = d.data;
+  const hsl = (r, g, b) => { r /= 255; g /= 255; b /= 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2; let h = 0, s = 0; if (mx !== mn) { const dd = mx - mn; s = l > .5 ? dd / (2 - mx - mn) : dd / (mx + mn); h = mx === r ? (g - b) / dd + (g < b ? 6 : 0) : mx === g ? (b - r) / dd + 2 : (r - g) / dd + 4; h *= 60; } return [h, s, l]; };
+  const rgb = (h, s, l) => { h = ((h % 360) + 360) % 360 / 360; if (!s) { const v = l * 255; return [v, v, v]; } const q = l < .5 ? l * (1 + s) : l + s - l * s, pp = 2 * l - q, f = t => { t = (t + 1) % 1; return 255 * (t < 1 / 6 ? pp + (q - pp) * 6 * t : t < .5 ? q : t < 2 / 3 ? pp + (q - pp) * (2 / 3 - t) * 6 : pp); }; return [f(h + 1 / 3), f(h), f(h - 1 / 3)]; };
+  let sh = 0, sw = 0, bx = 0, by = 0; for (let i = 0; i < p.length; i += 4) { if (p[i + 3] < 200) continue; const [h, s] = hsl(p[i], p[i + 1], p[i + 2]); if (s > .3) { sh += Math.cos(h * Math.PI / 180) * s; sw += Math.sin(h * Math.PI / 180) * s; } }
+  const base = (Math.atan2(sw, sh) * 180 / Math.PI + 360) % 360;
+  for (let i = 0; i < p.length; i += 4) { if (!p[i + 3]) continue; let [h, s, l] = hsl(p[i], p[i + 1], p[i + 2]); if (deg < 0) { s *= .08; l = Math.min(1, l * .75 + .3); } else h += deg - base; const o = rgb(h, s, l); p[i] = o[0]; p[i + 1] = o[1]; p[i + 2] = o[2]; }
+  x.putImageData(d, 0, 0); return c.toDataURL('image/png');
+}
+async function coreApply(key) {
+  const e = CORE_COL.find(o => o[0] === key) || CORE_COL[0]; if (e[2] == null) { document.documentElement.style.removeProperty('--hex'); return; }
+  const u = await coreTint(e[2]); if (u) document.documentElement.style.setProperty('--hex', 'url("' + u + '")');
+}
+const CORE_KEY = lsGet('bs-core', ''); if (CORE_KEY) coreApply(CORE_KEY);
+/* --- スリーブ(カードの裏面): 自分の端末だけに反映。5枚まで、古いものから消える --- */
+const SLV_MAX = 5;
+const slvList = () => { try { const a = JSON.parse(localStorage.getItem('bs-sleeves') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+function slvSave(a) { while (a.length > SLV_MAX) { const i = a.findIndex(x => x.id !== lsGet('bs-sleeve', '')); a.splice(i < 0 ? 0 : i, 1); } try { localStorage.setItem('bs-sleeves', JSON.stringify(a)); return true; } catch (e) { toast('保存できませんでした(容量不足)'); return false; } }
+function slvApply() { const id = lsGet('bs-sleeve', ''), s = slvList().find(x => x.id === id); if (s) document.documentElement.style.setProperty('--back', 'url("' + s.u + '")'); else document.documentElement.style.removeProperty('--back'); }
+function slvMake(file) {
+  return new Promise((res, rej) => { const fr = new FileReader(); fr.onerror = () => rej(); fr.onload = () => { const im = new Image(); im.onerror = () => rej(); im.onload = () => { const W = 252, H = 352, c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'), k = Math.max(W / im.naturalWidth, H / im.naturalHeight), w = im.naturalWidth * k, h = im.naturalHeight * k; x.fillStyle = '#000'; x.fillRect(0, 0, W, H); x.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); res(c.toDataURL('image/jpeg', .82)); }; im.src = String(fr.result); }; fr.readAsDataURL(file); });
+}
+slvApply();
+
+
 
 const HE = { t: 0, dur: 20000, zoom: 70, ops: [], nid: 1, uid: 1, sel: new Set(), inT: null, outT: null, rate: 1, loop: false, snap: true, clip: null, pk: null, vids: [], audio: 'last', playing: false, names: ['A', 'B'], undo: [], ready: false, busy: false, want: null, key: '', sc: 1, drag: null, raf: 0, t0: 0, tb: 0, busyExp: false, showNew: false, showDur: 2000 };
 function heLastTurn(T) { let r = null; HE.ops.forEach(o => { if (o.k === 'turn' && o.t <= T && (!r || o.t > r.t || (o.t === r.t && o.id > r.id))) r = o; }); return r; }

@@ -1,6 +1,6 @@
 const ART_URL = {};
 const pn = p => { if (!V) return p === 0 ? 'あなた' : '相手'; if (V.spec) { const n = V.names && V.names[p]; return n ? esc(n) : 'プレイヤー' + (p + 1); } if (p === V.me) return 'あなた'; const n = V.names && V.names[p]; return n ? esc(n) : '相手'; };
-const vsLine = () => (V && V.names && V.names[0] && V.names[1]) ? '<div class="vsname"><b>' + esc(V.names[V.me]) + '</b> vs <b>' + esc(V.names[1 - V.me]) + '</b></div>' : '';
+const vsLine = () => (V && V.names && V.names[0] && V.names[1]) ? '<div class="vsname">' + iconSpan(!RP ? myIcon() : '', V.names[V.me], 18) + '<b>' + esc(V.names[V.me]) + '</b> vs ' + iconSpan(!RP && inMatch() ? OPPIC : '', V.names[1 - V.me], 18) + '<b>' + esc(V.names[1 - V.me]) + '</b></div>' : '';
 const TOKEN_ART = { 'TOKEN-ソーディッシュ': '26RSD10-T001' };
 const _artBlob = {};
 // 画像(data:)は描き直すたびに読み込み直されてチカチカするので、短いURL(blob)にして一度だけ読み込む
@@ -312,6 +312,6 @@ function payHTML() {
   let z = '<div class="pc"><div class="pzs"><div class="pz' + (pay.bucket === 'pay' ? ' on' : '') + (payOk ? ' ok' : over ? ' bad' : '') + '" data-pzone="pay" data-ptab="pay"><span class="pzt">支払い(トラッシュへ) ' + nPay + '/' + need + '</span><div class="toks">' + toks(pay.pay) + '</div></div>';
   if (d.type !== 'magic') z += '<div class="pz' + (pay.bucket === 'place' ? ' on' : '') + (placeOk ? ' ok' : '') + '" data-pzone="place" data-ptab="place"><span class="pzt">置くコア ' + nPlace + (minPlace ? '/' + minPlace + '以上' : '(任意)') + '</span>' + plvBtns(st) + '<div class="toks">' + toks(pay.place) + '</div></div>';
   z += '</div><div class="dim">リザーブ・場のコアを枠へドラッグ(タップでも可)。決定すると支払います</div></div>';
-  const b = '<div class="bt"><button data-pok="1"' + (payOk && placeOk ? '' : ' disabled') + '>決定</button><button class="sub" data-pauto="1">自動で選ぶ</button><button class="sub" data-pcancel="1">やめる</button></div>';
+  const b = '<div class="bt"><button data-pok="1"' + (payOk && placeOk ? '' : ' disabled') + '>決定</button><button class="sub" data-pauto="1">自動で選ぶ</button><button class="sub" data-payreset="1">リセット</button><button class="sub" data-pcancel="1">やめる</button></div>';
   return '<div class="paywrap ' + cls + '" data-keepsel="1">' + a + z + b + '</div>';
 }

@@ -110,7 +110,7 @@ function bbsShow() {
   const box = $('bbsList'); if (!box) return;
   const pages = Math.max(1, Math.ceil(bbsRows.length / BBS_PER)); bbsPage = Math.min(Math.max(0, bbsPage), pages - 1);
   const rows = bbsRows.slice(bbsPage * BBS_PER, bbsPage * BBS_PER + BBS_PER);
-  box.innerHTML = (rows.map(x => '<div class="bbsi"><b' + (x.adm ? ' class="adm"' : '') + '>' + esc(String(x.name || '').slice(0, 12)) + '</b><small>' + (x.ts ? new Date(x.ts).toLocaleString('ja-JP') : '') + '</small><br>' + esc(String(x.text || '').slice(0, 400)) + '</div>').join('') || '<div class="note">まだ投稿はありません。</div>') +
+  box.innerHTML = (rows.map(x => '<div class="bbsi"><b' + (x.adm ? ' class="adm"' : '') + '>' + esc(String(x.name || '').slice(0, 20)) + '</b><small>' + (x.ts ? new Date(x.ts).toLocaleString('ja-JP') : '') + '</small><br>' + esc(String(x.text || '').slice(0, 400)) + '</div>').join('') || '<div class="note">まだ投稿はありません。</div>') +
     (pages > 1 ? '<div class="bbspg"><button class="sub" data-bbspg="-1"' + (bbsPage === 0 ? ' disabled' : '') + '>◀ 新しい</button><span>' + (bbsPage + 1) + ' / ' + pages + ' ページ(全' + bbsRows.length + '件)</span><button class="sub" data-bbspg="1"' + (bbsPage >= pages - 1 ? ' disabled' : '') + '>古い ▶</button></div>' : '');
 }
 async function bbsLoad() {
@@ -123,7 +123,7 @@ async function bbsLoad() {
 }
 document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-bbspg]'); if (b) { bbsPage += +b.dataset.bbspg; bbsShow(); } });
 $('bbsPost').onclick = async () => {
-  const name = ($('bbsName').value || '').trim().slice(0, 12) || ($('myName') && $('myName').value.trim().slice(0, 12)) || 'プレイヤー', text = ($('bbsText').value || '').trim().slice(0, 400), st = $('bbsStat');
+  const name = (($('myName').value || '').trim().slice(0, 12) || 'プレイヤー') + (document.body.classList.contains('adm') ? '(管理者)' : ''), text = ($('bbsText').value || '').trim().slice(0, 400), st = $('bbsStat');
   if (!text) { st.textContent = '内容を書いてください'; return; }
   if (!BBS_DB) { window.open('https://github.com/' + BBS_REPO + '/issues/new?title=' + encodeURIComponent('【報告】' + text.slice(0, 30)) + '&body=' + encodeURIComponent('投稿者: ' + name + '\nバージョン: ' + APP_VER + '\n\n' + text), '_blank'); st.textContent = 'GitHubの画面が開きます'; return; }
   if (Date.now() - bbsLast < 20000) { st.textContent = '少し待ってからもう一度投稿してください'; return; }
@@ -292,7 +292,7 @@ function setV(v) {
   if (undone) { ['me', 'opp'].forEach(k => { ctHold[k] = null; lifeHold[k] = null; resHold[k] = null; }); pendingFly.length = 0; gateUntil = 0; for (const k in soulHold) delete soulHold[k]; for (const k in coreHoldN) delete coreHoldN[k]; Object.keys(anim).forEach(k => { const m = anim[k]; if (m && typeof m.clear === 'function') m.clear(); }); anim.until = 0; anim.pop = {}; if (typeof specFxQ !== 'undefined') specFxQ.length = 0; }
   const newSeq = !undone && (V.seq !== lastSeq || fieldNew), tr = V.trace || [];
   if (undone) lastSeq = V.seq;
-  if (newSeq && (V.evs || []).some(e => e.t === 'gate')) { gateUntil = Date.now() + 2000; $('gate').hidden = false; setTimeout(() => { $('gate').hidden = true; }, 2000); }
+  if (newSeq && (V.evs || []).some(e => e.t === 'gate')) { gateUntil = Date.now() + 2000; gateFill(); $('gate').hidden = false; setTimeout(() => { $('gate').hidden = true; }, 2000); }
   if (newSeq && lastSeq !== null) {
     const ct = (V.evs || []).filter(e => (e.t === 'turn' && !RP && (e.p === V.me || V.spec)) || e.t === 'attack')[0];
     if (ct) {

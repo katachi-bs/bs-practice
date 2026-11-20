@@ -243,7 +243,7 @@ function setupDC() {
   const c0 = dc;
   dc.on('open', () => {
     if (c0 !== dc) return;
-    lastRx = Date.now(); rcBusy = false; showGame();
+    lastRx = Date.now(); rcBusy = false; showGame(); oppBackDefault(); OPPIC = ''; setTimeout(sleeveSend, 300); setTimeout(iconSend, 350);
     if (!isHost) {
       // 同じカードは1回だけ送る(40枚分まるごと送ると50KB前後になり、接続先によっては途中で止まるため)
       const u = [], ix = myDefs.map(d => { let i = u.findIndex(x => x === d || (x.id && x.id === d.id && x.name === d.name)); if (i < 0) { i = u.length; const L = CARD_LIST.find(c => c.def.id === d.id); u.push(L && d.id && JSON.stringify(L.def) === JSON.stringify(d) ? { id: d.id } : d); } return i; });
@@ -258,6 +258,8 @@ function setupDC() {
   const onDcData = m => {
     if (!m || typeof m !== 'object') return;
     if (specMsg(m)) return;
+    if (m.t === 'sleeve') { sleeveRecv(m); return; }
+    if (m.t === 'icon') { iconRecv(m); return; }
     if (m.t === 'deck' && isHost && Array.isArray(m.u) && Array.isArray(m.ix)) { const miss = []; guestDefs = m.ix.slice(0, 100).map(i => { const x = m.u[i]; if (x && x.id && Object.keys(x).length === 1) { const L = CARD_LIST.find(c => c.def.id === x.id); if (!L) { miss.push(x.id); return null; } return L.def; } return x; }).filter(Boolean).map(cleanDef); if (miss.length) toast('相手のカードがこちらに無いため外しました: ' + [...new Set(miss)].join(',')); guestName = str(m.name, 12).trim(); startGame(); }
     else if (m.t === 'deck' && isHost && Array.isArray(m.defs)) { guestDefs = m.defs.slice(0, 100).map(cleanDef); guestName = str(m.name, 12).trim(); startGame(); }
     else if (m.t === 'state' && !isHost) { guestStarted = true; if (SPEC) setSpecV(m.v); else setV(m.v); }

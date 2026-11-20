@@ -110,6 +110,9 @@ function handleClick(t) {
   if (t.closest('[data-rvinfo]')) { const pd = V.pending, id = t.closest('[data-rvinfo]').dataset.rvinfo, c = pd && pd.x && pd.x.cards.find(c => c.iid === id); if (c) { showSheet(detailHTML({ iid: c.iid, def: c.def, cores: [], tapped: false }) + '<div class="acts"><button class="sub" data-close="1">閉じる</button></div>', COLOR_HEX[c.def.color]); $('sheet').style.zIndex = 80; } return; }
   if (t.closest('[data-rvret]')) { doAct({ k: 'revTake', iids: [], top: t.closest('[data-rvret]').dataset.rvret === 'top' }); return; }
   if (t.closest('[data-rvnone]')) { doAct({ k: 'revTake', iid: null }); return; }
+  if (t.closest('[data-rvselreset]')) { revSel = []; renderRev(); return; }
+  if (t.closest('[data-pselreset]')) { pickSel.clear(); sel.clear(); render(); return; }
+  if (t.closest('[data-payreset]')) { if (pay) { pay.pay = new Set(); pay.place = new Set(); pay.ex = []; } render(); return; }
   if (t.closest('[data-rvreset]')) { revOrd = []; renderRev(); doAct({ k: 'revLive', order: [] }); return; }
   if (t.closest('[data-rvok]')) { const o = revOrd.slice(); revOrd = []; doAct({ k: 'revOrder', order: o }); return; }
   if (t.closest('[data-rv]')) {
@@ -324,7 +327,7 @@ document.addEventListener('pointercancel', () => { if (drag) { const d = drag; d
 { const upd = () => { const r = document.documentElement.style; r.setProperty('--sideh', ($('side').offsetHeight + 4) + 'px'); r.setProperty('--handh', ($('hand').offsetHeight + 6) + 'px'); };
   if (window.ResizeObserver) { const ro = new ResizeObserver(upd); ro.observe($('side')); ro.observe($('hand')); } }
 /* 開発者モード(パスは gateopen。ソースコードは公開されているので、鍵としては飾りです) */
-const APP_VER = 'v37.2.0 (2026/11/20)';
+const APP_VER = 'v37.3.0 (2026/11/20)';
 { const v = document.createElement('div'); v.id = 'appver'; v.textContent = 'ver ' + APP_VER; document.body.appendChild(v); }
 const DEV_PASS = 'gateopen';
 let DEV = false;

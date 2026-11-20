@@ -45,6 +45,14 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
     else { lg(G, pi, '　' + pd0.name + ': 色を指定しない'); G.fx.push({ n: pd0.name, t: '', p: pi, r: ['色を指定しませんでした'] }); }
     G.queue[0].i++; runQueue(G); return;
   }
+  if (pd0 && pd0.dist && pd0.pi === pi && Array.isArray(iids)) {
+    const pk = pd0.cands.includes(String(iids[0])) ? String(iids[0]) : null; if (!pk) return;
+    G.pending = null; G.undo = null; G.effPi = pd0.by != null ? pd0.by : pi;
+    const rs = [], m = pd0.dist.ids.length;
+    pd0.dist.ids.forEach(i => { const c = G.p[pd0.qi].field.find(x => x.iid === i); if (!c) return; const nn = i === pk ? pd0.dist.total - (m - 1) : 1; const n = trashToCard(G, pd0.qi, c, nn, false); rs.push(n ? '「' + c.def.name + '」にトラッシュのコア' + n + '個を置きました' : '「' + c.def.name + '」: 置けるコアがありません'); });
+    rs.forEach(r => lg(G, pi, '　' + pd0.name + ': ' + r)); G.fx.push({ n: pd0.name, t: '', p: pi, r: rs }); G.effPi = null;
+    if (G.queue[0]) G.queue[0].i++; runQueue(G); return;
+  }
   if (pd0 && pd0.kind === 'ynx' && pd0.pi === pi && Array.isArray(iids)) {
     G.pending = null; G.undo = null; const yes = iids.map(String).includes('yes'), it = G.queue[0];
     if (yes) { lg(G, pi, '　' + pd0.name + ': 効果を使う'); runQueue(G); return; }
@@ -131,6 +139,8 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
       G.fx.push({ n: pd.name, t: '', p: pi, r: ['「' + c.def.name + '」のフラッシュ効果をコストなしで使用'] });
       const eff = c.def.effects.find(e => e.timing.kind === 'flash'); if (eff) enqueue(G, pi, { def: c.def, iid: c.iid }, eff, { event: 'use', pi, iid: c.iid, name: c.def.name, free: true, spell: !!pd.spell });
     }
+  } else if (pd.kind === 'act' && !useAlt && ids.length === 2 && pd.acts.length === 1 && pd.acts[0].verb === 'trashCoresTotal' && pd.acts[0].total >= 3 && G.p[pd.qi].coreTrash.filter(x => !x.soul).length >= 3) {
+    G.pending = { pi, by: pd.by, name: pd.name, n: 1, cands: ids, qi: pd.qi, text: '3個を「2個+1個」に分けます。2個置くスピリットを1体選んでください(もう1体には1個)', kind: 'act', acts: [], alt: null, opt: false, upto: false, dist: { ids, total: pd.acts[0].total } }; G.undo = null; return;
   } else if (pd.kind === 'act') {
     const rs = [], jobs = []; G.effPi = pd.by != null ? pd.by : pi; G.effTapped = false; G.effHeavy = false;
     if (!ids.length) { rs.push('対象を指定しませんでした'); lg(G, pi, '　' + pd.name + ': 対象を指定しない'); }
@@ -154,7 +164,7 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
         else if (a.verb === 'lock') { (G.lock = G.lock || []).push({ iid: i, turn: G.turnNo, atk: !!a.atk, blk: !!a.blk }); rs.push(nm + 'は、このターン中、' + (a.atk && a.blk ? 'アタック/ブロック' : 'アタック') + 'できません'); }
         else if (a.verb === 'unb') { (G.unb = G.unb || []).push({ iid: i, turn: G.turnNo, bpMax: a.bpMax, costMax: a.costMax, costMin: a.costMin, bn: a.battle ? G.battleNo : null }); rs.push(nm + 'は、このターン中、' + (a.bpMax != null ? 'BP' + a.bpMax + '以下の' : a.costMax != null ? 'コスト' + a.costMax + '以下の' : '') + '相手のスピリットからブロックされません'); }
         else if (a.verb === 'coreToLife') { const cr = c.cores.find(x => !x.soul); if (cr && coreFloorBlock(G, pd.qi, c, 1)) { rs.push(nm + 'は、コアが1個より少なくならないため、コアを移せません'); } else if (cr) { c.cores.splice(c.cores.indexOf(cr), 1); G.p[pd.qi].life.push(cr); G.evs.push({ t: 'lifeAdd', p: pd.qi, n: 1 }); G.evs.push({ t: 'lifeGlow', p: pd.qi }); rs.push(nm + 'のコア1個をライフに置きました'); lifeUpEvt(G, pd.qi); if (!c.cores.length) vanishCard(G, pd.qi, c); } else rs.push('ソウルコア以外のコアがありません'); }
-        else if (a.verb === 'destroyMill') { if (G.queue[0]) G.queue[0].acted = true; const qv = c.def.effects.reduce((sm, e) => sm + (e.timing.kind === 'static' && e.timing.when === 'attacking' && effectActive(c, e) ? e.ops.filter(o => o.op === 'quake').reduce((x, o) => x + (o.n | 0), 0) : 0), 0); rs.push(nm + 'を破壊'); destroyCard(G, pd.qi, i); if (qv) mill(G, 1 - pi, qv, pd.name); }
+        else if (a.verb === 'destroyMill') { if (G.queue[0]) G.queue[0].acted = true; const qv = c.def.effects.reduce((sm, e) => sm + (e.timing.kind === 'static' && e.timing.when === 'attacking' && effectActive(c, e) ? e.ops.filter(o => o.op === 'quake').reduce((x, o) => x + (o.n | 0), 0) : 0), 0); let qv2 = qv; if (qv) { G.p[pi].field.forEach(K => K.def.effects.forEach(e => { if (e.timing.kind === 'static' && e.timing.when === 'step' && e.timing.step === 'attack' && e.timing.turn === 'you' && G.turn === pi && effectActive(K, e)) e.ops.forEach(o2 => { if (o2.op === 'quakePlus') qv2 += o2.n | 0; }); })); if (G.battle && G.battle.pi === pi) qv2 += G.battle.quakeAdd | 0; } rs.push(nm + 'を破壊'); destroyCard(G, pd.qi, i); if (qv2) mill(G, 1 - pi, qv2, pd.name); }
         else if (a.verb === 'puppetFx') { const pe = c.def.effects.find(e => e.keyword === 'puppet' && e.timing.kind === 'trigger' && effectActive(c, e)); if (pe) { enqueue(G, pi, c, pe, { event: 'summon' }); rs.push(nm + 'の【操霊】を発揮'); } else rs.push(nm + 'には発揮できる【操霊】がありません'); }
         else if (a.verb === 'bounceX') { const q0 = G.queue[0], sx = q0 && G.p[pi].field.find(x => x.iid === q0.src); if (c.def.type === 'nexus') { moveCard(G, pd.qi, i, 'hand'); if (sx) (sx.symx = sx.symx || []).push({ n: 1, color: 'white', d: 'battle' }); rs.push(nm + 'を手札に戻し、白シンボル1つを追加(このバトル中)'); } else { moveCard(G, pd.qi, i, 'hand'); if (sx) { sx.cores.push(mkCore(false)); G.evs.push({ t: 'coreAdd', p: pi, iid: sx.iid, n: 1 }); } rs.push(nm + 'を手札に戻し、コア1個を置きました'); } }
         else if (a.verb === 'summonFx') { const te = collectTrig(c, 'summon').act; if (te.length) { enqueue(G, pi, c, te[0], { event: 'summon' }); rs.push(nm + 'の召喚時効果を発揮'); } else rs.push(nm + 'には発揮できる召喚時効果がありません'); }
@@ -197,7 +207,7 @@ function chooseAct(G, pi, iids, useAlt, payIds) {
         else if (a.verb === 'dmgCap1') { (G.dmgCap = G.dmgCap || []).push({ pi, iid: i, turn: G.turnNo }); rs.push('このターン中、自分のライフは' + nm + 'から1しか減らされません'); }
         else if (a.verb === 'open') { if (G.queue[0]) G.queue[0].acted = true; }
         else if (a.verb === 'soulFromTrash') { const Pq = G.p[pd.qi]; let srcLoc = 'coreTrash'; let sc = Pq.coreTrash.find(x => x.soul); if (!sc && a.any) { const oc = Pq.field.find(x => x !== c && x.cores.some(y => y.soul)); sc = oc ? oc.cores.find(y => y.soul) : null; if (oc) srcLoc = 'card:' + oc.iid; } /* フィールド(他のカードの上)/トラッシュのみ。リザーブは不可 */ if (sc && moveCore(G, pd.qi, sc.id, { zone: 'card', iid: i })) { if (G.queue[0]) G.queue[0].acted = true; rs.push('[ソウルコア]を' + nm + 'に置きました'); G.evs.push({ t: 'coreAdd', p: pd.qi, iid: i, n: 1, from: srcLoc, soul: true }); } else rs.push('置ける[ソウルコア]がありません'); }
-        else if (a.verb === 'coreSel') { const cn2 = a.total ? Math.max(1, Math.floor(a.total / ids.length)) : a.perKwN ? G.p[pi].field.filter(x => x.def.type === 'spirit' && matchT(G, pi, pi, x, { kw: a.perKwN })).length : (a.n || 1); if (cn2 > 0) jobs.push({ qi: pd.qi, iid: i, choose: true, keep: a.keep != null ? a.keep : null, leave: a.leave != null ? a.leave : null, n: cn2 + (a.perEx && G.queue[0] && G.queue[0].ctx && G.queue[0].ctx.excludedEx ? G.queue[0].ctx.excludedEx.length : 0) }); }
+        else if (a.verb === 'coreSel') { const cn2 = a.total ? Math.max(1, Math.floor(a.total / ids.length)) : a.perKwN ? G.p[pi].field.filter(x => x.def.type === 'spirit' && matchT(G, pi, pi, x, { kw: a.perKwN })).length : (a.n || 1); if (cn2 > 0) jobs.push({ qi: pd.qi, iid: i, choose: true, keep: a.keep != null ? a.keep : null, leave: a.leave != null ? a.leave : null, leaveNon: a.leaveNon != null ? a.leaveNon : null, n: cn2 + (a.perEx && G.queue[0] && G.queue[0].ctx && G.queue[0].ctx.excludedEx ? G.queue[0].ctx.excludedEx.length : 0) }); }
       }
     });
     if (G.effTapped && G.effPi != null && G.turn === G.effPi) { const ow = G.effPi; G.effTapped = false; G.p[ow].field.forEach(X => X.def.effects.forEach((e, ei) => { const t = e.timing; if (t.kind !== 'trigger' || t.event !== 'effTap' || !effectActive(X, e)) return; if (t.limit === 'turn') { if (X.used && X.used[ei] === 't' + G.turnNo) return; (X.used = X.used || {})[ei] = 't' + G.turnNo; } enqueue(G, ow, X, e, { event: 'effTap' }); })); }
