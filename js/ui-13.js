@@ -58,6 +58,168 @@ $('admCards').onclick = () => {
   admOut('カード一覧(CSV)', 'bsp-cards.csv', '\ufeff' + rows.join('\n'), 'text/csv');
 };
 $('admEnd').onclick = () => setAdm(false);
+/* ===== カード所持管理(管理者用): R/M/X とシークレット、プロモの所持枚数 ===== */
+const COLK = 'bs-col-v1';
+let COL = { own: {}, fav: {}, extra: {} }, COLR = null, COLV = { vw: 'g', tab: 'img', set: '', rar: '', q: '', only: '' };
+try { const j = JSON.parse(localStorage.getItem(COLK) || 'null'); if (j && j.own) COL = { own: j.own || {}, fav: j.fav || {}, extra: j.extra || {} }; } catch (e) { }
+const colSave = () => { try { localStorage.setItem(COLK, JSON.stringify(COL)); } catch (e) { toast('この端末に保存できませんでした'); } };
+const colN = id => COL.own[id] || 0;
+function colSet(id, n) { n = Math.max(0, Math.min(99, n | 0)); if (n) COL.own[id] = n; else delete COL.own[id]; colSave(); }
+async function colLoadRar() {
+  if (COLR) return COLR;
+  try { const r = await fetch('cards/rarity.json', { cache: 'no-cache' }); COLR = await r.json(); } catch (e) { COLR = {}; toast('レアリティの表を読み込めませんでした'); }
+  return COLR;
+}
+let _colRows = null;
+function colRows() {
+  if (_colRows) return _colRows;
+  const vs = new Map(); CARD_LIST.forEach(c => { if (c.raw.altOf) { const k = String(c.raw.altOf); (vs.get(k) || vs.set(k, []).get(k)).push(c); } });
+  const rows = [];
+  CARD_LIST.forEach(c => {
+    if (c.raw.altOf) return;
+    const id = String(c.raw.id), rar = COLR[id] || '', arts = vs.get(id) || [];
+    const sec = arts.filter(x => /-S\d+$/.test(String(x.raw.id))), pro = arts.filter(x => !/-S\d+$/.test(String(x.raw.id)));
+    const promoOnly = rar === 'CP' || rar === 'PX';
+    if (!(rar === 'R' || rar === 'M' || rar === 'X' || promoOnly || sec.length || pro.length || COL.extra[id] || colN(id) > 0)) return;
+    const hideN = rar === 'C' && !COL.extra[id] && colN(id) === 0;   // 通常のCは出さない(シークレット・プロモだけ)
+    rows.push({ id, name: c.def.name, set: c.set, rar: rar || '?', promoOnly, ids: { n: promoOnly || hideN ? [] : [id], s: sec.map(x => String(x.raw.id)), p: promoOnly ? [id].concat(pro.map(x => String(x.raw.id))) : pro.map(x => String(x.raw.id)) } });
+  });
+  return (_colRows = rows);
+}
+const colSum = ids => ids.reduce((a, i) => a + colN(i), 0);
+const colCnt = r => { const n = colSum(r.ids.n), s = colSum(r.ids.s), p = colSum(r.ids.p); return { n, s, p, t: n + s + p }; };
+const colTarget = r => (COL.fav[r.id] && COL.fav[r.id].t) || 3;
+const colArtLabel = id => { const v = VARIANTS.find(x => x.id === id); if (/-S\d+$/.test(id)) return 'シークレット' + (v && v.tier >= 3 ? '★★' : v && v.tier === 2 ? '★' : '') + ' ' + id.match(/-S(\d+)$/)[1]; const m = id.match(/-P(\d+)$/); return m ? 'プロモ ' + m[1] : (/^RP/.test(id) || /CP/.test(id) ? 'プロモ' : '別絵'); };
+function colFiltered() {
+  const q = COLV.q.trim().toLowerCase();
+  return colRows().filter(r => {
+    if (COLV.set && r.set !== COLV.set) return false;
+    if (COLV.rar === 'S') { if (!r.ids.s.length) return false; } else if (COLV.rar === 'P') { if (!r.ids.p.length) return false; } else if (COLV.rar && r.rar !== COLV.rar) return false;
+    if (q && !(r.name + ' ' + r.id).toLowerCase().includes(q)) return false;
+    const k = colCnt(r); if (COLV.only === 'none' && k.t > 0) return false; if (COLV.only === 'have' && k.t === 0) return false;
+    return true;
+  });
+}
+const colImg = id => { const u = thumbOf(id) || artQ(id); return u ? '<img loading="lazy" src="' + esc(u) + '" alt="">' : ''; };
+function colHead() {
+  const sets = [...new Set(colRows().map(r => r.set))];
+  const T = [['img', '確認'], ['miss', '未所持'], ['fav', '★'], ['add', '＋追加']], VW = COLV.tab === 'img' || COLV.tab === 'miss';
+  return '<div class="coltop"><b>カード所持管理</b><button class="sub" data-cx="close">閉じる</button></div>' +
+    '<div class="coltabs">' + T.map(t => '<button class="' + (COLV.tab === t[0] ? 'on' : 'sub') + '" data-cx="tab" data-v="' + t[0] + '">' + t[1] + '</button>').join('') + '<button class="sub" data-cx="out">Excel</button>' + (VW ? '<span class="cvw"><button class="' + (COLV.vw === 'g' ? 'on' : 'sub') + '" data-cx="vw" data-v="g">画像</button><button class="' + (COLV.vw === 't' ? 'on' : 'sub') + '" data-cx="vw" data-v="t">表</button></span>' : '') + '</div>' +
+    '<div class="colflt"><select data-cf="set"><option value="">全収録</option>' + sets.map(s => '<option' + (COLV.set === s ? ' selected' : '') + '>' + esc(s) + '</option>').join('') + '</select>' +
+    '<select data-cf="rar">' + [['', '全レア'], ['R', 'R'], ['M', 'M'], ['X', 'X'], ['S', 'シークレットあり'], ['P', 'プロモあり']].map(o => '<option value="' + o[0] + '"' + (COLV.rar === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>' +
+    (COLV.tab === 'img' ? '<select data-cf="only">' + [['', 'すべて'], ['have', '持っている'], ['none', '持っていない']].map(o => '<option value="' + o[0] + '"' + (COLV.only === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>' : '') +
+    '<input data-cf="q" placeholder="カード名・番号" value="' + esc(COLV.q) + '"></div>';
+}
+function colBody() {
+  const rows = colFiltered(), tab = COLV.tab;
+  if (tab === 'img' && COLV.vw !== 't') { const cell = r => { const k = colCnt(r); return '<div class="colc' + (k.t ? ' has' : '') + '" data-cx="ed" data-v="' + esc(r.id) + '">' + colImg(r.id) + (COL.fav[r.id] ? '<i class="colcf">★</i>' : '') + '<span class="colct">' + k.t + '</span><span class="colcn">' + esc(r.name) + '</span><span class="colcs">' + r.rar + (k.n || k.s || k.p ? ' 通' + k.n + (r.ids.s.length ? ' S' + k.s : '') + (r.ids.p.length ? ' P' + k.p : '') : '') + '</span></div>'; };
+    let h = '', cur = null, buf = ''; rows.forEach(r => { if (r.set !== cur) { if (cur !== null) h += '<div class="colset">' + esc(cur) + '</div><div class="colgrid">' + buf + '</div>'; cur = r.set; buf = ''; } buf += cell(r); }); if (cur !== null) h += '<div class="colset">' + esc(cur) + '</div><div class="colgrid">' + buf + '</div>';
+    return '<div class="colinfo">' + rows.length + '種類(元のカードの収録弾ごと)</div>' + h; }
+  if (tab === 'img' && COLV.vw === 't') return '<div class="colinfo">' + rows.length + '種類(タップで編集)</div><table class="coltb"><tr><th>カード名</th><th>所持</th><th>通常</th><th>シークレット</th><th>プロモ</th></tr>' + (() => { let h = '', cur = null; rows.forEach(r => { if (r.set !== cur) { cur = r.set; h += '<tr class="colsetr"><td colspan="5">' + esc(cur) + '</td></tr>'; } const k = colCnt(r); h += '<tr data-cx="ed" data-v="' + esc(r.id) + '"><td>' + esc(r.name) + '<small> ' + r.rar + '</small></td><td>' + k.t + '</td><td' + (r.ids.n.length ? '>' + k.n : ' class="na">') + '</td><td' + (r.ids.s.length ? '>' + k.s : ' class="na">') + '</td><td' + (r.ids.p.length ? '>' + k.p : ' class="na">') + '</td></tr>'; }); return h; })() + '</table>';
+  if (tab === 'miss') {
+    const L = rows.filter(r => !r.promoOnly && (r.rar === 'R' || r.rar === 'M' || r.rar === 'X' || COL.extra[r.id])).map(r => ({ r, k: colCnt(r), need: colTarget(r) - colCnt(r).t })).filter(x => x.need > 0);
+    const hd = '<div class="colinfo">あと足りないカード ' + L.length + '種類・計' + L.reduce((a, x) => a + x.need, 0) + '枚(目標は基本3枚。★で個別に変えられます)</div>';
+    if (COLV.vw === 't') return hd + '<table class="coltb"><tr><th>カード名</th><th>所持</th><th>目標</th><th>あと</th><th></th></tr>' + (() => { let h = '', cur = null; L.forEach(x => { if (x.r.set !== cur) { cur = x.r.set; h += '<tr class="colsetr"><td colspan="5">' + esc(cur) + '</td></tr>'; } h += '<tr data-cx="ed" data-v="' + esc(x.r.id) + '"><td>' + esc(x.r.name) + '<small> ' + x.r.rar + '</small></td><td>' + x.k.t + '</td><td>' + colTarget(x.r) + '</td><td><b>' + x.need + '</b></td><td><button class="sub" data-cx="inc" data-v="' + esc(x.r.id) + '">＋1</button></td></tr>'; }); return h; })() + '</table>';
+    if (COLV.vw === 'g') { let h = '', cur = null, buf = ''; L.forEach(x => { if (x.r.set !== cur) { if (cur !== null) h += '<div class="colset">' + esc(cur) + '</div><div class="colgrid">' + buf + '</div>'; cur = x.r.set; buf = ''; } buf += '<div class="colc" data-cx="ed" data-v="' + esc(x.r.id) + '">' + colImg(x.r.id) + '<span class="colct">あと' + x.need + '</span><span class="colcn">' + esc(x.r.name) + '</span><span class="colcs">' + x.r.rar + ' 所持' + x.k.t + '/' + colTarget(x.r) + '</span></div>'; }); if (cur !== null) h += '<div class="colset">' + esc(cur) + '</div><div class="colgrid">' + buf + '</div>'; return hd + h; }
+    return '<div class="colinfo">あと足りないカード ' + L.length + '種類・計' + L.reduce((a, x) => a + x.need, 0) + '枚(目標は基本3枚。★で個別に変えられます)</div>' + colGrp(L.map(x => x.r), r => { const x = L.find(y => y.r === r); return '<div class="colrow" data-cx="ed" data-v="' + esc(x.r.id) + '"><div class="cth">' + colImg(x.r.id) + '</div><div class="cmid"><b>' + esc(x.r.name) + '</b><small>' + x.r.rar + ' / ' + esc(x.r.id) + ' / 所持' + x.k.t + '・目標' + colTarget(x.r) + '</small></div><div class="cneed">あと<b>' + x.need + '</b>枚</div><button class="sub" data-cx="inc" data-v="' + esc(x.r.id) + '">＋1</button></div>'; });
+  }
+  if (tab === 'add') return colAddBody();
+  const F = colRows().filter(r => COL.fav[r.id]);
+  return '<div class="colinfo">お気に入り ' + F.length + '種類(カードを開いて ☆ を押すと入ります。目標枚数も決められます)</div>' + colGrp(F, r => { const k = colCnt(r), t = colTarget(r); return '<div class="colrow" data-cx="ed" data-v="' + esc(r.id) + '"><div class="cth">' + colImg(r.id) + '</div><div class="cmid"><b>' + esc(r.name) + '</b><small>' + r.rar + ' / 通常' + k.n + (r.ids.s.length ? ' ・シークレット' + k.s : '') + (r.ids.p.length ? ' ・プロモ' + k.p : '') + '</small></div><div class="cneed">' + k.t + '/' + t + '<br><small>' + (t - k.t > 0 ? 'あと' + (t - k.t) : '達成') + '</small></div></div>'; });
+}
+function colAddBody() {
+  const q = COLV.q.trim().toLowerCase(), have = new Set(colRows().map(r => r.id));
+  const L = CARD_LIST.filter(c => !c.raw.altOf && !have.has(String(c.raw.id)) && (!COLV.set || c.set === COLV.set) && (!q || (c.def.name + ' ' + c.raw.id + ' ' + (c.def.reading || '')).toLowerCase().includes(q)));
+  const show = L.slice(0, 120);
+  return '<div class="colinfo">表にないカード(C・汎用カードなど)を足します。タップすると一覧に入って、そのまま枚数を入れられます。' + (L.length > 120 ? '(' + L.length + '件中、先頭120件。名前で絞ってください)' : '(' + L.length + '件)') + '</div><div class="colgrid">' + show.map(c => '<div class="colc" data-cx="addc" data-v="' + esc(String(c.raw.id)) + '">' + colImg(String(c.raw.id)) + '<span class="colcn">' + esc(c.def.name) + '</span><span class="colcs">' + esc(String(c.raw.id)) + '</span></div>').join('') + '</div>';
+}
+const colGrp = (rows, fn) => { let out = '', cur = null, buf = ''; const flush = () => { if (cur !== null) out += '<div class="colset">' + esc(cur) + '</div>' + buf; buf = ''; }; rows.forEach(r => { if (r.set !== cur) { flush(); cur = r.set; } buf += fn(r); }); flush(); return out; };
+function colRender(keep) {
+  const ov = $('colOv'); if (!ov) return; const sc = ov.querySelector('.colmain') ? ov.querySelector('.colmain').scrollTop : 0;
+  const act = document.activeElement && document.activeElement.dataset && document.activeElement.dataset.cf === 'q';
+  if (keep) { ov.querySelector('.colmain').innerHTML = colBody(); return; }
+  ov.innerHTML = '<div class="colhd">' + colHead() + '</div><div class="colmain">' + colBody() + '</div>'; ov.querySelector('.colmain').scrollTop = sc;
+}
+function colEdit(id) {
+  const r = colRows().find(x => x.id === id); if (!r) return;
+  const row = (aid, lab) => '<div class="ered"><div class="cth">' + colImg(aid) + '</div><div class="cmid"><b>' + lab + '</b><small>' + esc(aid) + '</small></div><span class="cstp"><b data-cx="dec" data-v="' + esc(aid) + '">－</b><i>' + colN(aid) + '</i><b data-cx="inc2" data-v="' + esc(aid) + '">＋</b></span></div>';
+  const k = colCnt(r), f = COL.fav[id];
+  const el = $('colEd') || (() => { const d = document.createElement('div'); d.id = 'colEd'; $('colOv').appendChild(d); return d; })();
+  el.dataset.id = id; el.hidden = false;
+  el.innerHTML = '<div class="edp"><div class="edh"><b>' + esc(r.name) + '</b><small>' + r.rar + ' / ' + esc(id) + '</small><button class="sub" data-cx="edclose">閉じる</button></div>' +
+    '<div class="edsum">所持 <b>' + k.t + '</b>枚(通常' + k.n + (r.ids.s.length ? ' ・シークレット' + k.s : '') + (r.ids.p.length ? ' ・プロモ' + k.p : '') + ')</div>' +
+    '<div class="edfav"><button class="' + (f ? 'on' : 'sub') + '" data-cx="fav" data-v="' + esc(id) + '">' + (f ? '★ お気に入り' : '☆ お気に入りに入れる') + '</button>' +
+    '<span class="cstp' + (f ? '' : ' dim') + '">目標 <b data-cx="tdec" data-v="' + esc(id) + '">－</b><i>' + colTarget(r) + '</i><b data-cx="tinc" data-v="' + esc(id) + '">＋</b></span></div>' +
+    (COL.extra[id] && !colCnt(r).t ? '<button class="sub" data-cx="unx" data-v="' + esc(id) + '" style="margin-bottom:6px">この追加を取り消す</button>' : '') + '<div class="edlist">' + r.ids.n.map(a => row(a, '通常')).join('') + r.ids.s.map(a => row(a, colArtLabel(a))).join('') + r.ids.p.map(a => row(a, colArtLabel(a))).join('') + '</div></div>';
+}
+function colSheets() {
+  const rows = colRows().slice().sort((a, b) => a.set.localeCompare(b.set, 'ja') || a.id.localeCompare(b.id));
+  const A = [['収録', '番号', 'レア', 'カード名', '所持枚数', '通常', 'シークレット', 'プロモ']].concat(rows.map(r => { const k = colCnt(r); return [r.set, r.id, r.rar, r.name, k.t, r.ids.n.length ? k.n : null, r.ids.s.length ? k.s : null, r.ids.p.length ? k.p : null]; }));
+  const B = [['収録', '番号', 'レア', 'カード名', '所持枚数', '目標', 'あと']].concat(rows.filter(r => !r.promoOnly && ('RMX'.includes(r.rar) || COL.extra[r.id])).map(r => { const k = colCnt(r), t = colTarget(r); return [r.set, r.id, r.rar, r.name, k.t, t, Math.max(0, t - k.t)]; }).filter(x => x[6] > 0));
+  const C = [['収録', '番号', 'レア', 'カード名', '所持枚数', '通常', 'シークレット', 'プロモ', '目標']].concat(rows.filter(r => COL.fav[r.id]).map(r => { const k = colCnt(r); return [r.set, r.id, r.rar, r.name, k.t, r.ids.n.length ? k.n : null, r.ids.s.length ? k.s : null, r.ids.p.length ? k.p : null, colTarget(r)]; }));
+  return [['所持一覧', A], ['未所持(あと何枚)', B], ['お気に入り', C]];
+}
+/* 最小のxlsx(zipを無圧縮で組む。外部ライブラリなし) */
+function xlsxBuild(sheets) {
+  const enc = new TextEncoder(), X = s => String(s).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+  const col = i => String.fromCharCode(65 + i);
+  const sh = rows => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="22" customWidth="1"/><col min="2" max="2" width="14" customWidth="1"/><col min="3" max="3" width="6" customWidth="1"/><col min="4" max="4" width="26" customWidth="1"/><col min="5" max="9" width="12" customWidth="1"/></cols><sheetData>' + rows.map((r, y) => '<row r="' + (y + 1) + '">' + r.map((v, x) => { const ref = col(x) + (y + 1), st = y === 0 ? ' s="1"' : v === null ? ' s="2"' : ''; if (v === null) return '<c r="' + ref + '"' + st + '/>'; return typeof v === 'number' ? '<c r="' + ref + '"' + st + '><v>' + v + '</v></c>' : '<c r="' + ref + '" t="inlineStr"' + st + '><is><t>' + X(v) + '</t></is></c>'; }).join('') + '</row>').join('') + '</sheetData></worksheet>';
+  const F = [
+    ['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' + sheets.map((s, i) => '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('') + '</Types>'],
+    ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'],
+    ['xl/workbook.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>' + sheets.map((s, i) => '<sheet name="' + X(s[0]) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>').join('') + '</sheets></workbook>'],
+    ['xl/_rels/workbook.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + sheets.map((s, i) => '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>').join('') + '<Relationship Id="rId' + (sheets.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'],
+    ['xl/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Meiryo"/></font><font><b/><sz val="11"/><name val="Meiryo"/></font></fonts><fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFDDE6FF"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFD9D9D9"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="0" fontId="0" fillId="3" borderId="0" xfId="0" applyFill="1"/></cellXfs></styleSheet>']
+  ].concat(sheets.map((s, i) => ['xl/worksheets/sheet' + (i + 1) + '.xml', sh(s[1])]));
+  const T = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; T[n] = c >>> 0; }
+  const crc = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = T[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  const parts = [], cen = []; let off = 0;
+  const w16 = (a, v) => a.push(v & 255, v >> 8 & 255), w32 = (a, v) => a.push(v & 255, v >> 8 & 255, v >> 16 & 255, v >>> 24 & 255);
+  F.forEach(([nm, txt]) => {
+    const nb = enc.encode(nm), d = enc.encode(txt), c = crc(d), h = [];
+    w32(h, 0x04034b50); w16(h, 20); w16(h, 0x0800); w16(h, 0); w16(h, 0); w16(h, 0x21); w32(h, c); w32(h, d.length); w32(h, d.length); w16(h, nb.length); w16(h, 0);
+    parts.push(new Uint8Array(h), nb, d);
+    const z = []; w32(z, 0x02014b50); w16(z, 20); w16(z, 20); w16(z, 0x0800); w16(z, 0); w16(z, 0); w16(z, 0x21); w32(z, c); w32(z, d.length); w32(z, d.length); w16(z, nb.length); w16(z, 0); w16(z, 0); w16(z, 0); w16(z, 0); w32(z, 0); w32(z, off);
+    cen.push(new Uint8Array(z), nb); off += h.length + nb.length + d.length;
+  });
+  const cl = cen.reduce((a, b) => a + b.length, 0), e = []; w32(e, 0x06054b50); w16(e, 0); w16(e, 0); w16(e, F.length); w16(e, F.length); w32(e, cl); w32(e, off); w16(e, 0);
+  return new Blob(parts.concat(cen, [new Uint8Array(e)]), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+function colOut() {
+  const S = colSheets(), tsv = S[0][1].map(r => r.join('\t')).join('\n');
+  const el = $('colEd') || (() => { const d = document.createElement('div'); d.id = 'colEd'; $('colOv').appendChild(d); return d; })(); el.hidden = false; el.dataset.id = '';
+  el.innerHTML = '<div class="edp"><div class="edh"><b>Excelに書き出す</b><button class="sub" data-cx="edclose">閉じる</button></div><div class="edlist" style="padding:6px 2px"><p class="note">3つのシート(所持一覧・未所持・お気に入り)が入ったExcelファイルを保存します。</p><div class="row"><button data-cx="xlsx">Excelファイル(.xlsx)を保存</button></div><p class="note">表をそのままコピーして、スプレッドシートに貼り付けることもできます(所持一覧)。</p><div class="row"><button class="sub" data-cx="tsv">表をコピー</button></div><p class="note">この端末に保存してあるデータです。念のため、バックアップを取っておけます。</p><div class="row"><button class="sub" data-cx="bk">バックアップをコピー</button></div><textarea id="colBk" rows="3" placeholder="バックアップを貼り付けて、下のボタンで復元" style="width:100%"></textarea><div class="row"><button class="sub" data-cx="rs">貼り付けた内容で復元</button></div></div></div>';
+  el._tsv = tsv;
+}
+function colOpen() {
+  colLoadRar().then(() => {
+    let ov = $('colOv'); if (!ov) { ov = document.createElement('div'); ov.id = 'colOv'; document.body.appendChild(ov); ov.addEventListener('click', colClick); ov.addEventListener('input', colInput); ov.addEventListener('change', colInput); }
+    _colRows = null; ov.hidden = false; colRender();
+  });
+}
+function colInput(e) { const f = e.target.dataset && e.target.dataset.cf; if (!f) return; COLV[f] = e.target.value; if (f === 'q' && e.type === 'change') return; colRender(true); }
+function colClick(e) {
+  const t = e.target.closest('[data-cx]'); if (!t) return; const a = t.dataset.cx, v = t.dataset.v, ed = $('colEd'), cur = ed && !ed.hidden ? ed.dataset.id : '';
+  if (a === 'close') { $('colOv').hidden = true; return; }
+  if (a === 'tab') { COLV.tab = v; colRender(); return; }
+  if (a === 'vw') { COLV.vw = v; colRender(); return; }
+  if (a === 'ed') { colEdit(v); return; }
+  if (a === 'addc') { COL.extra[v] = 1; colSave(); _colRows = null; colEdit(v); colRender(true); return; }
+  if (a === 'unx') { delete COL.extra[v]; delete COL.fav[v]; colSave(); _colRows = null; ed.hidden = true; colRender(true); return; }
+  if (a === 'edclose') { ed.hidden = true; _colRows = null; colRender(true); return; }
+  if (a === 'out') { colOut(); return; }
+  if (a === 'inc') { const r = colRows().find(x => x.id === v); if (r) { colSet(r.ids.n[0] || r.ids.p[0], colN(r.ids.n[0] || r.ids.p[0]) + 1); colRender(true); } return; }
+  if (a === 'inc2' || a === 'dec') { colSet(v, colN(v) + (a === 'dec' ? -1 : 1)); colEdit(cur); return; }
+  if (a === 'fav') { if (COL.fav[v]) delete COL.fav[v]; else COL.fav[v] = { t: 3 }; colSave(); colEdit(v); return; }
+  if (a === 'tinc' || a === 'tdec') { const f = COL.fav[v] || (COL.fav[v] = { t: 3 }); f.t = Math.max(1, Math.min(20, (f.t || 3) + (a === 'tdec' ? -1 : 1))); colSave(); colEdit(v); return; }
+  if (a === 'xlsx') { const b = xlsxBuild(colSheets()), u = URL.createObjectURL(b), l = document.createElement('a'); l.href = u; l.download = 'bsp-cards-' + new Date().toISOString().slice(0, 10) + '.xlsx'; document.body.appendChild(l); l.click(); setTimeout(() => { URL.revokeObjectURL(u); l.remove(); }, 1500); toast('保存しました'); return; }
+  if (a === 'tsv') { navigator.clipboard.writeText(ed._tsv).then(() => toast('コピーしました'), () => toast('コピーできませんでした')); return; }
+  if (a === 'bk') { navigator.clipboard.writeText(JSON.stringify(COL)).then(() => toast('コピーしました'), () => toast('コピーできませんでした')); return; }
+  if (a === 'rs') { try { const j = JSON.parse($('colBk').value); if (!j || !j.own) throw 0; COL = { own: j.own, fav: j.fav || {}, extra: j.extra || {} }; colSave(); toast('復元しました'); ed.hidden = true; colRender(); } catch (x) { toast('読み込めませんでした'); } return; }
+}
+$('admCol').onclick = colOpen;
+
 const HE = { t: 0, dur: 20000, zoom: 70, ops: [], nid: 1, uid: 1, sel: new Set(), inT: null, outT: null, rate: 1, loop: false, snap: true, clip: null, pk: null, vids: [], audio: 'last', playing: false, names: ['A', 'B'], undo: [], ready: false, busy: false, want: null, key: '', sc: 1, drag: null, raf: 0, t0: 0, tb: 0, busyExp: false, showNew: false, showDur: 2000 };
 function heLastTurn(T) { let r = null; HE.ops.forEach(o => { if (o.k === 'turn' && o.t <= T && (!r || o.t > r.t || (o.t === r.t && o.id > r.id))) r = o; }); return r; }
 function heNextStep(T) {

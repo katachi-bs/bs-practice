@@ -642,10 +642,21 @@ function secShineSlot(sl) {   // 対戦中、シークレット版のカード�
   if (!isSecretId(cid)) return;
   setTimeout(() => { const c = sl.querySelector('[data-card]') || sl; shineAt(c.getBoundingClientRect(), cid); }, 520);
 }
-function bSwap(id, nx) {   // デッキ内の id を nx に入れ替える(同じ位置。すでに入っていれば、まとめる)
-  const m = new Map(); [...B.deck].forEach(([k, n]) => { if (k === id) m.set(nx, (m.get(nx) || 0) + n); else m.set(k, (m.get(k) || 0) + n); });
-  B.deck = m; if (B.cover === id) B.cover = nx; _bFlipId = nx; bRender(); setTimeout(() => { _bFlipId = ''; }, 400);
-  if (isSecretId(nx)) setTimeout(() => { const t = document.querySelector('.bc[data-bid="' + String(nx).replace(/"/g, '') + '"]'); if (t) shineAt(t.getBoundingClientRect(), nx); }, 120);
+function bSwap(id, nx) {   // デッキ内の id を nx に入れ替える(同じ位置)。変わるカードだけを描き直して、ほかの画像が一瞬消えないようにする
+  const merge = B.deck.has(nx), m = new Map(); [...B.deck].forEach(([k, n]) => { if (k === id) m.set(nx, (m.get(nx) || 0) + n); else m.set(k, (m.get(k) || 0) + n); });
+  B.deck = m; if (B.cover === id) B.cover = nx;
+  const tile = document.querySelector('#bList .bc[data-bid="' + String(id).replace(/"/g, '') + '"]'), c = cardById(nx);
+  const fin = () => { if (isSecretId(nx)) setTimeout(() => { const t = document.querySelector('.bc[data-bid="' + String(nx).replace(/"/g, '') + '"]'); if (t) shineAt(t.getBoundingClientRect(), nx); }, 120); };
+  if (merge || !tile || !c) { _bFlipId = nx; bRender(); setTimeout(() => { _bFlipId = ''; }, 400); fin(); return; }
+  const apply = () => {
+    _bFlipId = nx; const w = document.createElement('div'); w.innerHTML = thumbHTML(c, 'deck', m.get(nx)); _bFlipId = '';
+    const n = w.firstElementChild; if (!n) { bRender(); return; } tile.replaceWith(n);
+    [id, nx].forEach(x => { const pt = document.querySelector('#bGrid .bc[data-badd="' + String(x).replace(/"/g, '') + '"]'), pc = cardById(x); if (!pt || !pc) return; const w2 = document.createElement('div'); w2.innerHTML = thumbHTML(pc, 'pool'); const n2 = w2.firstElementChild; if (!n2) return; if (pt.style.backgroundImage) { n2.style.backgroundImage = pt.style.backgroundImage; n2.removeAttribute('data-bg'); } pt.replaceWith(n2); });
+    { const cc = coverOf({ cover: B.cover, cards: [...B.deck] }); const ce = $('bCover'); ce.setAttribute('style', coverStyle(cc)); ce.textContent = cc && artOf(String(cc.raw.id)) ? '' : (cc ? cc.def.name.slice(0, 5) : '表紙'); }
+    lazyBg(); fin();
+  };
+  const u = thumbOf(nx) || artQ(nx); if (!u) { apply(); return; }
+  const im = new Image(); let done = false; const go = () => { if (done) return; done = true; apply(); }; im.onload = im.onerror = go; im.src = u; setTimeout(go, 400);
 }
 const ART_POP_MIN = 6;   // イラスト違いがこれ以上あるカードは、1回切り替えたあとに、選べる一覧を出す
 function artPop(id, poolBase) {
@@ -665,6 +676,7 @@ function artPop(id, poolBase) {
     if (isSecretId(nx)) shineAt(c.getBoundingClientRect(), nx);
   });
 }
+const bSplittable = id => { const g = artGroup(id); return g.length > 1 && g[0] !== id && (B.deck.get(id) || 0) >= 2; };
 function bSplit(id) {   // イラスト違いのカードをまとめて入れていたとき、1枚だけそのイラストを残して、ほかはデフォルトの絵に戻す(同じカードのイラスト違いを混ぜて入れられる)
   const g = artGroup(id), base = g[0], n = B.deck.get(id) || 0; if (g.length < 2 || id === base || n < 2) return;
   const m = new Map(); [...B.deck].forEach(([k, v]) => { if (k === id) { m.set(id, 1); m.set(base, (m.get(base) || 0) + n - 1); } else m.set(k, (m.get(k) || 0) + v); });
@@ -698,10 +710,10 @@ function bFlip(id, el) {
 }
 function thumbHTML(c, mode, nOverride) {
   const id = String(c.raw.id), art = artQ(id), au = art ? (thumbOf(id) || art) : '', n = nOverride != null ? nOverride : (B.deck.get(id) || 0), d = c.def;
-  const act = mode === 'view' ? '' : mode === 'deck' ? ' draggable="true" data-bid="' + esc(id) + '" data-bdrag="' + esc(id) + '"' : ' draggable="true" data-badd="' + esc(id) + '"';
+  const act = mode === 'view' ? '' : mode === 'deck' ? ' data-bid="' + esc(id) + '" data-bdrag="' + esc(id) + '"' : ' draggable="true" data-badd="' + esc(id) + '"';
   return '<div class="bc' + (art ? ' hasimg' : '') + (mode === 'deck' && nameCount(d.name) > 3 ? ' over' : '') + (mode === 'deck' && _bFlipId === id ? ' flipin' : '') + '"' + act + (mode === 'view' ? ' data-vinfo="' + esc(id) + '"' : '') + ' style="--cc:' + (COLOR_HEX[d.color] || '#6a7499') + (art && mode !== 'pool' ? ';background-image:url(' + au + ')' : '') + '"' + (art && mode === 'pool' ? ' data-bg="' + au + '"' : '') + '>' +
     '<span class="bcost">' + d.cost + '</span><span class="bn">' + esc(d.name) + '</span><span class="bid">' + esc(c.raw.altOf || d.id) + ' / ' + TYPE_JP[d.type] + (c.raw.altOf ? ' <b class="balt">別絵</b>' : '') + '</span>' +
-    (n ? (mode === 'deck' ? '<span class="bcnt bstep"><b data-bdec="' + esc(id) + '" title="1枚減らす">－</b><i>' + n + '</i><b data-binc="' + esc(id) + '" title="1枚増やす">＋</b></span>' : '<span class="bcnt">' + n + '</span>') : '') + (mode === 'deck' && n >= 2 && c.raw.altOf ? '<span class="bsplit" data-bsplit="' + esc(id) + '" title="1枚だけ残して、ほかはデフォルトの絵に戻す">分離</span>' : '') + (mode === 'deck' ? '<span class="bstar' + (B.cover === id ? ' on' : '') + '" data-bcover="' + esc(id) + '" title="表紙にする">' + (B.cover === id ? '★表紙' : '☆') + '</span>' : '') + (mode === 'pool' && artGroup(id).length > 1 ? '<span class="bflp" data-bpflip="' + esc(c.raw.altOf || id) + '" title="イラストを切り替える">⟳</span>' : '') + (mode === 'view' ? '' : '<span class="bi" data-binfo="' + esc(id) + '">i</span>' + (n ? '<span class="bdel" data-bdelall="' + esc(id) + '">削除</span>' : '')) + '</div>';
+    (n ? (mode === 'deck' ? '<span class="bcnt bstep"><b data-bdec="' + esc(id) + '" title="1枚減らす">－</b><i>' + n + '</i><b data-binc="' + esc(id) + '" title="1枚増やす">＋</b></span>' : '<span class="bcnt">' + n + '</span>') : '') + (mode === 'deck' && n >= 2 && c.raw.altOf ? '<span class="bsplit" data-bsplit="' + esc(id) + '" title="1枚だけ残して、ほかはデフォルトの絵に戻す">分離</span>' : '') + (mode === 'deck' ? '<span class="bstar' + (B.cover === id ? ' on' : '') + '" data-bcover="' + esc(id) + '" title="表紙にする">' + (B.cover === id ? '★表紙' : '☆') + '</span>' : '') + (mode === 'pool' && artGroup(id).length > 1 ? '<span class="bart">絵 ' + (artGroup(id).indexOf(id) + 1) + '/' + artGroup(id).length + '</span>' : '') + (mode === 'view' ? '' : '<span class="bi" data-binfo="' + esc(id) + '">i</span>' + (n ? '<span class="bdel" data-bdelall="' + esc(id) + '">削除</span>' : '')) + '</div>';
 }
 const poolCard = c => { const v = !c.raw.altOf && B.pv && B.pv[String(c.raw.id)]; return v ? (cardById(v) || c) : c; };   // 一覧で選んでいるイラスト
 function bFiltered() {

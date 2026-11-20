@@ -154,7 +154,7 @@ $('bExport').onclick = () => { const t = JSON.stringify({ name: $('bName').value
 $('bImportJson').onclick = () => { showSheet('<h3>デッキを取り込む</h3><div class="note">書き出した文字を貼り付けてください。</div><textarea id="bImpText" style="height:120px"></textarea><div class="acts"><button id="bImpOk">取り込む</button><button class="sub" data-close="1">閉じる</button></div>'); $('bImpOk').onclick = () => { try { const o = JSON.parse($('bImpText').value); if (!o || !Array.isArray(o.cards)) throw 0; B.deck = new Map(); o.cards.forEach(([id, n]) => { if (cardById(String(id)) && n > 0) B.deck.set(String(id), Math.min(3, +n | 0)); }); B.name = String(o.name || '無題'); $('bName').value = B.name; hideSheet(); bRender(); toast('取り込みました'); } catch (e) { toast('形式が正しくありません'); } }; };
 document.querySelectorAll('[data-btab]').forEach(b => { b.onclick = () => { $('builder').dataset.tab = b.dataset.btab; document.querySelectorAll('[data-btab]').forEach(x => x.classList.toggle('on', x === b)); }; });
 $('builder').addEventListener('click', e => {
-  if (dragSuppress) return;
+  if (dragSuppress || Date.now() - (window._poolLP || 0) < 800) return;
   const t = e.target;
   const inf = t.closest('[data-binfo]'); if (inf) { const c = cardById(inf.dataset.binfo); if (c) showSheet(detailHTML({ def: c.def, cores: [], iid: '' }) + '<div class="acts"><button data-bpick="' + esc(c.raw.id) + '">デッキに入れる</button><button class="sub" data-close="1">閉じる</button></div>'); return; }
   const del = t.closest('[data-bdelall]'); if (del) { B.deck.delete(del.dataset.bdelall); bRender(); return; }
@@ -162,7 +162,6 @@ $('builder').addEventListener('click', e => {
   { const tile = t.closest('#bList .bc'); if (tile && tile.dataset.bid && !t.closest('.bstep,[data-bcover],[data-bdelall],[data-binfo],[data-bsplit]')) { bFlip(tile.dataset.bid, tile); return; } }   // カードそのものを押すと、別のイラストがあれば順に切り替わる(ボタンは出さない隠し操作。なければ何も起きない)
   const dec = t.closest('[data-bdec]'); if (dec) { bAdd(dec.dataset.bdec, -1); return; }
   const sp = t.closest('[data-bsplit]'); if (sp) { bSplit(sp.dataset.bsplit); return; }
-  const pf = t.closest('[data-bpflip]'); if (pf) { bPoolFlip(pf.dataset.bpflip); return; }
   const add = t.closest('[data-badd]'); if (add) bAdd(add.dataset.badd, 1);
 });
 document.addEventListener('click', e => { const p = e.target.closest && e.target.closest('[data-bpick]'); if (p) { bAdd(p.dataset.bpick, 1); hideSheet(); } });
@@ -183,9 +182,11 @@ document.addEventListener('click', e => { const p = e.target.closest && e.target
   });
   const end = () => {
     clearTimeout(tm); cand = null; if (!drag) return;
-    const ids = [...box().children].map(x => x.dataset.bid).filter(Boolean), m = new Map();
+    const ids = [...box().children].map(x => x.dataset.bid).filter(Boolean), m = new Map(), was = [...B.deck.keys()], did = drag.dataset.bid;
     ids.forEach(id => { if (B.deck.has(id)) m.set(id, B.deck.get(id)); }); B.deck = m;
-    drag.classList.remove('lift'); drag = null; dragSuppress = true; setTimeout(() => { dragSuppress = false; }, 150); bRender();
+    const moved = ids.join('|') !== was.join('|');
+    drag.classList.remove('lift'); drag = null; dragSuppress = true; setTimeout(() => { dragSuppress = false; }, 150);
+    if (moved && bSplittable(did)) bSplit(did); else bRender();   // デフォルト以外の絵を2枚以上まとめて入れているカードを入れ替えたら、1枚だけ残して、ほかはデフォルトに戻す
   };
   document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
   document.addEventListener('touchmove', e => { if (drag) e.preventDefault(); }, { passive: false });
@@ -193,11 +194,24 @@ document.addEventListener('click', e => { const p = e.target.closest && e.target
 })();
 // ドラッグ(PC): 一覧→デッキで追加 / デッキ→一覧で削除
 let bDragId = null, bDragFrom = '';
-const bDragSplittable = () => { if (bDragFrom !== 'deck' || !bDragId) return false; const g = artGroup(bDragId); return g.length > 1 && g[0] !== bDragId && (B.deck.get(bDragId) || 0) >= 2; };
+(function () {   // 左の一覧: カードを長押しすると、イラストが切り替わる(ボタンなし)
+  let tm = null, sx = 0, sy = 0;
+  document.addEventListener('pointerdown', e => {
+    const el = e.target.closest && e.target.closest('#bGrid .bc[data-badd]'); if (!el || e.target.closest('[data-binfo],[data-bdelall]')) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const id = el.dataset.badd, g = artGroup(id); if (g.length < 2) return;
+    sx = e.clientX; sy = e.clientY; clearTimeout(tm);
+    tm = setTimeout(() => { window._poolLP = Date.now(); try { navigator.vibrate && navigator.vibrate(20); } catch (x) { } bPoolFlip(g[0]); }, 420);
+  });
+  document.addEventListener('pointermove', e => { if (Math.hypot(e.clientX - sx, e.clientY - sy) > 8) clearTimeout(tm); });
+  const stop = () => clearTimeout(tm); document.addEventListener('pointerup', stop); document.addEventListener('pointercancel', stop);
+  document.addEventListener('contextmenu', e => { if (Date.now() - (window._poolLP || 0) < 1500 && e.target.closest && e.target.closest('#bGrid .bc')) e.preventDefault(); });
+  document.addEventListener('dragstart', e => { if (Date.now() - (window._poolLP || 0) < 1500) e.preventDefault(); }, true);
+})();
 $('builder').addEventListener('dragstart', e => { const a = e.target.closest('[data-badd],[data-bdrag]'); if (!a) return; bDragId = a.dataset.badd || a.dataset.bdrag; bDragFrom = a.dataset.badd ? 'pool' : 'deck'; try { e.dataTransfer.setData('text/plain', bDragId); e.dataTransfer.effectAllowed = 'copyMove'; } catch (x) { } });
-$('builder').addEventListener('dragover', e => { if (!bDragId) return; const over = e.target.closest('.bdeck,.bpool'); if (over && ((over.classList.contains('bdeck') && (bDragFrom === 'pool' || bDragSplittable())) || (over.classList.contains('bpool') && bDragFrom === 'deck'))) { e.preventDefault(); over.classList.add('drop'); } });
+$('builder').addEventListener('dragover', e => { if (!bDragId) return; const over = e.target.closest('.bdeck,.bpool'); if (over && ((over.classList.contains('bdeck') && bDragFrom === 'pool') || (over.classList.contains('bpool') && bDragFrom === 'deck'))) { e.preventDefault(); over.classList.add('drop'); } });
 $('builder').addEventListener('dragleave', e => { const o = e.target.closest('.bdeck,.bpool'); if (o) o.classList.remove('drop'); });
-$('builder').addEventListener('drop', e => { document.querySelectorAll('.bdeck.drop,.bpool.drop').forEach(x => x.classList.remove('drop')); const over = e.target.closest('.bdeck,.bpool'); if (!over || !bDragId) return; e.preventDefault(); if (over.classList.contains('bdeck') && bDragFrom === 'pool') bAdd(bDragId, 1); else if (over.classList.contains('bdeck') && bDragFrom === 'deck') bSplit(bDragId); else if (over.classList.contains('bpool') && bDragFrom === 'deck') bAdd(bDragId, -1); bDragId = null; });
+$('builder').addEventListener('drop', e => { document.querySelectorAll('.bdeck.drop,.bpool.drop').forEach(x => x.classList.remove('drop')); const over = e.target.closest('.bdeck,.bpool'); if (!over || !bDragId) return; e.preventDefault(); if (over.classList.contains('bdeck') && bDragFrom === 'pool') bAdd(bDragId, 1); else if (over.classList.contains('bpool') && bDragFrom === 'deck') bAdd(bDragId, -1); bDragId = null; });
 $('builder').addEventListener('dragend', () => { bDragId = null; document.querySelectorAll('.bdeck.drop,.bpool.drop').forEach(x => x.classList.remove('drop')); });
 try { const s = localStorage.getItem('bs-deck'); if (s) $('deckText').value = s; } catch (e) { }
 setTimeout(() => { try { renderLobbyList(); } catch (e) { } }, 0);
